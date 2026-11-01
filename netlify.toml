@@ -1,0 +1,19 @@
+# Netlify Configuration for AIoT FDP Training Portal
+
+[build]
+  # Directory that contains the deploy-ready HTML files and assets
+  publish = "."
+
+# Ensure proper asset caching and security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"

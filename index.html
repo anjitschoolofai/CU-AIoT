@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIoT FDP Training Portal — Crescent University</title>
+  <meta name="description" content="Two-Day Faculty Development Programme on AIoT: Integrating Artificial Intelligence with the Internet of Things. 3–4 November 2026. Resource Person: Prof. R. Anjit Raja.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/landing.css">
+</head>
+<body>
+
+<!-- =================== ANIMATED BACKGROUND =================== -->
+<div class="hero-bg">
+  <div class="hero-grid"></div>
+  <!-- Floating particles via CSS -->
+  <div class="particles" id="particles"></div>
+</div>
+
+<!-- =================== LANDING HEADER =================== -->
+<header class="landing-header">
+  <div class="landing-logo">
+    <div class="logo-box">AI<span style="font-size:0.6em">oT</span></div>
+    <div>
+      <div class="logo-title">AIoT FDP Portal</div>
+      <div class="logo-sub">Crescent University &bull; 2026</div>
+    </div>
+  </div>
+  <nav class="landing-nav" style="display:flex;gap:0.25rem;">
+    <a href="pages/day1/index.html">Day 1</a>
+    <a href="pages/day2/index.html">Day 2</a>
+    <a href="pages/lab/index.html">Virtual Lab</a>
+    <a href="pages/campus.html">Smart Campus</a>
+    <a href="pages/architecture.html">Architecture</a>
+    <a href="pages/applications.html">Applications</a>
+    <a href="pages/research.html">Research</a>
+    <a href="pages/tutorials.html">Tutorials</a>
+    <a href="pages/projects.html">Project Studio</a>
+    <a href="pages/hardware.html">Hardware</a>
+    <a href="pages/resources.html">Resources</a>
+    <a href="pages/assessment.html">Assessment</a>
+  </nav>
+  <a href="pages/day1/index.html" class="btn btn-primary btn-sm">Start Learning →</a>
+</header>
+
+<!-- =================== TAGLINE STRIP =================== -->
+<div class="tagline-strip" style="margin-top:64px;">
+  <div class="tagline-marquee" aria-hidden="true">
+    <span>DESIGN</span><span class="sep">✦</span>
+    <span>LEARN</span><span class="sep">✦</span>
+    <span>SIMULATE</span><span class="sep">✦</span>
+    <span>CONNECT</span><span class="sep">✦</span>
+    <span>INTEGRATE</span><span class="sep">✦</span>
+    <span>INNOVATE</span><span class="sep">✦</span>
+    <span>DESIGN</span><span class="sep">✦</span>
+    <span>LEARN</span><span class="sep">✦</span>
+    <span>SIMULATE</span><span class="sep">✦</span>
+    <span>CONNECT</span><span class="sep">✦</span>
+    <span>INTEGRATE</span><span class="sep">✦</span>
+    <span>INNOVATE</span><span class="sep">✦</span>
+  </div>
+</div>
+
+<!-- =================== HERO SECTION =================== -->
+<section class="hero-section">
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      Faculty Development Programme &bull; 3–4 November 2026
+    </div>
+
+    <h1 class="hero-headline">
+      <span class="aiot">AIoT</span> Interactive<br>
+      <span class="fdp">Training Portal</span>
+    </h1>
+
+    <p class="hero-sub">
+      A premium, fully interactive web-based training environment for faculty members and educators
+      exploring the convergence of Artificial Intelligence and the Internet of Things.
+    </p>
+
+    <!-- Session Cards -->
+    <div class="session-cards">
+      <a href="pages/day1/index.html" class="session-card" style="text-decoration:none;">
+        <div class="day-label">📅 Day 1</div>
+        <div class="session-date">3 November 2026</div>
+        <h3>Building Intelligent AIoT Ecosystems: Sensors, Edge Computing, Cloud Integration and AI-Driven Decision-Making</h3>
+        <div class="outcome">🎯 Understand the complete AIoT ecosystem, data flow and intelligent decision process</div>
+      </a>
+      <a href="pages/day2/index.html" class="session-card" style="text-decoration:none;">
+        <div class="day-label">📅 Day 2</div>
+        <div class="session-date">4 November 2026</div>
+        <h3>Designing Smart Systems with AIoT: Technologies, Applications and Use Cases</h3>
+        <div class="outcome">🎯 Apply the foundation to design, evaluate and present integrated smart-system solutions</div>
+      </a>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="hero-cta">
+      <a href="pages/day1/index.html" class="btn-hero-primary">
+        🚀 Start Day 1 Learning
+      </a>
+      <a href="pages/lab/index.html" class="btn-hero-secondary">
+        🔬 Open Virtual Lab
+      </a>
+      <a href="pages/campus.html" class="btn-hero-secondary">
+        🏫 Smart Campus Demo
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PROGRAMME BANNER =================== -->
+<div class="programme-banner">
+  <div class="detail-item">
+    <div class="detail-label">FDP Theme</div>
+    <div class="detail-value">AIoT: <span>Integrating AI with IoT</span></div>
+  </div>
+  <div class="detail-item">
+    <div class="detail-label">Resource Person</div>
+    <div class="detail-value"><span>Prof. R. Anjit Raja</span></div>
+  </div>
+  <div class="detail-item">
+    <div class="detail-label">Duration</div>
+    <div class="detail-value"><span>Two Days</span> · ~7 hrs/day</div>
+  </div>
+  <div class="detail-item">
+    <div class="detail-label">Programme Dates</div>
+    <div class="detail-value"><span>3 – 4 November 2026</span></div>
+  </div>
+</div>
+
+<!-- =================== THREE MODES =================== -->
+<div style="padding: 3rem; background: var(--navy);">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div style="text-align:center; margin-bottom:2rem;">
+      <h2 class="section-title" style="justify-content:center; font-size:1.6rem;">Three Demonstration <span class="accent">Modes</span></h2>
+      <p class="section-subtitle">The portal clearly distinguishes educational explanations, simulated demonstrations and verified hardware data.</p>
+    </div>
+    <div class="mode-strip" style="padding:0;">
+      <div class="mode-feature-card">
+        <div class="mode-tag learning">Learning Mode</div>
+        <div class="mode-icon">📚</div>
+        <h3>Guided Learning</h3>
+        <p>Structured explanations, architecture diagrams, worked examples, terminology, key concepts and knowledge checks. Ideal for conceptual understanding.</p>
+        <div style="margin-top:1rem;">
+          <span class="label-illustrative">📖 ILLUSTRATIVE EXAMPLE</span>
+        </div>
+      </div>
+      <div class="mode-feature-card">
+        <div class="mode-tag simulation">Simulation Mode</div>
+        <div class="mode-icon">🔬</div>
+        <h3>Virtual Laboratory</h3>
+        <p>Interactive virtual sensors, adjustable parameters, live-looking charts, MQTT simulation, alert generation and edge/cloud comparison. No hardware required.</p>
+        <div style="margin-top:1rem;">
+          <span class="label-simulated">🔬 SIMULATED</span>
+        </div>
+      </div>
+      <div class="mode-feature-card">
+        <div class="mode-tag hardware">Real Hardware Mode</div>
+        <div class="mode-icon">🔌</div>
+        <h3>Physical Hardware</h3>
+        <p>Connect actual ESP32 / Raspberry Pi devices via MQTT. Shows only verified sensor readings from a configured and functioning data path; otherwise shows disconnected state.</p>
+        <div style="margin-top:1rem;">
+          <span class="label-disconnected">⚡ DISCONNECTED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== TWO-DAY ROADMAP =================== -->
+<div style="padding: 3rem; background: var(--navy-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div style="max-width: 900px; margin: 0 auto;">
+    <div style="text-align:center; margin-bottom:2rem;">
+      <h2 class="section-title" style="justify-content:center;">Two-Day Learning <span class="accent">Roadmap</span></h2>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 80px 1fr; align-items:center; gap:1rem;">
+      <!-- Day 1 -->
+      <div class="card" style="border-color:rgba(0,188,212,0.3);">
+        <div style="font-size:0.75rem; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">3 November 2026 · Day 1</div>
+        <h3 style="font-size:1rem; color:var(--white); margin-bottom:0.75rem;">🏗️ Understand &amp; Experiment</h3>
+        <ul style="list-style:none; font-size:0.8rem; color:var(--text-muted); line-height:2;">
+          <li>✦ AIoT Fundamentals &amp; Architecture</li>
+          <li>✦ Sensors, Devices &amp; Embedded Hardware</li>
+          <li>✦ Connectivity, Edge &amp; Cloud</li>
+          <li>✦ AI/ML for Sensor Data</li>
+          <li>✦ Virtual Laboratory Experiments</li>
+          <li>✦ Smart Campus Integration Demo</li>
+          <li>✦ Security, Faculty Design &amp; Assessment</li>
+        </ul>
+        <a href="pages/day1/index.html" class="btn btn-primary btn-sm" style="margin-top:1rem;">Go to Day 1 →</a>
+      </div>
+      <!-- Arrow -->
+      <div style="text-align:center; font-size:2.5rem; color:var(--cyan);">→</div>
+      <!-- Day 2 -->
+      <div class="card" style="border-color:rgba(0,188,212,0.3);">
+        <div style="font-size:0.75rem; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">4 November 2026 · Day 2</div>
+        <h3 style="font-size:1rem; color:var(--white); margin-bottom:0.75rem;">🎨 Design &amp; Apply</h3>
+        <ul style="list-style:none; font-size:0.8rem; color:var(--text-muted); line-height:2;">
+          <li>✦ Smart-System Design Methodology</li>
+          <li>✦ Architecture Patterns</li>
+          <li>✦ Sector-Based Design Studios</li>
+          <li>✦ Data &amp; Model Engineering</li>
+          <li>✦ Security, Ethics &amp; Sustainability</li>
+          <li>✦ Capstone Design Challenge</li>
+          <li>✦ Peer Review &amp; Assessment</li>
+        </ul>
+        <a href="pages/day2/index.html" class="btn btn-primary btn-sm" style="margin-top:1rem;">Go to Day 2 →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== FEATURES STRIP =================== -->
+<div class="features-strip">
+  <div class="feature-item">
+    <div class="feat-icon">🎓</div>
+    <div class="feat-label">13 Day 1 Modules</div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">🏗️</div>
+    <div class="feat-label">9 Day 2 Modules</div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">🔬</div>
+    <div class="feat-label">5 Virtual Lab Experiments</div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">🏫</div>
+    <div class="feat-label">Smart Campus Demo</div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">📊</div>
+    <div class="feat-label">Interactive Assessments</div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">🔌</div>
+    <div class="feat-label">Hardware Ready</div>
+  </div>
+</div>
+
+<!-- =================== QUICK NAV CARDS =================== -->
+<div style="padding:3rem; background:var(--navy);">
+  <div style="max-width:1100px; margin:0 auto;">
+    <h2 class="section-title" style="margin-bottom:1.5rem;">Portal <span class="accent">Navigation</span></h2>
+    <div class="grid-auto">
+
+      <a href="pages/day1/index.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">📘</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Day 1 — AIoT Ecosystems</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">13 modules covering fundamentals to intelligent decision-making</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">3 Nov 2026 →</div>
+      </a>
+
+      <a href="pages/day2/index.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">📗</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Day 2 — Smart Systems</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">9 modules from design methodology to capstone project</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">4 Nov 2026 →</div>
+      </a>
+
+      <a href="pages/architecture.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🏛️</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Architecture Explorer</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Interactive 6-layer AIoT architecture with selectable details</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Explore →</div>
+      </a>
+
+      <a href="pages/lab/index.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🔬</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Virtual Laboratory</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">5 interactive experiments: environment, maintenance, agriculture, energy, campus</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Launch Lab →</div>
+      </a>
+
+      <a href="pages/campus.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🏫</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Smart Campus Demo</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Flagship integrated AIoT demonstration with full sensor ecosystem</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Open Demo →</div>
+      </a>
+
+      <a href="pages/applications.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🌍</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Application Gallery</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Case studies: smart cities, healthcare, agriculture, Industry 4.0 and more</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Browse →</div>
+      </a>
+
+      <a href="AIoT Research Portal_demo1.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🔬</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Research Portal &amp; Simulators</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">15 peer-reviewed papers, neuromorphic MLOps, edge-cloud offload &amp; live simulators</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Launch Research →</div>
+      </a>
+
+      <a href="pages/tutorials.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">📖</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Tutorials &amp; Resources</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Step-by-step guides for sensors, ESP32, MQTT, Python ML and more</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Learn →</div>
+      </a>
+
+      <a href="pages/projects.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🚀</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Project Studio</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Faculty project templates, design canvas and capstone challenge</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Design →</div>
+      </a>
+
+      <a href="pages/assessment.html" class="card" style="text-decoration:none; display:block; cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">📝</div>
+        <h3 style="color:var(--white); margin-bottom:0.35rem;">Assessment &amp; Quizzes</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">MCQs, scenario questions, architecture interpretation and daily final checks</p>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--cyan);">Take Quiz →</div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- =================== FOOTER =================== -->
+<footer class="landing-footer">
+  <div>
+    <strong style="color:var(--white);">AIoT FDP Training Portal</strong> &bull;
+    Resource Person: <strong>Prof. R. Anjit Raja</strong> &bull;
+    Crescent University
+  </div>
+  <div style="display:flex; gap:1.5rem;">
+    <span>3–4 November 2026</span>
+    <span style="color:var(--cyan);">DESIGN · LEARN · SIMULATE · INNOVATE</span>
+  </div>
+</footer>
+
+<script src="assets/js/portal.js"></script>
+<script>
+  // Simple particle background
+  const pContainer = document.getElementById('particles');
+  if (pContainer) {
+    for (let i = 0; i < 40; i++) {
+      const dot = document.createElement('div');
+      dot.style.cssText = `
+        position:absolute;
+        width:${Math.random()*3+1}px; height:${Math.random()*3+1}px;
+        background:rgba(0,188,212,${Math.random()*0.4+0.1});
+        border-radius:50%;
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        animation: float-particle ${Math.random()*20+10}s ease-in-out infinite;
+        animation-delay:-${Math.random()*20}s;
+      `;
+      pContainer.appendChild(dot);
+    }
+  }
+</script>
+<style>
+  @keyframes float-particle {
+    0%,100%{ transform: translateY(0) translateX(0); opacity:0.3; }
+    33%    { transform: translateY(-30px) translateX(15px); opacity:0.7; }
+    66%    { transform: translateY(20px) translateX(-10px); opacity:0.5; }
+  }
+</style>
+</body>
+</html>
