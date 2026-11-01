@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Campus Demo — AIoT FDP Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    /* ---- Campus-specific styles ---- */
+    .sim-mode-banner {
+      background: linear-gradient(135deg, rgba(255,143,0,0.18), rgba(255,87,34,0.12));
+      border: 2px solid var(--amber);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .sim-mode-banner .banner-icon { font-size: 2rem; flex-shrink: 0; }
+    .sim-mode-banner h3 { font-size: 1rem; color: var(--amber); font-family: var(--font-head); margin-bottom: 0.3rem; }
+    .sim-mode-banner p  { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+
+    .bridge-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: linear-gradient(90deg, rgba(0,188,212,0.15), rgba(21,101,192,0.15));
+      border: 1px solid var(--cyan); border-radius: 20px;
+      padding: 0.3rem 1rem; font-size: 0.78rem; font-weight: 600; color: var(--cyan);
+      margin-top: 0.75rem;
+    }
+
+    /* Architecture flow */
+    .arch-flow-horiz {
+      display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+      background: var(--navy-mid); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem 1rem; overflow-x: auto;
+    }
+    .arch-flow-node {
+      display: flex; flex-direction: column; align-items: center;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.85rem 1rem; min-width: 110px;
+      text-align: center; transition: all var(--transition); flex-shrink: 0;
+    }
+    .arch-flow-node:hover { border-color: var(--cyan); transform: translateY(-2px); }
+    .arch-flow-node .fn-icon { font-size: 1.5rem; margin-bottom: 0.35rem; }
+    .arch-flow-node .fn-label { font-size: 0.72rem; font-weight: 700; color: var(--white); }
+    .arch-flow-node .fn-sub   { font-size: 0.63rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .arch-flow-node.layer-1 { border-color: rgba(0,188,212,0.5); }
+    .arch-flow-node.layer-2 { border-color: rgba(21,101,192,0.5); }
+    .arch-flow-node.layer-3 { border-color: rgba(0,137,123,0.5); }
+    .arch-flow-node.layer-4 { border-color: rgba(103,58,183,0.5); }
+    .arch-flow-node.layer-5 { border-color: rgba(255,143,0,0.5); }
+    .arch-flow-node.layer-6 { border-color: rgba(0,200,83,0.5); }
+    .arch-flow-node.layer-7 { border-color: rgba(244,67,54,0.5); }
+    .arch-flow-node.layer-8 { border-color: rgba(0,188,212,0.5); }
+    .arch-flow-arrow-h { color: var(--cyan); font-size: 1.5rem; padding: 0 0.25rem; flex-shrink: 0; animation: pulse-h 1.8s ease-in-out infinite; }
+    @keyframes pulse-h { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+    /* Decision engine */
+    .decision-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem; transition: all var(--transition);
+    }
+    .decision-card:hover { border-color: rgba(0,188,212,0.4); }
+    .decision-flow {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem;
+      font-size: 0.82rem; margin-bottom: 0.5rem;
+    }
+    .decision-flow .df-box {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.25rem 0.6rem; color: var(--text-muted);
+    }
+    .decision-flow .df-arrow { color: var(--cyan); font-size: 1rem; }
+    .decision-flow .df-method {
+      border-radius: 6px; padding: 0.25rem 0.6rem; font-weight: 700;
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .df-method.threshold { background: rgba(255,143,0,0.15); color: var(--amber); border: 1px solid rgba(255,143,0,0.4); }
+    .df-method.rulebased { background: rgba(21,101,192,0.15); color: var(--cyan-light); border: 1px solid rgba(0,188,212,0.3); }
+    .decision-action {
+      font-size: 0.78rem; color: var(--green); font-weight: 600;
+      display: flex; align-items: center; gap: 0.4rem; margin-top: 0.35rem;
+    }
+
+    /* Event log */
+    .event-log {
+      background: #0d1117; border: 1px solid #30363d;
+      border-radius: var(--radius); padding: 1rem;
+      font-family: var(--font-mono); font-size: 0.75rem;
+      line-height: 1.8; max-height: 300px; overflow-y: auto;
+    }
+    .event-log .log-entry { display: flex; gap: 0.5rem; margin-bottom: 0.2rem; }
+    .log-ts   { color: #6e7681; flex-shrink: 0; }
+    .log-type-sensor  { color: var(--cyan); font-weight: 600; }
+    .log-type-rule    { color: var(--amber); font-weight: 600; }
+    .log-type-alert   { color: var(--red); font-weight: 600; }
+    .log-type-system  { color: var(--green); font-weight: 600; }
+    .log-msg  { color: #c9d1d9; }
+
+    /* Control panel */
+    .control-bar {
+      display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .speed-group { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-muted); }
+    .speed-group select { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary); padding: 0.35rem 0.6rem; font-size: 0.8rem; }
+    .speed-group select option { background: var(--navy-mid); }
+
+    /* Sensor grid */
+    .sensor-grid-campus {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    }
+    @media (max-width: 1024px) { .sensor-grid-campus { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .sensor-grid-campus { grid-template-columns: 1fr; } }
+
+    .sensor-card-campus {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.1rem; text-align: center;
+      transition: all var(--transition); position: relative; overflow: hidden;
+    }
+    .sensor-card-campus:hover { border-color: rgba(0,188,212,0.4); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+    .sensor-card-campus .sc-icon { font-size: 2.2rem; margin-bottom: 0.4rem; }
+    .sensor-card-campus .sc-value {
+      font-size: 1.9rem; font-weight: 700; font-family: var(--font-mono); color: var(--cyan);
+    }
+    .sensor-card-campus .sc-value.warn { color: var(--amber); }
+    .sensor-card-campus .sc-value.crit { color: var(--red); }
+    .sensor-card-campus .sc-unit  { font-size: 0.78rem; color: var(--text-muted); }
+    .sensor-card-campus .sc-name  { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.3rem; }
+    .sensor-card-campus .sc-bar   { margin: 0.5rem 0 0.4rem; }
+    .sensor-card-campus .sc-label { position: absolute; top: 0.6rem; right: 0.6rem; }
+
+    /* Device table */
+    .device-status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+    .device-status-dot.sim { background: var(--amber); animation: blink 2s ease-in-out infinite; }
+
+    /* Participant challenge */
+    .challenge-form {
+      background: var(--navy-mid); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.75rem;
+    }
+    .challenge-output {
+      background: rgba(0,200,83,0.06); border: 1px solid rgba(0,200,83,0.3);
+      border-radius: var(--radius); padding: 1.25rem; margin-top: 1.25rem;
+      display: none;
+    }
+    .challenge-output.visible { display: block; }
+    .challenge-output h4 { color: var(--green); font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .challenge-output p  { font-size: 0.83rem; color: var(--text-muted); line-height: 1.7; }
+    .challenge-output .design-label {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: rgba(21,101,192,0.15); color: var(--cyan-light);
+      border: 1px solid rgba(0,188,212,0.3); font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; padding: 0.15rem 0.6rem; border-radius: 4px; margin-bottom: 0.75rem;
+    }
+    .checkbox-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem 1rem;
+    }
+    .checkbox-grid label {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; color: var(--text-muted); cursor: pointer;
+    }
+    .checkbox-grid input[type="checkbox"] { accent-color: var(--cyan); }
+
+    /* Simulation running indicator */
+    .sim-running-indicator {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; color: var(--green); font-weight: 600;
+    }
+    .sim-running-indicator .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+      animation: blink 1s ease-in-out infinite;
+    }
+    .sim-paused { color: var(--amber); }
+    .sim-paused .pulse-dot { background: var(--amber); animation: none; }
+  </style>
+</head>
+<body data-portal="campus">
+
+  <!-- ================================================
+       PAGE CONTENT (nav.js injects header+sidebar)
+       ================================================ -->
+
+  <!-- 1. PAGE HERO -->
+  <div class="page-hero">
+    <div class="tag">🏫 Day 1 Flagship Demo · 3 November 2026</div>
+    <h1>AIoT Smart Campus</h1>
+    <p>Flagship Integrated Demonstration — A complete end-to-end AIoT system simulation spanning all architectural layers: physical sensing, connectivity, edge processing, cloud analytics, and intelligent decision-making.</p>
+    <div class="bridge-badge">📘 Day 1 Concepts → 🔬 Integrated Demo → 📗 Day 2 Deep Dives</div>
+    <div class="meta">
+      <span>📅 <strong>3 Nov 2026</strong> — Day 1 Culmination</span>
+      <span>🔬 <strong>SIMULATION</strong> — No physical hardware</span>
+      <span>⏱️ <strong>~45 min</strong> guided walkthrough</span>
+      <span>👥 <strong>Faculty FDP</strong> — Crescent University</span>
+    </div>
+  </div>
+
+  <!-- 2. SIMULATION MODE BANNER -->
+  <div class="sim-mode-banner" role="alert">
+    <div class="banner-icon">🔬</div>
+    <div>
+      <h3>⚠️ SIMULATION MODE — All sensor readings are computer-generated</h3>
+      <p>No physical hardware is connected to this portal. Every sensor reading, chart, and alert shown here is produced by a mathematical simulation engine running in your browser. All data values are labelled <strong style="color:var(--amber);">SIMULATED</strong> throughout this page. This is an educational demonstration only.</p>
+    </div>
+  </div>
+
+  <!-- 3. CAMPUS OVERVIEW MAP -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🗺️</span>
+      <h3>Campus Overview Map <small>8 monitored zones — all readings SIMULATED</small></h3>
+    </div>
+    <div class="campus-grid" id="campus-map">
+      <!-- Dynamically populated by JS -->
+    </div>
+    <div style="text-align:center;margin-top:0.75rem;font-size:0.75rem;color:var(--text-muted);">
+      <span class="label-simulated">🔬 SIMULATED</span>&ensp;
+      <span style="display:inline-flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Occupied</span>&ensp;
+      <span style="display:inline-flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--green);display:inline-block;"></span> Vacant</span>&ensp;
+      <span style="display:inline-flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block;"></span> Alert</span>
+    </div>
+  </div>
+
+  <!-- 4. SENSOR ECOSYSTEM -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">📡</span>
+      <h3>Sensor Ecosystem <small>8 virtual sensors — all values SIMULATED</small></h3>
+    </div>
+    <div class="sensor-grid-campus" id="sensor-grid">
+
+      <div class="sensor-card-campus" id="sc-temperature">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">🌡️</div>
+        <div class="sc-name">Temperature</div>
+        <div class="sc-value" id="sv-temperature">26.4</div>
+        <div class="sc-unit">°C</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-temperature" style="width:33%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Normal: 20–30°C · Warn: 30°C</div>
+      </div>
+
+      <div class="sensor-card-campus" id="sc-humidity">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">💧</div>
+        <div class="sc-name">Humidity</div>
+        <div class="sc-value" id="sv-humidity">58.0</div>
+        <div class="sc-unit">%RH</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-humidity" style="width:58%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Normal: 40–70% · Warn: 75%</div>
+      </div>
+
+      <div class="sensor-card-campus" id="sc-airquality">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">💨</div>
+        <div class="sc-name">Air Quality (CO₂)</div>
+        <div class="sc-value" id="sv-airquality">142</div>
+        <div class="sc-unit">ppm</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-airquality" style="width:28%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Good: &lt;200 · Warn: 200ppm</div>
+      </div>
+
+      <div class="sensor-card-campus" id="sc-occupancy">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">👥</div>
+        <div class="sc-name">Occupancy</div>
+        <div class="sc-value" id="sv-occupancy">12</div>
+        <div class="sc-unit">persons</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-occupancy" style="width:40%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Capacity: 30 persons</div>
+      </div>
+
+      <div class="sensor-card-campus" id="sc-energy">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">⚡</div>
+        <div class="sc-name">Energy Consumption</div>
+        <div class="sc-value" id="sv-energy">12.4</div>
+        <div class="sc-unit">kW</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-energy" style="width:25%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Peak: 50 kW · Warn: 40kW</div>
+      </div>
+
+      <div class="sensor-card-campus" id="sc-vibration">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">📳</div>
+        <div class="sc-name">Vibration</div>
+        <div class="sc-value" id="sv-vibration">0.12</div>
+        <div class="sc-unit">g (acceleration)</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-vibration" style="width:6%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Safe: &lt;0.8g · Alert: 0.8g</div>
+      </div>
+
+      <div class="sensor-card-campus" id="sc-waterlevel">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">🪣</div>
+        <div class="sc-name">Water Tank Level</div>
+        <div class="sc-value" id="sv-waterlevel">74</div>
+        <div class="sc-unit">%</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-waterlevel" style="width:74%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Pump ON at: &lt;40%</div>
+      </div>
+
+      <div class="sensor-card-campus" id="sc-light">
+        <span class="sc-label"><span class="label-simulated">🔬 SIM</span></span>
+        <div class="sc-icon">☀️</div>
+        <div class="sc-name">Light Intensity</div>
+        <div class="sc-value" id="sv-light">450</div>
+        <div class="sc-unit">lux</div>
+        <div class="sc-bar"><div class="progress-bar"><div class="progress-fill" id="sb-light" style="width:45%"></div></div></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">Recommended: 300–500 lux</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. ARCHITECTURE DATA FLOW -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🔄</span>
+      <h3>Architecture Data Flow <small>8-layer pipeline — conceptual overview</small></h3>
+    </div>
+    <div class="arch-flow-horiz">
+      <div class="arch-flow-node layer-1">
+        <div class="fn-icon">📡</div>
+        <div class="fn-label">Physical Sensors</div>
+        <div class="fn-sub">DHT22 · PIR · HC-SR04</div>
+      </div>
+      <div class="arch-flow-arrow-h">→</div>
+      <div class="arch-flow-node layer-2">
+        <div class="fn-icon">🔌</div>
+        <div class="fn-label">ESP32 / RPi Gateway</div>
+        <div class="fn-sub">Edge Device · ADC · GPIO</div>
+      </div>
+      <div class="arch-flow-arrow-h">→</div>
+      <div class="arch-flow-node layer-3">
+        <div class="fn-icon">📨</div>
+        <div class="fn-label">MQTT Broker</div>
+        <div class="fn-sub">QoS · Publish/Subscribe</div>
+      </div>
+      <div class="arch-flow-arrow-h">→</div>
+      <div class="arch-flow-node layer-4">
+        <div class="fn-icon">⚙️</div>
+        <div class="fn-label">Edge Processing</div>
+        <div class="fn-sub">Filtering · Aggregation</div>
+      </div>
+      <div class="arch-flow-arrow-h">→</div>
+      <div class="arch-flow-node layer-5">
+        <div class="fn-icon">☁️</div>
+        <div class="fn-label">Cloud Platform</div>
+        <div class="fn-sub">ThingsBoard · InfluxDB</div>
+      </div>
+      <div class="arch-flow-arrow-h">→</div>
+      <div class="arch-flow-node layer-6">
+        <div class="fn-icon">🤖</div>
+        <div class="fn-label">AI Analytics</div>
+        <div class="fn-sub">Rules · Thresholds</div>
+      </div>
+      <div class="arch-flow-arrow-h">→</div>
+      <div class="arch-flow-node layer-7">
+        <div class="fn-icon">🧠</div>
+        <div class="fn-label">Decision Engine</div>
+        <div class="fn-sub">Rule-based · Threshold</div>
+      </div>
+      <div class="arch-flow-arrow-h">→</div>
+      <div class="arch-flow-node layer-8">
+        <div class="fn-icon">📊</div>
+        <div class="fn-label">Dashboard</div>
+        <div class="fn-sub">Visualization · Alerts</div>
+      </div>
+    </div>
+    <div class="alert alert-info mt-2" style="margin-top:1rem;">
+      <span class="alert-icon">ℹ️</span>
+      <div>Each arrow represents a data handoff between layers. Latency increases towards the right; decisions closest to the edge (left) are fastest but have less context. The full pipeline from sensor to dashboard in a real campus system takes approximately 100–500ms. <span class="label-illustrative">ILLUSTRATIVE</span></div>
+    </div>
+  </div>
+
+  <!-- 6. CAMPUS CHARTS (2x2 grid) -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">📊</span>
+      <h3>Live Campus Analytics <small>Charts update every 2 seconds — <span class="label-simulated">SIMULATED</span></small></h3>
+    </div>
+    <div class="grid-2" style="gap:1.5rem;">
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">Room Occupancy (persons) <span class="label-simulated">SIM</span></div>
+        <div class="chart-container"><canvas id="chart-occupancy"></canvas></div>
+      </div>
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">Temperature &amp; Humidity — last 20 readings <span class="label-simulated">SIM</span></div>
+        <div class="chart-container"><canvas id="chart-environment"></canvas></div>
+      </div>
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">Energy by Building (kW) <span class="label-simulated">SIM</span></div>
+        <div class="chart-container"><canvas id="chart-energy"></canvas></div>
+      </div>
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">Water Tank Level (%) — last 20 readings <span class="label-simulated">SIM</span></div>
+        <div class="chart-container"><canvas id="chart-water"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. DECISION ENGINE PANEL -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🧠</span>
+      <h3>Decision Engine Panel <small>Transparent rule-based decisions — no ML/AI models used</small></h3>
+    </div>
+    <div class="alert alert-warning" style="margin-bottom:1.25rem;">
+      <span class="alert-icon">⚠️</span>
+      <div>All decisions shown are produced by <strong>threshold comparisons</strong> and <strong>explicit rule logic</strong>. No machine learning models or AI training is involved. Each rule is fully auditable — the condition, method, and output are shown explicitly.</div>
+    </div>
+    <div id="decision-panel">
+
+      <div class="decision-card" id="dc-lights">
+        <div class="decision-flow">
+          <span class="df-box">Room B-201 <strong>Unoccupied</strong></span>
+          <span class="df-arrow">+</span>
+          <span class="df-box">Lights <strong>ON</strong></span>
+          <span class="df-arrow">→</span>
+          <span class="df-method rulebased">RULE-BASED</span>
+          <span class="df-arrow">→</span>
+          <span class="df-box">Condition: occupancy = 0 AND lights = ON</span>
+        </div>
+        <div class="decision-action">✅ Recommended Action: Turn Lights OFF — estimated saving: 0.8 kWh/hr</div>
+      </div>
+
+      <div class="decision-card" id="dc-airquality">
+        <div class="decision-flow">
+          <span class="df-box">Air Quality: <strong id="dc-aq-val">247 ppm</strong></span>
+          <span class="df-arrow">→</span>
+          <span class="df-box">Threshold: 200 ppm CO₂</span>
+          <span class="df-arrow">→</span>
+          <span class="df-method threshold">THRESHOLD RULE</span>
+        </div>
+        <div class="decision-action" id="dc-aq-action">⚠️ Alert: CO₂ exceeds safe limit. Recommend: Increase ventilation in Computer Lab.</div>
+      </div>
+
+      <div class="decision-card" id="dc-vibration">
+        <div class="decision-flow">
+          <span class="df-box">Lab Vibration: <strong id="dc-vib-val">0.89 g</strong></span>
+          <span class="df-arrow">→</span>
+          <span class="df-box">Threshold: 0.8 g</span>
+          <span class="df-arrow">→</span>
+          <span class="df-method threshold">THRESHOLD RULE</span>
+        </div>
+        <div class="decision-action" id="dc-vib-action">⚠️ Alert: Abnormal vibration detected in Physics Lab. Recommend: Schedule structural inspection.</div>
+      </div>
+
+      <div class="decision-card" id="dc-water">
+        <div class="decision-flow">
+          <span class="df-box">Water Tank: <strong id="dc-water-val">31%</strong></span>
+          <span class="df-arrow">→</span>
+          <span class="df-box">Threshold: &lt;40%</span>
+          <span class="df-arrow">→</span>
+          <span class="df-method rulebased">RULE-BASED</span>
+          <span class="df-arrow">→</span>
+          <span class="df-box">Safety check: pump not running (verified)</span>
+        </div>
+        <div class="decision-action">💧 Recommend: Enable water pump. Safety interlock check PASSED.</div>
+      </div>
+
+      <div class="decision-card" id="dc-energy">
+        <div class="decision-flow">
+          <span class="df-box">Energy: <strong id="dc-energy-val">12.4 kW</strong></span>
+          <span class="df-arrow">→</span>
+          <span class="df-box">Schedule: Off-hours (after 18:00)</span>
+          <span class="df-arrow">→</span>
+          <span class="df-method rulebased">RULE-BASED</span>
+        </div>
+        <div class="decision-action">✅ Normal consumption. No action required during working hours.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 8. LIVE CONTROLS -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🎮</span>
+      <h3>Simulation Controls</h3>
+    </div>
+    <div class="control-bar">
+      <button class="btn btn-primary" id="btn-start">▶ Start Simulation</button>
+      <button class="btn btn-secondary" id="btn-pause" disabled>⏸ Pause</button>
+      <button class="btn btn-outline" id="btn-reset">🔄 Reset</button>
+      <div class="speed-group">
+        <span>⚡ Speed:</span>
+        <select id="sim-speed" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);padding:0.35rem 0.6rem;font-size:0.8rem;font-family:var(--font-body);">
+          <option value="4000">0.5× (slow)</option>
+          <option value="2000" selected>1× (normal)</option>
+          <option value="1000">2× (fast)</option>
+          <option value="500">4× (rapid)</option>
+        </select>
+      </div>
+      <div class="speed-group">
+        <span>🎯 Inject Event:</span>
+        <select id="event-inject" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);padding:0.35rem 0.6rem;font-size:0.8rem;font-family:var(--font-body);">
+          <option value="normal">Normal Day</option>
+          <option value="highOccupancy">High Occupancy</option>
+          <option value="equipmentFault">Equipment Fault</option>
+          <option value="powerSpike">Power Spike</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" id="btn-inject">Inject →</button>
+      </div>
+      <div id="sim-status-indicator">
+        <span class="sim-running-indicator" id="sim-running-badge" style="display:none;">
+          <span class="pulse-dot"></span> Simulation Running
+        </span>
+        <span class="sim-running-indicator sim-paused" id="sim-paused-badge" style="display:none;">
+          <span class="pulse-dot"></span> Paused
+        </span>
+      </div>
+    </div>
+    <!-- 9. EVENT LOG -->
+    <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center;">
+      <span>📋 Event Log <span class="label-simulated">SIMULATED EVENTS</span></span>
+      <button class="btn btn-outline btn-sm" id="btn-clear-log">🗑 Clear</button>
+    </div>
+    <div class="event-log" id="event-log">
+      <div class="log-entry">
+        <span class="log-ts">[--:--:--]</span>
+        <span class="log-type-system">SYSTEM</span>
+        <span class="log-msg">Campus simulation ready. Press ▶ Start to begin.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. DEVICE CONNECTIVITY TABLE -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🔌</span>
+      <h3>Device Connectivity Table <small>All devices are simulated — no real hardware</small></h3>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Device ID</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Protocol</th>
+            <th>Status</th>
+            <th>Last Seen</th>
+            <th>Data Label</th>
+          </tr>
+        </thead>
+        <tbody id="device-table-body">
+          <tr>
+            <td class="mono">CAMPUS-TEMP-01</td>
+            <td>Temperature Sensor (DHT22)</td>
+            <td>Classroom A-101</td>
+            <td><code>MQTT</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-01">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">CAMPUS-PIR-02</td>
+            <td>PIR Occupancy Sensor</td>
+            <td>Computer Lab</td>
+            <td><code>MQTT</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-02">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">CAMPUS-AQ-03</td>
+            <td>Air Quality Sensor (MQ-135)</td>
+            <td>Computer Lab</td>
+            <td><code>MQTT</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-03">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">CAMPUS-ENERGY-04</td>
+            <td>Smart Energy Meter</td>
+            <td>Main Distribution Board</td>
+            <td><code>MQTT / Modbus</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-04">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">CAMPUS-VIB-05</td>
+            <td>Vibration Sensor (MPU6050)</td>
+            <td>Physics Lab</td>
+            <td><code>MQTT</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-05">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">CAMPUS-WATER-06</td>
+            <td>Ultrasonic Level Sensor (HC-SR04)</td>
+            <td>Rooftop Water Tank</td>
+            <td><code>MQTT</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-06">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">CAMPUS-ESP32-GW</td>
+            <td>ESP32 Gateway Node</td>
+            <td>Server Room</td>
+            <td><code>Wi-Fi / MQTT</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-07">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">CAMPUS-LIGHT-08</td>
+            <td>LDR Light Intensity Sensor</td>
+            <td>Library Reading Hall</td>
+            <td><code>MQTT</code></td>
+            <td><span class="device-status-dot sim"></span><span style="color:var(--amber);">SIMULATED</span></td>
+            <td class="mono" id="dt-08">--:--:--</td>
+            <td><span class="label-simulated">🔬 SIM</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 11. PARTICIPANT CHALLENGE -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🎯</span>
+      <h3>Participant Challenge — Design Your Campus Solution</h3>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:1.25rem;">
+      <span class="alert-icon">ℹ️</span>
+      <div>Use this guided form to design a custom AIoT solution for your institution. The output is a <strong>proposed design summary only</strong> — not a deployed system. Use it as a starting point for discussion.</div>
+    </div>
+    <div class="challenge-form">
+      <div class="grid-2" style="gap:1.25rem;margin-bottom:1.25rem;">
+        <div class="form-group">
+          <label class="form-label">🎯 Problem Statement</label>
+          <select class="form-control" id="ch-problem">
+            <option value="">— Select a campus problem —</option>
+            <option value="energy">Excessive energy consumption in unoccupied rooms</option>
+            <option value="water">Water wastage in campus facilities</option>
+            <option value="airquality">Poor air quality in crowded classrooms</option>
+            <option value="security">Unauthorized access to restricted labs</option>
+            <option value="attendance">Manual attendance tracking inefficiency</option>
+            <option value="parking">Campus parking space utilization</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">💻 Hardware Platform</label>
+          <select class="form-control" id="ch-hardware">
+            <option value="">— Select hardware —</option>
+            <option value="esp32">ESP32 (Wi-Fi + BLE, affordable)</option>
+            <option value="rpi4">Raspberry Pi 4 (Linux, high compute)</option>
+            <option value="arduino">Arduino Uno (simple, limited)</option>
+            <option value="jetson">NVIDIA Jetson Nano (ML capable)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">📡 Communication Protocol</label>
+          <select class="form-control" id="ch-protocol">
+            <option value="">— Select protocol —</option>
+            <option value="mqtt">MQTT (lightweight, pub/sub, IoT-native)</option>
+            <option value="http">HTTP/REST (familiar, polling-based)</option>
+            <option value="ble">BLE (short range, low power)</option>
+            <option value="lora">LoRaWAN (long range, low power)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">☁️ Processing Location</label>
+          <select class="form-control" id="ch-processing">
+            <option value="">— Select location —</option>
+            <option value="edge">Edge Only (fastest, most private)</option>
+            <option value="cloud">Cloud Only (most scalable)</option>
+            <option value="hybrid">Hybrid Edge + Cloud (recommended)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🤖 Decision Method</label>
+          <select class="form-control" id="ch-method">
+            <option value="">— Select method —</option>
+            <option value="threshold">Simple Threshold Rules (easiest to implement)</option>
+            <option value="rulebased">Rule-Based Logic (if/else, explainable)</option>
+            <option value="regression">Linear Regression Prediction (predict trends)</option>
+            <option value="anomaly">Anomaly Detection (Isolation Forest)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">📊 Output / Visualization</label>
+          <select class="form-control" id="ch-output">
+            <option value="">— Select output —</option>
+            <option value="dashboard">Web Dashboard (Grafana / ThingsBoard)</option>
+            <option value="mobile">Mobile App Alerts</option>
+            <option value="email">Email Notifications</option>
+            <option value="actuator">Automatic Actuator Control</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📡 Required Sensors (select all that apply)</label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="ch-sensors" value="temperature"> 🌡️ Temperature (DHT22)</label>
+          <label><input type="checkbox" name="ch-sensors" value="humidity"> 💧 Humidity (DHT22)</label>
+          <label><input type="checkbox" name="ch-sensors" value="pir"> 👁️ PIR Motion</label>
+          <label><input type="checkbox" name="ch-sensors" value="ultrasonic"> 📏 Ultrasonic Distance</label>
+          <label><input type="checkbox" name="ch-sensors" value="airquality"> 💨 Air Quality (MQ-135)</label>
+          <label><input type="checkbox" name="ch-sensors" value="energy"> ⚡ Energy Meter</label>
+          <label><input type="checkbox" name="ch-sensors" value="light"> ☀️ Light (LDR/BH1750)</label>
+          <label><input type="checkbox" name="ch-sensors" value="rfid"> 🏷️ RFID / NFC</label>
+          <label><input type="checkbox" name="ch-sensors" value="camera"> 📷 Camera Module</label>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-generate-solution" style="margin-top:0.5rem;">✨ Generate My Campus Solution</button>
+
+      <div class="challenge-output" id="challenge-output">
+        <div class="design-label">🎨 PROPOSED DESIGN — Not a deployed system</div>
+        <h4>🏫 Your Proposed AIoT Campus Solution</h4>
+        <div id="challenge-output-text"></div>
+        <div class="alert alert-warning" style="margin-top:1rem;">
+          <span class="alert-icon">⚠️</span>
+          <div>This is a <strong>conceptual design</strong> generated for educational purposes. Implementation requires hardware procurement, software development, testing, and institutional approval. Actual performance may vary.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/portal.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script>
+  /* ============================================================
+     Smart Campus Simulation Engine
+     All data is SIMULATED — no physical hardware connected
+     ============================================================ */
+  'use strict';
+
+  /* ---- Campus State ---- */
+  const CampusState = {
+    running: false,
+    paused: false,
+    speed: 2000,
+    tick: 0,
+    scenario: 'normal',
+    intervals: [],
+    sensors: {
+      temperature: { value: 26.4, min: 20, max: 40,  unit: '°C',     drift: 0.4,  warnAt: 30,  critAt: 35  },
+      humidity:    { value: 58.0, min: 30, max: 90,  unit: '%RH',    drift: 1.2,  warnAt: 75,  critAt: 85  },
+      airquality:  { value: 142,  min: 50, max: 500, unit: 'ppm',    drift: 8,    warnAt: 200, critAt: 300 },
+      occupancy:   { value: 12,   min: 0,  max: 30,  unit: 'persons',drift: 1.5,  warnAt: 25,  critAt: 30  },
+      energy:      { value: 12.4, min: 2,  max: 50,  unit: 'kW',     drift: 0.9,  warnAt: 40,  critAt: 48  },
+      vibration:   { value: 0.12, min: 0,  max: 2,   unit: 'g',      drift: 0.04, warnAt: 0.8, critAt: 1.5 },
+      waterlevel:  { value: 74,   min: 0,  max: 100, unit: '%',      drift: 0.4,  warnAt: 40,  critAt: 20  },
+      light:       { value: 450,  min: 50, max: 1200,unit: 'lux',    drift: 15,   warnAt: 800, critAt: 1000}
+    },
+    rooms: [
+      { id: 'r101', name: 'Classroom A-101', icon: '🏫', occupied: true,  temp: 26.1, persons: 32 },
+      { id: 'r201', name: 'Classroom B-201', icon: '🏫', occupied: false, temp: 28.3, persons: 0  },
+      { id: 'clab', name: 'Computer Lab',    icon: '💻', occupied: true,  temp: 24.5, persons: 18 },
+      { id: 'phys', name: 'Physics Lab',     icon: '🔬', occupied: true,  temp: 27.8, persons: 9  },
+      { id: 'lib',  name: 'Library',         icon: '📚', occupied: true,  temp: 23.2, persons: 22 },
+      { id: 'adm',  name: 'Admin Block',     icon: '🏢', occupied: true,  temp: 25.6, persons: 8  },
+      { id: 'cafe', name: 'Cafeteria',       icon: '🍽️', occupied: false, temp: 29.4, persons: 0  },
+      { id: 'audi', name: 'Main Auditorium', icon: '🎭', occupied: false, temp: 30.1, persons: 0  }
+    ],
+    envHistory: { labels: [], temp: [], humidity: [] },
+    waterHistory: { labels: [], level: [] }
+  };
+
+  /* ---- Helper: clamp + rand ---- */
+  function camp(v, mn, mx) { return Math.min(Math.max(v, mn), mx); }
+  function rnd(min, max, dp = 1) { return +(Math.random() * (max - min) + min).toFixed(dp); }
+  function ts() { return new Date().toLocaleTimeString('en-IN', { hour12: false }); }
+
+  /* ---- Update a single sensor ---- */
+  function stepSensor(key) {
+    const s = CampusState.sensors[key];
+    const sc = CampusState.scenario;
+    let drift = s.drift;
+    // Inject scenario bias
+    if (sc === 'highOccupancy') {
+      if (key === 'occupancy') drift = 3;
+      if (key === 'airquality') drift = 20;
+      if (key === 'energy') drift = 2;
+    } else if (sc === 'equipmentFault') {
+      if (key === 'vibration') drift = 0.3;
+      if (key === 'energy') drift = 3;
+    } else if (sc === 'powerSpike') {
+      if (key === 'energy') { s.value = camp(s.value + rnd(2, 6, 1), s.min, s.max); return s.value; }
+    }
+    const noise = (Math.random() - 0.5) * 2 * drift;
+    s.value = camp(+(s.value + noise).toFixed(2), s.min, s.max);
+    return s.value;
+  }
+
+  /* ---- DOM helpers ---- */
+  function qs(sel) { return document.querySelector(sel); }
+  function qsa(sel) { return [...document.querySelectorAll(sel)]; }
+
+  /* ---- Update sensor cards ---- */
+  function updateSensorCard(key) {
+    const s = CampusState.sensors[key];
+    const valEl = qs(`#sv-${key}`);
+    const barEl = qs(`#sb-${key}`);
+    if (!valEl) return;
+
+    const level = s.value >= s.critAt ? 'crit' : s.value >= s.warnAt ? 'warn' : '';
+    valEl.className = 'sc-value' + (level ? ` ${level}` : '');
+    valEl.textContent = key === 'airquality' || key === 'occupancy' || key === 'light'
+      ? Math.round(s.value)
+      : s.value.toFixed(key === 'vibration' ? 2 : 1);
+
+    if (barEl) {
+      const pct = ((s.value - s.min) / (s.max - s.min)) * 100;
+      barEl.style.width = pct.toFixed(0) + '%';
+      barEl.className = 'progress-fill' + (level === 'crit' ? ' danger' : level === 'warn' ? ' warning' : '');
+    }
+    return level;
+  }
+
+  /* ---- Update campus map zones ---- */
+  function updateCampusMap() {
+    CampusState.rooms.forEach((room, i) => {
+      // Random occupancy drift
+      if (Math.random() < 0.15) {
+        room.occupied = Math.random() > 0.35;
+        room.persons  = room.occupied ? Math.floor(Math.random() * 35) : 0;
+      }
+      room.temp = +(room.temp + (Math.random() - 0.5) * 0.4).toFixed(1);
+
+      const el = qs(`#zone-${room.id}`);
+      if (!el) return;
+      const isAlert = room.temp > 32;
+      el.className = `campus-zone ${isAlert ? 'alert' : room.occupied ? 'occupied' : 'vacant'}`;
+      el.querySelector('.zone-status').innerHTML =
+        `${isAlert ? '🔴 ALERT' : room.occupied ? '🟡 Occupied' : '🟢 Vacant'}<br>
+         <span style="color:var(--cyan-light)">${room.temp}°C</span>
+         ${room.occupied ? `· ${room.persons} persons` : ''}
+         <br><span class="label-simulated" style="font-size:0.62rem;">SIM</span>`;
+    });
+  }
+
+  /* ---- Build campus map ---- */
+  function buildCampusMap() {
+    const grid = qs('#campus-map');
+    if (!grid) return;
+    grid.innerHTML = CampusState.rooms.map(room => `
+      <div class="campus-zone ${room.occupied ? 'occupied' : 'vacant'}" id="zone-${room.id}"
+           onclick="showToast('${room.name}: ${room.persons} persons detected (SIMULATED)', 'info')">
+        <div class="zone-icon">${room.icon}</div>
+        <div class="zone-name">${room.name}</div>
+        <div class="zone-status">
+          ${room.occupied ? '🟡 Occupied' : '🟢 Vacant'}<br>
+          <span style="color:var(--cyan-light)">${room.temp}°C</span>
+          ${room.occupied ? `· ${room.persons} persons` : ''}
+          <br><span class="label-simulated" style="font-size:0.62rem;">SIM</span>
+        </div>
+      </div>`).join('');
+  }
+
+  /* ---- Event log ---- */
+  function logEvent(type, msg) {
+    const log = qs('#event-log');
+    if (!log) return;
+    const typeClasses = { SENSOR: 'log-type-sensor', RULE: 'log-type-rule', ALERT: 'log-type-alert', SYSTEM: 'log-type-system' };
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML = `<span class="log-ts">[${ts()}]</span>
+      <span class="${typeClasses[type] || 'log-type-system'}">${type.padEnd(6,' ')}</span>
+      <span class="log-msg">| ${msg}</span>`;
+    log.insertBefore(entry, log.firstChild);
+    while (log.children.length > 60) log.lastChild.remove();
+  }
+
+  /* ---- Update device table last-seen ---- */
+  function updateDeviceTable() {
+    const now = ts();
+    for (let i = 1; i <= 8; i++) {
+      const el = qs(`#dt-0${i}`);
+      if (el) el.textContent = now;
+    }
+  }
+
+  /* ---- Update decision panel values ---- */
+  function updateDecisionPanel() {
+    const s = CampusState.sensors;
+    const aqEl = qs('#dc-aq-val');
+    if (aqEl) aqEl.textContent = Math.round(s.airquality.value) + ' ppm';
+    const aqAct = qs('#dc-aq-action');
+    if (aqAct) {
+      if (s.airquality.value > 300) {
+        aqAct.innerHTML = '🚨 CRITICAL: CO₂ dangerously high. Immediate ventilation required.';
+        aqAct.style.color = 'var(--red)';
+      } else if (s.airquality.value > 200) {
+        aqAct.innerHTML = '⚠️ Alert: CO₂ exceeds safe limit. Recommend: Increase ventilation.';
+        aqAct.style.color = 'var(--amber)';
+      } else {
+        aqAct.innerHTML = '✅ Air quality normal. No action required.';
+        aqAct.style.color = 'var(--green)';
+      }
+    }
+    const vibEl = qs('#dc-vib-val');
+    if (vibEl) vibEl.textContent = s.vibration.value.toFixed(2) + ' g';
+    const vibAct = qs('#dc-vib-action');
+    if (vibAct) {
+      if (s.vibration.value > 1.5) {
+        vibAct.innerHTML = '🚨 CRITICAL: Severe vibration. Emergency inspection required immediately.';
+        vibAct.style.color = 'var(--red)';
+      } else if (s.vibration.value > 0.8) {
+        vibAct.innerHTML = '⚠️ Alert: Abnormal vibration in Physics Lab. Recommend: Schedule structural inspection.';
+        vibAct.style.color = 'var(--amber)';
+      } else {
+        vibAct.innerHTML = '✅ Vibration within safe limits. No action required.';
+        vibAct.style.color = 'var(--green)';
+      }
+    }
+    const wEl = qs('#dc-water-val');
+    if (wEl) wEl.textContent = Math.round(s.waterlevel.value) + '%';
+    const eEl = qs('#dc-energy-val');
+    if (eEl) eEl.textContent = s.energy.value.toFixed(1) + ' kW';
+  }
+
+  /* ---- Charts ---- */
+  let chartOccupancy, chartEnvironment, chartEnergy, chartWater;
+
+  const ROOMS_SHORT = ['A-101','B-201','Comp','Physics','Library','Admin','Cafe','Audi'];
+
+  function initCharts() {
+    // Room Occupancy bar
+    chartOccupancy = ChartManager.createBarChart('chart-occupancy',
+      ROOMS_SHORT,
+      [{
+        label: 'Persons (SIMULATED)',
+        data: CampusState.rooms.map(r => r.persons),
+        backgroundColor: CampusState.rooms.map(r => r.occupied ? 'rgba(255,143,0,0.7)' : 'rgba(0,200,83,0.5)'),
+        borderColor: CampusState.rooms.map(r => r.occupied ? '#ff8f00' : '#00c853'),
+        borderWidth: 1
+      }]
+    );
+
+    // Environment line chart
+    const initLabels = Array.from({ length: 20 }, (_, i) => `T-${20-i}`);
+    const initTemp = Array.from({ length: 20 }, () => rnd(25, 28, 1));
+    const initHum  = Array.from({ length: 20 }, () => rnd(55, 62, 1));
+    CampusState.envHistory.labels   = initLabels;
+    CampusState.envHistory.temp     = initTemp;
+    CampusState.envHistory.humidity = initHum;
+    chartEnvironment = ChartManager.createLineChart('chart-environment', initLabels, [
+      { label: 'Temp °C (SIM)', data: initTemp, borderColor: '#f44336', backgroundColor: 'rgba(244,67,54,0.08)', fill: true },
+      { label: 'Humidity %RH (SIM)', data: initHum, borderColor: '#00bcd4', backgroundColor: 'rgba(0,188,212,0.08)', fill: true }
+    ]);
+
+    // Energy by building bar
+    chartEnergy = ChartManager.createBarChart('chart-energy',
+      ['Academic Block', 'Admin Block', 'Labs', 'Library', 'Cafeteria', 'Hostel'],
+      [{
+        label: 'Energy kW (SIMULATED)',
+        data: [12.4, 4.2, 8.7, 2.1, 3.5, 5.8],
+        backgroundColor: ['rgba(0,188,212,0.6)','rgba(21,101,192,0.6)','rgba(0,137,123,0.6)','rgba(103,58,183,0.6)','rgba(255,143,0,0.6)','rgba(0,200,83,0.6)']
+      }]
+    );
+
+    // Water tank level
+    const initWater = Array.from({ length: 20 }, () => rnd(68, 78, 1));
+    CampusState.waterHistory.labels = initLabels.slice();
+    CampusState.waterHistory.level  = initWater;
+    chartWater = ChartManager.createLineChart('chart-water', initLabels.slice(), [
+      { label: 'Tank Level % (SIM)', data: initWater, borderColor: '#00bcd4', backgroundColor: 'rgba(0,188,212,0.12)', fill: true }
+    ]);
+  }
+
+  /* ---- Push new data to charts ---- */
+  function updateCharts() {
+    const label = ts();
+    const s = CampusState.sensors;
+
+    // Occupancy chart — update all bars
+    if (chartOccupancy) {
+      chartOccupancy.data.datasets[0].data = CampusState.rooms.map(r => r.persons);
+      chartOccupancy.data.datasets[0].backgroundColor = CampusState.rooms.map(r =>
+        r.occupied ? 'rgba(255,143,0,0.7)' : 'rgba(0,200,83,0.5)');
+      chartOccupancy.update('none');
+    }
+
+    // Environment
+    ChartManager.pushPoint('chart-environment', label, s.temperature.value, s.humidity.value);
+
+    // Energy chart — randomise slight change
+    if (chartEnergy) {
+      chartEnergy.data.datasets[0].data = chartEnergy.data.datasets[0].data.map(v =>
+        camp(+(v + (Math.random() - 0.5) * 0.4).toFixed(1), 0, 50));
+      chartEnergy.update('none');
+    }
+
+    // Water
+    ChartManager.pushPoint('chart-water', label, s.waterlevel.value);
+  }
+
+  /* ---- Simulation tick ---- */
+  const SENSOR_KEYS = ['temperature','humidity','airquality','occupancy','energy','vibration','waterlevel','light'];
+  const LOG_TOPICS = [
+    () => `campus/room101/temperature: ${CampusState.sensors.temperature.value.toFixed(1)}°C | SIMULATED`,
+    () => `campus/lab/humidity: ${CampusState.sensors.humidity.value.toFixed(1)}%RH | SIMULATED`,
+    () => `campus/lab/airquality: ${Math.round(CampusState.sensors.airquality.value)}ppm CO₂ | SIMULATED`,
+    () => `campus/room201/occupancy: ${Math.round(CampusState.sensors.occupancy.value)} persons | SIMULATED`,
+    () => `campus/energy/total: ${CampusState.sensors.energy.value.toFixed(1)}kW | SIMULATED`,
+    () => `campus/physics/vibration: ${CampusState.sensors.vibration.value.toFixed(2)}g | SIMULATED`,
+    () => `campus/tank/level: ${Math.round(CampusState.sensors.waterlevel.value)}% | SIMULATED`,
+    () => `campus/library/light: ${Math.round(CampusState.sensors.light.value)}lux | SIMULATED`,
+  ];
+
+  function runTick() {
+    if (!CampusState.running || CampusState.paused) return;
+    CampusState.tick++;
+
+    // Step all sensors
+    SENSOR_KEYS.forEach(k => stepSensor(k));
+
+    // Update sensor cards + check alerts
+    SENSOR_KEYS.forEach(k => {
+      const level = updateSensorCard(k);
+      if (level === 'crit') {
+        showToast(`🚨 CRITICAL: ${k} = ${CampusState.sensors[k].value} ${CampusState.sensors[k].unit} (SIMULATED)`, 'error', 4000);
+        logEvent('ALERT', `CRITICAL ${k.toUpperCase()}: ${CampusState.sensors[k].value}${CampusState.sensors[k].unit} exceeds critical threshold`);
+      } else if (level === 'warn' && CampusState.tick % 5 === 0) {
+        showToast(`⚠️ Warning: ${k} at ${CampusState.sensors[k].value} ${CampusState.sensors[k].unit} (SIMULATED)`, 'warning');
+      }
+    });
+
+    // Log sensor data
+    const topicFn = LOG_TOPICS[CampusState.tick % LOG_TOPICS.length];
+    logEvent('SENSOR', topicFn());
+
+    // Periodic rule checks
+    if (CampusState.tick % 3 === 0) {
+      const aq = CampusState.sensors.airquality.value;
+      if (aq > 200) {
+        logEvent('RULE', `Air quality ${Math.round(aq)}ppm > 200ppm threshold → ALERT: Increase ventilation`);
+      } else {
+        logEvent('RULE', `Air quality ${Math.round(aq)}ppm normal → No action required`);
+      }
+    }
+    if (CampusState.tick % 4 === 0) {
+      const wl = CampusState.sensors.waterlevel.value;
+      if (wl < 40) {
+        logEvent('RULE', `Water tank ${Math.round(wl)}% < 40% → RULE: Enable pump (safety check passed)`);
+      }
+    }
+    if (CampusState.tick % 7 === 0) {
+      const occ = Math.round(CampusState.sensors.occupancy.value);
+      logEvent('RULE', `Classroom occupancy ${occ} persons → ${occ === 0 ? 'RULE: Recommend lights OFF' : 'Normal occupancy, no action'}`);
+    }
+
+    updateCampusMap();
+    updateCharts();
+    updateDecisionPanel();
+    updateDeviceTable();
+  }
+
+  /* ---- Start / Pause / Reset ---- */
+  function startSimulation() {
+    if (CampusState.running && !CampusState.paused) return;
+    CampusState.running = true;
+    CampusState.paused  = false;
+
+    if (CampusState.intervals.length === 0) {
+      const iv = setInterval(runTick, CampusState.speed);
+      CampusState.intervals.push(iv);
+    }
+
+    qs('#btn-start').disabled = true;
+    qs('#btn-pause').disabled = false;
+    qs('#sim-running-badge').style.display = '';
+    qs('#sim-paused-badge').style.display  = 'none';
+    logEvent('SYSTEM', 'Campus simulation STARTED — all readings are SIMULATED');
+    showToast('▶ Simulation started — data is SIMULATED', 'success');
+  }
+
+  function pauseSimulation() {
+    CampusState.paused = !CampusState.paused;
+    const btn = qs('#btn-pause');
+    if (CampusState.paused) {
+      btn.textContent = '▶ Resume';
+      qs('#sim-running-badge').style.display = 'none';
+      qs('#sim-paused-badge').style.display  = '';
+      logEvent('SYSTEM', 'Simulation PAUSED');
+      showToast('⏸ Simulation paused', 'info');
+    } else {
+      btn.textContent = '⏸ Pause';
+      qs('#sim-running-badge').style.display = '';
+      qs('#sim-paused-badge').style.display  = 'none';
+      logEvent('SYSTEM', 'Simulation RESUMED');
+    }
+  }
+
+  function resetSimulation() {
+    CampusState.intervals.forEach(clearInterval);
+    CampusState.intervals = [];
+    CampusState.running   = false;
+    CampusState.paused    = false;
+    CampusState.tick      = 0;
+    CampusState.scenario  = 'normal';
+    // Reset sensor values
+    CampusState.sensors.temperature.value = 26.4;
+    CampusState.sensors.humidity.value    = 58.0;
+    CampusState.sensors.airquality.value  = 142;
+    CampusState.sensors.occupancy.value   = 12;
+    CampusState.sensors.energy.value      = 12.4;
+    CampusState.sensors.vibration.value   = 0.12;
+    CampusState.sensors.waterlevel.value  = 74;
+    CampusState.sensors.light.value       = 450;
+
+    SENSOR_KEYS.forEach(k => updateSensorCard(k));
+    updateCampusMap();
+    updateDecisionPanel();
+
+    qs('#btn-start').disabled = false;
+    qs('#btn-pause').disabled = true;
+    qs('#btn-pause').textContent = '⏸ Pause';
+    qs('#sim-running-badge').style.display = 'none';
+    qs('#sim-paused-badge').style.display  = 'none';
+    logEvent('SYSTEM', 'Simulation RESET — values restored to defaults');
+    showToast('🔄 Simulation reset', 'info');
+  }
+
+  /* ---- Inject event ---- */
+  function injectEvent() {
+    const ev = qs('#event-inject').value;
+    CampusState.scenario = ev;
+
+    const msgs = {
+      normal:         '📋 Normal Day scenario — baseline sensor values',
+      highOccupancy:  '👥 HIGH OCCUPANCY injected — expect elevated CO₂, occupancy, energy (SIMULATED)',
+      equipmentFault: '⚠️ EQUIPMENT FAULT injected — vibration spike expected in Physics Lab (SIMULATED)',
+      powerSpike:     '⚡ POWER SPIKE injected — energy readings elevated (SIMULATED)'
+    };
+
+    // Apply immediate values for dramatic effect
+    if (ev === 'highOccupancy') {
+      CampusState.sensors.occupancy.value  = rnd(24, 30, 0);
+      CampusState.sensors.airquality.value = rnd(230, 310, 0);
+      CampusState.sensors.energy.value     = rnd(28, 40, 1);
+    } else if (ev === 'equipmentFault') {
+      CampusState.sensors.vibration.value  = rnd(0.85, 1.6, 2);
+      CampusState.sensors.energy.value     = rnd(35, 47, 1);
+    } else if (ev === 'powerSpike') {
+      CampusState.sensors.energy.value     = rnd(42, 49, 1);
+    } else {
+      CampusState.sensors.temperature.value = 26.4;
+      CampusState.sensors.vibration.value   = 0.12;
+      CampusState.sensors.energy.value      = 12.4;
+    }
+
+    SENSOR_KEYS.forEach(k => updateSensorCard(k));
+    updateDecisionPanel();
+    logEvent('SYSTEM', msgs[ev] || 'Event injected');
+    showToast(msgs[ev], ev === 'normal' ? 'info' : 'warning', 4000);
+  }
+
+  /* ---- Speed change ---- */
+  function changeSpeed() {
+    CampusState.speed = parseInt(qs('#sim-speed').value);
+    if (CampusState.running) {
+      CampusState.intervals.forEach(clearInterval);
+      CampusState.intervals = [];
+      const iv = setInterval(runTick, CampusState.speed);
+      CampusState.intervals.push(iv);
+    }
+  }
+
+  /* ---- Participant Challenge ---- */
+  const PROBLEM_DETAILS = {
+    energy:      { title: 'Excessive Energy Consumption', sensors: ['temperature','pir','energy','light'], kpi: 'Reduce energy waste by 30% in unoccupied spaces' },
+    water:       { title: 'Water Wastage', sensors: ['ultrasonic','pir'], kpi: 'Detect leaks and wastage, target 20% reduction' },
+    airquality:  { title: 'Poor Air Quality', sensors: ['airquality','humidity','pir'], kpi: 'Keep CO₂ < 200ppm, ventilate proactively' },
+    security:    { title: 'Unauthorized Access', sensors: ['rfid','camera','pir'], kpi: 'Zero unauthorized entries; alert within 5 seconds' },
+    attendance:  { title: 'Manual Attendance', sensors: ['rfid','camera','pir'], kpi: 'Automate 100% of attendance records' },
+    parking:     { title: 'Parking Utilization', sensors: ['ultrasonic','light'], kpi: 'Real-time parking map, reduce search time by 50%' }
+  };
+
+  function generateSolution() {
+    const problem  = qs('#ch-problem').value;
+    const hardware = qs('#ch-hardware').value;
+    const protocol = qs('#ch-protocol').value;
+    const proc     = qs('#ch-processing').value;
+    const method   = qs('#ch-method').value;
+    const output   = qs('#ch-output').value;
+    const sensors  = qsa('input[name="ch-sensors"]:checked').map(c => c.value);
+
+    if (!problem || !hardware || !protocol || !proc || !method || !output) {
+      showToast('⚠️ Please fill in all dropdown fields first.', 'warning');
+      return;
+    }
+
+    const pd = PROBLEM_DETAILS[problem] || {};
+    const hwNames = { esp32: 'ESP32 microcontroller (Wi-Fi + BLE built-in, ~₹300)', rpi4: 'Raspberry Pi 4 (Linux, full Python support, ~₹3500)', arduino: 'Arduino Uno (simple I/O, limited networking)', jetson: 'NVIDIA Jetson Nano (GPU-accelerated inference)' };
+    const protoNames = { mqtt: 'MQTT v3.1.1 (port 1883/8883 TLS)', http: 'HTTP/REST over Wi-Fi', ble: 'Bluetooth Low Energy 5.0', lora: 'LoRaWAN (long range, low power)' };
+    const procNames  = { edge: 'Edge-only (sub-10ms latency, no internet required)', cloud: 'Cloud platform (scalable, needs connectivity)', hybrid: 'Hybrid Edge + Cloud (recommended: edge for alerts, cloud for analytics)' };
+    const methodNames = { threshold: 'Simple Threshold Rules (if sensor > limit → action)', rulebased: 'Rule-Based Logic (explicit if/else conditions)', regression: 'Linear Regression (Python scikit-learn, trend prediction)', anomaly: 'Isolation Forest Anomaly Detection (unsupervised)' };
+    const outNames   = { dashboard: 'Grafana / ThingsBoard Dashboard', mobile: 'Mobile App Push Notifications', email: 'Automated Email Alerts', actuator: 'Closed-Loop Actuator Control (automatic response)' };
+
+    const sensorList = sensors.length > 0 ? sensors.join(', ') : 'No sensors selected — please add sensors above';
+
+    const html = `
+      <p><strong style="color:var(--cyan)">Problem:</strong> ${pd.title || problem}</p>
+      <p><strong style="color:var(--cyan)">KPI Target:</strong> ${pd.kpi || 'Define your own measurable target'}</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:0.75rem 0;">
+      <p><strong style="color:var(--cyan)">Hardware:</strong> ${hwNames[hardware] || hardware}</p>
+      <p><strong style="color:var(--cyan)">Sensors Required:</strong> ${sensorList}</p>
+      <p><strong style="color:var(--cyan)">Protocol:</strong> ${protoNames[protocol] || protocol}</p>
+      <p><strong style="color:var(--cyan)">Processing:</strong> ${procNames[proc] || proc}</p>
+      <p><strong style="color:var(--cyan)">Decision Method:</strong> ${methodNames[method] || method}</p>
+      <p><strong style="color:var(--cyan)">Output:</strong> ${outNames[output] || output}</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:0.75rem 0;">
+      <p><strong style="color:var(--amber)">Estimated Cost (prototype):</strong> ${hardware === 'jetson' ? '~₹8,000–15,000' : hardware === 'rpi4' ? '~₹4,000–8,000' : hardware === 'esp32' ? '~₹800–2,000' : '~₹500–1,500'} for sensors + hardware</p>
+      <p><strong style="color:var(--amber)">Implementation Timeline:</strong> Prototype in 1–2 weeks; campus-wide deployment 3–6 months</p>
+      <p><strong style="color:var(--amber)">Next Steps:</strong> 1) Obtain hardware · 2) Set up development environment · 3) Write sensor firmware · 4) Configure MQTT broker · 5) Build dashboard · 6) Test & validate</p>
+    `;
+
+    qs('#challenge-output-text').innerHTML = html;
+    qs('#challenge-output').classList.add('visible');
+    showToast('✨ Solution design generated! (Proposed concept only)', 'success', 4000);
+  }
+
+  /* ---- Bind events and init ---- */
+  document.addEventListener('DOMContentLoaded', () => {
+    buildCampusMap();
+    initCharts();
+    SENSOR_KEYS.forEach(k => updateSensorCard(k));
+    updateDecisionPanel();
+
+    qs('#btn-start').addEventListener('click', startSimulation);
+    qs('#btn-pause').addEventListener('click', pauseSimulation);
+    qs('#btn-reset').addEventListener('click', resetSimulation);
+    qs('#btn-inject').addEventListener('click', injectEvent);
+    qs('#sim-speed').addEventListener('change', changeSpeed);
+    qs('#btn-clear-log').addEventListener('click', () => {
+      qs('#event-log').innerHTML = '<div class="log-entry"><span class="log-ts">[--:--:--]</span><span class="log-type-system">SYSTEM</span><span class="log-msg">| Log cleared.</span></div>';
+    });
+    qs('#btn-generate-solution').addEventListener('click', generateSolution);
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Lab — AIoT FDP Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .sim-bar { position:sticky; top:64px; z-index:800; background:rgba(10,22,40,0.97); border-bottom:1px solid var(--border); padding:0.6rem 0; margin-bottom:1.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; backdrop-filter:blur(8px); }
+    .sim-label-bar { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,143,0,0.12); color:var(--amber); border:1px solid rgba(255,143,0,0.4); font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:0.3rem 0.85rem; border-radius:20px; }
+    .sim-label-bar .dot { width:8px; height:8px; border-radius:50%; background:var(--amber); animation:blink 1.2s ease-in-out infinite; }
+    .ctrl-panel { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; }
+    .ctrl-row { display:flex; align-items:center; gap:1rem; margin-bottom:0.75rem; flex-wrap:wrap; }
+    .ctrl-label { font-size:0.78rem; color:var(--text-muted); font-weight:600; min-width:130px; }
+    .ctrl-val { font-family:var(--font-mono); color:var(--cyan); font-size:0.85rem; font-weight:700; min-width:70px; text-align:right; }
+    .alert-item { padding:0.55rem 0.85rem; border-radius:8px; font-size:0.8rem; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.5rem; border-left:3px solid; }
+    .alert-item.warning { background:rgba(255,143,0,0.1); border-color:var(--amber); color:var(--off-white,#e8f0fe); }
+    .alert-item.critical { background:rgba(244,67,54,0.12); border-color:var(--red); color:var(--off-white,#e8f0fe); }
+    .alert-item.normal   { background:rgba(0,200,83,0.1);  border-color:var(--green); color:var(--off-white,#e8f0fe); }
+    .reading-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; text-align:center; }
+    .reading-val  { font-size:2rem; font-weight:700; font-family:var(--font-mono); }
+    .reading-name { font-size:0.75rem; font-weight:600; color:var(--text-primary); margin-bottom:0.2rem; }
+    .reading-unit { font-size:0.78rem; color:var(--text-muted); }
+    .decision-trace { background:rgba(10,22,40,0.6); border:1px solid var(--border); border-radius:8px; padding:0.85rem; font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono); line-height:1.8; }
+    .decision-trace .trace-step { color:var(--cyan); }
+    .decision-trace .trace-result { color:var(--green); font-weight:700; }
+    .decision-trace .trace-alert  { color:var(--amber); font-weight:700; }
+    .pump-indicator { display:flex; align-items:center; justify-content:center; gap:0.75rem; padding:1rem; background:var(--card-bg); border-radius:var(--radius); border:1px solid var(--border); }
+    .pump-dot { width:20px; height:20px; border-radius:50%; transition:all 0.3s; }
+    .pump-dot.on  { background:var(--green); box-shadow:0 0 12px var(--green); animation:blink 1.5s ease-in-out infinite; }
+    .pump-dot.off { background:var(--text-muted); }
+    .event-log { max-height:200px; overflow-y:auto; background:#0d1117; border:1px solid #30363d; border-radius:var(--radius); padding:0.75rem; font-family:var(--font-mono); font-size:0.74rem; color:#8b949e; }
+    .event-log .el-ts  { color:#6e7681; }
+    .event-log .el-ok  { color:var(--green); }
+    .event-log .el-warn{ color:var(--amber); }
+    .event-log .el-val { color:var(--cyan); }
+  </style>
+</head>
+<body data-portal="lab">
+
+<!-- ======== PAGE HERO ======== -->
+<div class="page-hero">
+  <div class="tag">🔬 Virtual Laboratory</div>
+  <h1>AIoT Virtual Laboratory</h1>
+  <p>Five interactive experiments — environmental monitoring, predictive maintenance, smart agriculture, energy management and smart campus. No physical hardware required. All data is computer-generated and clearly labelled.</p>
+  <div class="meta">
+    <span>📅 Day 1 · 3 November 2026</span>
+    <span>⏱️ Suggested: <strong>90 minutes</strong></span>
+    <span>🔬 <strong>5 Experiments</strong></span>
+  </div>
+</div>
+
+<!-- ======== STICKY SIM BAR ======== -->
+<div class="sim-bar">
+  <div class="sim-label-bar"><div class="dot"></div>SIMULATION MODE ACTIVE — All readings are computer-generated. No hardware connected.</div>
+  <div style="display:flex;gap:0.5rem;margin-left:auto;flex-wrap:wrap;">
+    <button class="btn btn-primary btn-sm" id="btn-start-all" onclick="startAll()">▶ Start All</button>
+    <button class="btn btn-outline btn-sm" id="btn-stop-all" onclick="stopAll()">⏸ Stop All</button>
+    <button class="btn btn-outline btn-sm" onclick="resetAll()">🔄 Reset All</button>
+    <select class="form-control" id="sim-speed" style="width:auto;padding:0.3rem 0.6rem;font-size:0.78rem;" onchange="setSpeed(this.value)">
+      <option value="1">Normal Speed</option>
+      <option value="2">Fast (2×)</option>
+      <option value="0.5">Slow (0.5×)</option>
+    </select>
+  </div>
+</div>
+
+<!-- ======== EXPERIMENT TABS ======== -->
+<div class="tabs" id="lab-tabs">
+  <button class="tab-btn active" data-tab="exp-a">🌡️ A — Environment</button>
+  <button class="tab-btn" data-tab="exp-b">🔧 B — Maintenance</button>
+  <button class="tab-btn" data-tab="exp-c">🌾 C — Agriculture</button>
+  <button class="tab-btn" data-tab="exp-d">⚡ D — Energy</button>
+  <button class="tab-btn" data-tab="exp-e">🏫 E — Campus</button>
+</div>
+
+<!-- =================== EXPERIMENT A =================== -->
+<div class="tab-pane active" id="exp-a">
+  <div class="grid-2" style="gap:1.25rem;">
+    <div>
+      <div class="card mb-2">
+        <div class="card-header"><span class="icon">🎯</span><h3>Objective <small>Smart Environmental Monitoring</small></h3></div>
+        <p style="font-size:0.83rem;color:var(--text-muted);">Monitor temperature, humidity and air quality with configurable thresholds. Observe how the system generates alerts and recommends ventilation when parameters exceed safe levels.</p>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.75rem;padding:0.75rem;background:rgba(0,188,212,0.04);border-radius:8px;border-left:3px solid var(--cyan);">
+          <strong style="color:var(--white);">System Diagram:</strong> Sensors (DHT22 + MQ-135) → ESP32 → MQTT → Dashboard + Alert Engine
+        </div>
+      </div>
+      <div class="ctrl-panel mb-2">
+        <h5 style="color:var(--cyan);margin-bottom:0.75rem;">🎛️ Sensor Controls (Manual Override)</h5>
+        <div class="ctrl-row"><span class="ctrl-label">Temperature (°C)</span><input type="range" min="15" max="45" value="26" id="sl-temp" oninput="updateSlider('temp',this.value)" style="flex:1;"><span class="ctrl-val" id="sv-temp">26.0°C</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">Humidity (%RH)</span><input type="range" min="20" max="95" value="58" id="sl-hum" oninput="updateSlider('hum',this.value)" style="flex:1;"><span class="ctrl-val" id="sv-hum">58.0%</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">Air Quality (ppm)</span><input type="range" min="50" max="500" value="142" id="sl-aq" oninput="updateSlider('aq',this.value)" style="flex:1;"><span class="ctrl-val" id="sv-aq">142 ppm</span></div>
+        <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">⚠️ Alert Thresholds</h5>
+        <div class="ctrl-row"><span class="ctrl-label">Temp warn (°C)</span><input type="number" class="form-control" id="th-temp" value="30" style="width:80px;"></div>
+        <div class="ctrl-row"><span class="ctrl-label">Humidity warn (%)</span><input type="number" class="form-control" id="th-hum" value="75" style="width:80px;"></div>
+        <div class="ctrl-row"><span class="ctrl-label">AQ warn (ppm)</span><input type="number" class="form-control" id="th-aq" value="200" style="width:80px;"></div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="startExpA()">▶ Start Simulation</button>
+          <button class="btn btn-outline btn-sm" onclick="stopExpA()">⏸ Pause</button>
+          <button class="btn btn-outline btn-sm" onclick="resetExpA()">🔄 Reset</button>
+          <button class="btn btn-secondary btn-sm" onclick="LabEngine.exportCSV('env')">⬇ Export CSV</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="grid-3" style="gap:0.6rem;margin-bottom:1rem;">
+        <div class="reading-card"><div class="reading-name">Temperature</div><div class="reading-val text-cyan" id="rd-temp">26.0</div><div class="reading-unit">°C</div><div style="margin-top:0.4rem;"><span class="label-simulated" id="lb-temp">🔬 SIMULATED</span></div></div>
+        <div class="reading-card"><div class="reading-name">Humidity</div><div class="reading-val text-cyan" id="rd-hum">58.0</div><div class="reading-unit">%RH</div><div style="margin-top:0.4rem;"><span class="label-simulated">🔬 SIMULATED</span></div></div>
+        <div class="reading-card"><div class="reading-name">Air Quality</div><div class="reading-val text-cyan" id="rd-aq">142</div><div class="reading-unit">ppm CO₂</div><div style="margin-top:0.4rem;"><span class="label-simulated">🔬 SIMULATED</span></div></div>
+      </div>
+      <div class="card mb-2" style="padding:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><span style="font-size:0.78rem;font-weight:600;color:var(--white);">Environmental Trend</span><span class="label-simulated">🔬 SIMULATED</span></div>
+        <div class="chart-container"><canvas id="chart-env"></canvas></div>
+      </div>
+      <div class="card" style="padding:1rem;">
+        <h5 style="color:var(--cyan);margin-bottom:0.5rem;">🔍 Active Alerts</h5>
+        <div id="env-alerts"><div class="alert-item normal"><span>✅</span> All parameters within normal range</div></div>
+        <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">⚙️ Decision Trace</h5>
+        <div class="decision-trace" id="env-trace">
+          <span class="trace-step">INPUT:</span> temp=26.0°C, hum=58%, AQ=142ppm<br>
+          <span class="trace-step">RULE (threshold):</span> temp &lt; 30°C → OK<br>
+          <span class="trace-step">RULE (threshold):</span> hum &lt; 75% → OK<br>
+          <span class="trace-step">RULE (threshold):</span> AQ &lt; 200ppm → OK<br>
+          <span class="trace-result">OUTPUT: No action required. All within thresholds.</span>
+        </div>
+        <div class="alert alert-info mt-2" style="font-size:0.78rem;"><span class="alert-icon">ℹ️</span><span>This experiment uses <strong>THRESHOLD RULES only</strong>, not ML. A real system might additionally use statistical baselines or a trained anomaly model.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== EXPERIMENT B =================== -->
+<div class="tab-pane" id="exp-b">
+  <div class="grid-2" style="gap:1.25rem;">
+    <div>
+      <div class="card mb-2">
+        <div class="card-header"><span class="icon">🔧</span><h3>Objective <small>AI-Based Predictive Maintenance</small></h3></div>
+        <p style="font-size:0.83rem;color:var(--text-muted);">Simulate equipment vibration data. Inject a fault to see the anomaly detection system respond. Understand the difference between a threshold rule and a trained anomaly model.</p>
+      </div>
+      <div class="ctrl-panel mb-2">
+        <h5 style="color:var(--cyan);margin-bottom:0.75rem;">🎛️ Simulation Controls</h5>
+        <div class="ctrl-row"><span class="ctrl-label">Threshold (g)</span><input type="range" min="0.3" max="1.5" step="0.05" value="0.8" id="sl-vib-th" oninput="document.getElementById('sv-vib-th').textContent=parseFloat(this.value).toFixed(2)+'g';" style="flex:1;"><span class="ctrl-val" id="sv-vib-th">0.80g</span></div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="startExpB()">▶ Normal Operation</button>
+          <button class="btn btn-danger btn-sm" onclick="injectFault()">💥 Inject Fault</button>
+          <button class="btn btn-outline btn-sm" onclick="stopExpB()">⏸ Pause</button>
+          <button class="btn btn-outline btn-sm" onclick="resetExpB()">🔄 Reset</button>
+        </div>
+        <div class="alert alert-warning mt-2" style="font-size:0.78rem;"><span class="alert-icon">⚠️</span><span><strong>Note:</strong> This experiment uses a <strong>SIMPLE THRESHOLD RULE</strong>, NOT a trained ML model. A real anomaly detection system (e.g. Isolation Forest) would be trained on labeled baseline data.</span></div>
+      </div>
+      <div class="card">
+        <h5 style="color:var(--cyan);margin-bottom:0.5rem;">Anomaly Score</h5>
+        <div class="progress-bar" style="height:14px;margin:0.5rem 0;"><div class="progress-fill" id="anom-fill" style="width:15%;height:100%;"></div></div>
+        <div id="anom-pct" style="font-size:1.4rem;font-weight:700;font-family:var(--font-mono);color:var(--cyan);">15%</div>
+        <div id="anom-status" style="font-size:0.8rem;color:var(--green);">● Normal Operation</div>
+        <span class="label-simulated mt-1" style="display:inline-flex;">🔬 SIMULATED</span>
+      </div>
+    </div>
+    <div>
+      <div class="card mb-2" style="padding:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><span style="font-size:0.78rem;font-weight:600;color:var(--white);">Vibration Signal (g)</span><span class="label-simulated">🔬 SIMULATED</span></div>
+        <div class="chart-container"><canvas id="chart-vib"></canvas></div>
+      </div>
+      <div class="card" style="padding:1rem;">
+        <h5 style="color:var(--cyan);margin-bottom:0.5rem;">⚙️ Decision Trace</h5>
+        <div class="decision-trace" id="vib-trace">
+          <span class="trace-step">INPUT:</span> vibration_peak = 0.12g<br>
+          <span class="trace-step">METHOD:</span> THRESHOLD RULE (not ML)<br>
+          <span class="trace-step">RULE:</span> IF peak &gt; 0.80g → ALERT<br>
+          <span class="trace-result">OUTPUT: 0.12g &lt; 0.80g → Normal. No action.</span>
+        </div>
+        <div class="alert-item normal mt-2" id="vib-alert-display"><span>✅</span> Equipment operating normally</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== EXPERIMENT C =================== -->
+<div class="tab-pane" id="exp-c">
+  <div class="grid-2" style="gap:1.25rem;">
+    <div>
+      <div class="card mb-2">
+        <div class="card-header"><span class="icon">🌾</span><h3>Objective <small>Smart Agriculture &amp; Irrigation</small></h3></div>
+        <p style="font-size:0.83rem;color:var(--text-muted);">Simulate soil moisture, temperature and humidity. The system decides when to activate the irrigation pump based on configurable thresholds. Explore manual override and safety states.</p>
+      </div>
+      <div class="ctrl-panel mb-2">
+        <h5 style="color:var(--cyan);margin-bottom:0.75rem;">🌱 Sensor Controls</h5>
+        <div class="ctrl-row"><span class="ctrl-label">Soil Moisture (%)</span><input type="range" min="10" max="100" value="62" id="sl-soil" oninput="updateSoil(this.value)" style="flex:1;"><span class="ctrl-val" id="sv-soil">62%</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">Crop Type</span>
+          <select class="form-control" id="crop-type" onchange="updateCropThreshold()" style="width:auto;">
+            <option value="45">Rice (threshold: 45%)</option>
+            <option value="35" selected>Wheat (threshold: 35%)</option>
+            <option value="50">Tomato (threshold: 50%)</option>
+            <option value="40">Sugarcane (threshold: 40%)</option>
+          </select>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">Manual Pump Override</span>
+          <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;"><input type="checkbox" id="manual-pump"> Force pump ON</label>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">Safety State</span>
+          <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;"><input type="checkbox" id="safety-off"> Disable pump (maintenance)</label>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="startExpC()">▶ Start Simulation</button>
+          <button class="btn btn-outline btn-sm" onclick="stopExpC()">⏸ Pause</button>
+          <button class="btn btn-outline btn-sm" onclick="resetExpC()">🔄 Reset</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="grid-2" style="gap:0.75rem;margin-bottom:1rem;">
+        <div class="reading-card"><div class="reading-name">Soil Moisture</div><div class="reading-val" id="rd-soil" style="color:var(--green);">62.0</div><div class="reading-unit">%</div><span class="label-simulated" style="display:inline-flex;margin-top:0.4rem;">🔬 SIMULATED</span></div>
+        <div class="pump-indicator"><div class="pump-dot off" id="pump-dot"></div><div><div style="font-size:0.85rem;font-weight:700;color:var(--white);" id="pump-status-txt">PUMP OFF</div><div style="font-size:0.72rem;color:var(--text-muted);">Irrigation Pump</div></div></div>
+      </div>
+      <div class="card mb-2" style="padding:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><span style="font-size:0.78rem;font-weight:600;color:var(--white);">Soil Moisture Trend</span><span class="label-simulated">🔬 SIMULATED</span></div>
+        <div class="chart-container"><canvas id="chart-agri"></canvas></div>
+      </div>
+      <div class="card" style="padding:1rem;">
+        <h5 style="color:var(--cyan);margin-bottom:0.5rem;">⚙️ Decision Trace</h5>
+        <div class="decision-trace" id="agri-trace">
+          <span class="trace-step">METHOD:</span> RULE-BASED THRESHOLD (not ML)<br>
+          <span class="trace-step">INPUT:</span> soil_moisture=62%, crop_threshold=35%<br>
+          <span class="trace-step">RULE 1:</span> safety_off = false → Safety OK<br>
+          <span class="trace-step">RULE 2:</span> 62% &gt; 35% → No irrigation needed<br>
+          <span class="trace-result">OUTPUT: PUMP OFF — soil moisture adequate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== EXPERIMENT D =================== -->
+<div class="tab-pane" id="exp-d">
+  <div class="grid-2" style="gap:1.25rem;">
+    <div>
+      <div class="card mb-2">
+        <div class="card-header"><span class="icon">⚡</span><h3>Objective <small>Smart Energy Management</small></h3></div>
+        <p style="font-size:0.83rem;color:var(--text-muted);">Monitor simulated room-by-room energy consumption. Detect unusual usage compared to a rolling baseline. Generate an illustrative 24-hour forecast.</p>
+      </div>
+      <div class="ctrl-panel mb-2">
+        <h5 style="color:var(--cyan);margin-bottom:0.75rem;">⚡ Simulation Controls</h5>
+        <div class="ctrl-row"><span class="ctrl-label">Time of Day (h)</span><input type="range" min="0" max="23" value="10" id="sl-tod" oninput="updateTimeOfDay(this.value)" style="flex:1;"><span class="ctrl-val" id="sv-tod">10:00</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">Anomaly Threshold (kW)</span><input type="range" min="1" max="10" step="0.5" value="3" id="sl-en-th" oninput="document.getElementById('sv-en-th').textContent=parseFloat(this.value).toFixed(1)+'kW'" style="flex:1;"><span class="ctrl-val" id="sv-en-th">3.0kW</span></div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="startExpD()">▶ Start Monitoring</button>
+          <button class="btn btn-secondary btn-sm" onclick="generateForecast()">📈 Generate Forecast</button>
+          <button class="btn btn-outline btn-sm" onclick="stopExpD()">⏸ Pause</button>
+          <button class="btn btn-outline btn-sm" onclick="resetExpD()">🔄 Reset</button>
+        </div>
+      </div>
+      <div class="card" style="padding:1rem;">
+        <h5 style="color:var(--cyan);margin-bottom:0.5rem;">💡 Recommendations</h5>
+        <div id="energy-recs" style="font-size:0.8rem;color:var(--text-muted);line-height:2;">
+          Run the simulation to generate recommendations...
+        </div>
+        <span class="label-simulated mt-2" style="display:inline-flex;">🔬 SIMULATED — Rule-based recommendations</span>
+      </div>
+    </div>
+    <div>
+      <div class="card mb-2" style="padding:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><span style="font-size:0.78rem;font-weight:600;color:var(--white);">Room Energy Consumption (kW)</span><span class="label-simulated">🔬 SIMULATED</span></div>
+        <div class="chart-container"><canvas id="chart-energy"></canvas></div>
+      </div>
+      <div class="card" style="padding:1rem;" id="forecast-panel" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><span style="font-size:0.78rem;font-weight:600;color:var(--white);">24-Hour Demand Forecast (Moving Average)</span><span class="label-illustrative">📖 ILLUSTRATIVE — Moving average, not a validated model</span></div>
+        <div class="chart-container"><canvas id="chart-forecast"></canvas></div>
+        <p style="font-size:0.72rem;color:var(--text-muted);margin-top:0.5rem;">⚠️ Forecast uses a simple 3-period moving average. This is illustrative only — not a validated energy model. Actual consumption depends on occupancy, weather and equipment schedule.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== EXPERIMENT E =================== -->
+<div class="tab-pane" id="exp-e">
+  <div class="alert alert-warning mb-2">
+    <span class="alert-icon">🔬</span>
+    <span><strong>SIMULATION MODE</strong> — All readings in this experiment are computer-generated. No real campus hardware is connected. All data labelled SIMULATED.</span>
+  </div>
+  <div class="grid-2" style="gap:1.25rem;margin-bottom:1rem;">
+    <!-- Zone cards -->
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.75rem;">🏫 Campus Zone Status</h5>
+      <div class="campus-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="campus-zone occupied" id="zone-classroom"><div class="zone-icon">🏫</div><div class="zone-name">Classroom A-101</div><div class="zone-status" id="zs-classroom">Occupied · 26.4°C</div></div>
+        <div class="campus-zone vacant" id="zone-lab"><div class="zone-icon">⚗️</div><div class="zone-name">Physics Lab</div><div class="zone-status" id="zs-lab">Vacant · 24.1°C</div></div>
+        <div class="campus-zone occupied" id="zone-library"><div class="zone-icon">📚</div><div class="zone-name">Library</div><div class="zone-status" id="zs-library">Occupied · 23.5°C</div></div>
+        <div class="campus-zone" id="zone-admin"><div class="zone-icon">🏢</div><div class="zone-name">Admin Block</div><div class="zone-status" id="zs-admin">Occupied · 25.0°C</div></div>
+      </div>
+      <div class="ctrl-panel mt-2">
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="startExpE()">▶ Run Campus Sim</button>
+          <button class="btn btn-outline btn-sm" onclick="stopExpE()">⏸ Pause</button>
+          <button class="btn btn-outline btn-sm" onclick="resetExpE()">🔄 Reset</button>
+        </div>
+      </div>
+    </div>
+    <!-- Campus readings -->
+    <div>
+      <div class="grid-2" style="gap:0.6rem;margin-bottom:1rem;">
+        <div class="reading-card"><div class="reading-name">Temperature</div><div class="reading-val text-cyan" id="e-temp">25.2</div><div class="reading-unit">°C campus avg</div></div>
+        <div class="reading-card"><div class="reading-name">Air Quality</div><div class="reading-val text-cyan" id="e-aq">142</div><div class="reading-unit">ppm CO₂</div></div>
+        <div class="reading-card"><div class="reading-name">Energy Load</div><div class="reading-val text-amber" id="e-energy">12.4</div><div class="reading-unit">kW total</div></div>
+        <div class="reading-card">
+          <div class="reading-name">Water Tank</div>
+          <div class="reading-val text-green" id="e-water">74.0</div>
+          <div class="reading-unit">% level</div>
+          <div class="progress-bar mt-1"><div class="progress-fill" id="water-fill" style="width:74%;"></div></div>
+        </div>
+      </div>
+      <span class="label-simulated" style="display:inline-flex;margin-bottom:0.75rem;">🔬 SIMULATED</span>
+      <div class="card" style="padding:1rem;">
+        <h5 style="color:var(--cyan);margin-bottom:0.5rem;">🤖 Rule-Based Decisions</h5>
+        <div id="campus-decisions" style="font-size:0.8rem;"></div>
+        <div class="alert alert-info mt-2" style="font-size:0.78rem;"><span class="alert-icon">ℹ️</span><span>All decisions use <strong>THRESHOLD RULES</strong>, clearly NOT machine learning. Each decision shows: input → rule → output.</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Event Log -->
+  <div class="card" style="padding:1rem;">
+    <div class="flex-between mb-1"><h5 style="color:var(--cyan);">📋 Event Log</h5><button class="btn btn-outline btn-sm" onclick="document.getElementById('event-log').innerHTML=''">Clear</button></div>
+    <div class="event-log" id="event-log"><div style="color:#6e7681;">— Simulation not started —</div></div>
+  </div>
+</div>
+
+<script src="../../assets/js/portal.js"></script>
+<script src="../../assets/js/simulation.js"></script>
+<script src="../../assets/js/nav.js"></script>
+<script>
+// ===== GLOBAL CHART INSTANCES =====
+let envChart, vibChart, agriChart, energyChart, forecastChart;
+let simIntervals = [];
+let simSpeed = 1;
+
+function setSpeed(v) { simSpeed = parseFloat(v); }
+function clearIntervals() { simIntervals.forEach(clearInterval); simIntervals = []; }
+function startAll() { startExpA(); startExpB(); startExpC(); startExpD(); startExpE(); showToast('All simulations started', 'success'); }
+function stopAll()  { clearIntervals(); showToast('All simulations paused', 'info'); }
+function resetAll() { clearIntervals(); initAllCharts(); resetReadings(); document.getElementById('event-log').innerHTML='<div style="color:#6e7681;">— Reset —</div>'; showToast('All experiments reset','info'); }
+
+function addLog(msg, type='ok') {
+  const log = document.getElementById('event-log');
+  if (!log) return;
+  const el = document.createElement('div');
+  el.innerHTML = `<span class="el-ts">[${formatTs()}]</span> <span class="el-${type}">${msg}</span>`;
+  log.prepend(el);
+  while (log.children.length > 50) log.lastChild.remove();
+}
+
+// ===== SLIDER UPDATES =====
+function updateSlider(key, val) {
+  const fval = parseFloat(val);
+  if (key==='temp') { document.getElementById('sv-temp').textContent=fval.toFixed(1)+'°C'; document.getElementById('rd-temp').textContent=fval.toFixed(1); SimEngine.setManual('temperature',fval); }
+  if (key==='hum')  { document.getElementById('sv-hum').textContent=fval.toFixed(1)+'%';  document.getElementById('rd-hum').textContent=fval.toFixed(1); SimEngine.setManual('humidity',fval); }
+  if (key==='aq')   { document.getElementById('sv-aq').textContent=fval.toFixed(0)+' ppm'; document.getElementById('rd-aq').textContent=fval.toFixed(0); SimEngine.setManual('airquality',fval); }
+  checkEnvAlerts();
+}
+function updateSoil(val) { document.getElementById('sv-soil').textContent=parseFloat(val).toFixed(0)+'%'; document.getElementById('rd-soil').textContent=parseFloat(val).toFixed(0); SimEngine.setManual('soilmoisture',parseFloat(val)); checkPump(); }
+function updateCropThreshold() { checkPump(); }
+function updateTimeOfDay(val) { const h=parseInt(val); document.getElementById('sv-tod').textContent=(h<10?'0':'')+h+':00'; updateEnergyByTime(h); }
+
+// ===== EXPERIMENT A =====
+function startExpA() {
+  stopExpA();
+  const intv = setInterval(() => {
+    const t = SimEngine.step('temperature');
+    const h = SimEngine.step('humidity');
+    const a = SimEngine.step('airquality');
+    document.getElementById('rd-temp').textContent = t.toFixed(1);
+    document.getElementById('rd-hum').textContent  = h.toFixed(1);
+    document.getElementById('rd-aq').textContent   = a.toFixed(0);
+    document.getElementById('sl-temp').value = t;
+    document.getElementById('sv-temp').textContent = t.toFixed(1)+'°C';
+    const ts = formatTs();
+    if (envChart) { envChart.data.labels.push(ts); envChart.data.datasets[0].data.push(t); envChart.data.datasets[1].data.push(h); if (envChart.data.labels.length>25){envChart.data.labels.shift();envChart.data.datasets.forEach(d=>d.data.shift());} envChart.update('none'); }
+    checkEnvAlerts();
+    LabEngine.history['env'] = LabEngine.history['env']||[];
+    LabEngine.history['env'].push({ts,temp:t,humidity:h,airquality:a});
+  }, 2000/simSpeed);
+  simIntervals.push(intv);
+}
+function stopExpA()  { /* handled by clearIntervals */ }
+function resetExpA() { document.getElementById('rd-temp').textContent='26.0'; document.getElementById('rd-hum').textContent='58.0'; document.getElementById('rd-aq').textContent='142'; if (envChart){envChart.data.labels=[];envChart.data.datasets.forEach(d=>d.data=[]);envChart.update();} document.getElementById('env-alerts').innerHTML='<div class="alert-item normal"><span>✅</span> All parameters within normal range</div>'; }
+
+function checkEnvAlerts() {
+  const t  = parseFloat(document.getElementById('rd-temp').textContent)||26;
+  const h  = parseFloat(document.getElementById('rd-hum').textContent)||58;
+  const aq = parseFloat(document.getElementById('rd-aq').textContent)||142;
+  const th_t  = parseFloat(document.getElementById('th-temp').value)||30;
+  const th_h  = parseFloat(document.getElementById('th-hum').value)||75;
+  const th_aq = parseFloat(document.getElementById('th-aq').value)||200;
+  const alerts = [];
+  if (t  >= th_t+5)  alerts.push({cls:'critical',icon:'🔴',msg:`CRITICAL: Temperature ${t.toFixed(1)}°C exceeds ${th_t+5}°C → Immediate cooling recommended`});
+  else if (t >= th_t) alerts.push({cls:'warning', icon:'⚠️',msg:`WARNING: Temperature ${t.toFixed(1)}°C > ${th_t}°C threshold → Increase ventilation`});
+  if (h  >= th_h)    alerts.push({cls:'warning', icon:'⚠️',msg:`WARNING: Humidity ${h.toFixed(1)}% > ${th_h}% threshold → Check ventilation`});
+  if (aq >= th_aq+100) alerts.push({cls:'critical',icon:'🔴',msg:`CRITICAL: Air quality ${aq.toFixed(0)}ppm >> ${th_aq}ppm → Open windows immediately`});
+  else if (aq >= th_aq) alerts.push({cls:'warning',icon:'⚠️',msg:`WARNING: Air quality ${aq.toFixed(0)}ppm > ${th_aq}ppm → Improve ventilation`});
+  const alertDiv = document.getElementById('env-alerts');
+  const traceDiv = document.getElementById('env-trace');
+  if (!alertDiv || !traceDiv) return;
+  if (alerts.length === 0) { alertDiv.innerHTML='<div class="alert-item normal"><span>✅</span> All parameters within normal range</div>'; }
+  else { alertDiv.innerHTML = alerts.map(a=>`<div class="alert-item ${a.cls}"><span>${a.icon}</span>${a.msg}</div>`).join(''); if(alerts.some(a=>a.cls==='critical')) showToast('⚠️ Critical threshold exceeded!','error'); }
+  traceDiv.innerHTML = `<span class="trace-step">INPUT:</span> temp=${t.toFixed(1)}°C, hum=${h.toFixed(1)}%, AQ=${aq.toFixed(0)}ppm<br>`+
+    `<span class="trace-step">RULE (threshold):</span> temp ${t>=th_t?'≥':'<'} ${th_t}°C → ${t>=th_t?'<span class="trace-alert">ALERT</span>':'OK'}<br>`+
+    `<span class="trace-step">RULE (threshold):</span> hum ${h>=th_h?'≥':'<'} ${th_h}% → ${h>=th_h?'<span class="trace-alert">ALERT</span>':'OK'}<br>`+
+    `<span class="trace-step">RULE (threshold):</span> AQ ${aq>=th_aq?'≥':'<'} ${th_aq}ppm → ${aq>=th_aq?'<span class="trace-alert">ALERT</span>':'OK'}<br>`+
+    (alerts.length?`<span class="trace-alert">OUTPUT: ${alerts.length} alert(s) — action recommended</span>`:`<span class="trace-result">OUTPUT: No action required. All within thresholds.</span>`);
+}
+
+// ===== EXPERIMENT B =====
+let faultMode = false;
+function startExpB() {
+  stopExpB(); faultMode = false;
+  const intv = setInterval(() => {
+    const base = faultMode ? (0.9+Math.random()*0.6) : (0.05+Math.random()*0.25);
+    const th = parseFloat(document.getElementById('sl-vib-th').value)||0.8;
+    if (vibChart) { vibChart.data.labels.push(formatTs()); vibChart.data.datasets[0].data.push(+base.toFixed(3)); vibChart.data.datasets[1].data.push(th); if(vibChart.data.labels.length>25){vibChart.data.labels.shift();vibChart.data.datasets.forEach(d=>d.data.shift());} vibChart.update('none'); }
+    const score = Math.min(100, Math.round((base/th)*100*0.5));
+    document.getElementById('anom-fill').style.width = score+'%';
+    document.getElementById('anom-fill').className = 'progress-fill' + (score>80?' danger':score>50?' warning':'');
+    document.getElementById('anom-pct').textContent = score+'%';
+    const isFault = base >= th;
+    document.getElementById('anom-status').innerHTML = isFault ? '<span style="color:var(--red);">● ANOMALY DETECTED</span>' : '<span style="color:var(--green);">● Normal Operation</span>';
+    document.getElementById('vib-trace').innerHTML = `<span class="trace-step">METHOD:</span> THRESHOLD RULE (not ML)<br><span class="trace-step">INPUT:</span> vibration_peak = ${base.toFixed(3)}g<br><span class="trace-step">RULE:</span> IF peak &gt; ${th.toFixed(2)}g → ALERT<br>`+(isFault?`<span class="trace-alert">OUTPUT: ${base.toFixed(3)}g ≥ ${th.toFixed(2)}g → MAINTENANCE ALERT</span>`:`<span class="trace-result">OUTPUT: ${base.toFixed(3)}g &lt; ${th.toFixed(2)}g → Normal. No action.</span>`);
+    const alertEl = document.getElementById('vib-alert-display');
+    if (alertEl) { alertEl.className='alert-item '+(isFault?'critical':'normal')+' mt-2'; alertEl.innerHTML=isFault?'<span>🔴</span> Anomaly detected — schedule equipment inspection':'<span>✅</span> Equipment operating normally'; }
+    if (isFault && faultMode) addLog(`Vibration fault: ${base.toFixed(3)}g → Inspection alert`,'warn');
+  }, 1500/simSpeed);
+  simIntervals.push(intv);
+}
+function stopExpB()  {}
+function resetExpB() { faultMode=false; if(vibChart){vibChart.data.labels=[];vibChart.data.datasets.forEach(d=>d.data=[]);vibChart.update();} document.getElementById('anom-pct').textContent='0%'; document.getElementById('anom-fill').style.width='0%'; }
+function injectFault() { faultMode=true; showToast('⚠️ Equipment fault injected — vibration spiked','warning'); addLog('Fault injected by trainer','warn'); if(!simIntervals.length) startExpB(); }
+
+// ===== EXPERIMENT C =====
+function startExpC() {
+  stopExpC();
+  const intv = setInterval(() => {
+    const soil = SimEngine.step('soilmoisture');
+    document.getElementById('rd-soil').textContent = soil.toFixed(0);
+    document.getElementById('sl-soil').value = soil;
+    document.getElementById('sv-soil').textContent = soil.toFixed(0)+'%';
+    if (agriChart) { agriChart.data.labels.push(formatTs()); agriChart.data.datasets[0].data.push(soil); const th=parseInt(document.getElementById('crop-type').value); agriChart.data.datasets[1].data.push(th); if(agriChart.data.labels.length>25){agriChart.data.labels.shift();agriChart.data.datasets.forEach(d=>d.data.shift());} agriChart.update('none'); }
+    checkPump();
+  }, 2000/simSpeed);
+  simIntervals.push(intv);
+}
+function stopExpC() {}
+function resetExpC() { if(agriChart){agriChart.data.labels=[];agriChart.data.datasets.forEach(d=>d.data=[]);agriChart.update();} document.getElementById('pump-dot').className='pump-dot off'; document.getElementById('pump-status-txt').textContent='PUMP OFF'; }
+function checkPump() {
+  const soil = parseFloat(document.getElementById('rd-soil').textContent)||62;
+  const th   = parseInt(document.getElementById('crop-type').value)||35;
+  const manual = document.getElementById('manual-pump').checked;
+  const safetyOff = document.getElementById('safety-off').checked;
+  const pumpOn = safetyOff ? false : (manual || soil < th);
+  document.getElementById('pump-dot').className = 'pump-dot ' + (pumpOn?'on':'off');
+  document.getElementById('pump-status-txt').textContent = pumpOn ? 'PUMP ON' : 'PUMP OFF';
+  document.getElementById('agri-trace').innerHTML = `<span class="trace-step">METHOD:</span> RULE-BASED THRESHOLD (not ML)<br><span class="trace-step">INPUT:</span> soil=${soil.toFixed(0)}%, crop_threshold=${th}%<br><span class="trace-step">RULE 1:</span> safety_off=${safetyOff} → ${safetyOff?'<span class="trace-alert">PUMP DISABLED (maintenance)</span>':'Safety OK'}<br>`+(safetyOff?'':`<span class="trace-step">RULE 2:</span> manual_override=${manual}<br><span class="trace-step">RULE 3:</span> soil ${soil<th?'<':'>='} threshold ${th}% → ${soil<th?'Needs water':'Adequate'}<br>`+(pumpOn?`<span class="trace-alert">OUTPUT: PUMP ON → Irrigating</span>`:`<span class="trace-result">OUTPUT: PUMP OFF → Soil moisture adequate</span>`));
+}
+
+// ===== EXPERIMENT D =====
+const rooms = ['Classroom A','Classroom B','Lab 1','Lab 2','Admin','Library'];
+function updateEnergyByTime(h) {
+  const factor = h >= 8 && h <= 17 ? 1 : h >= 18 && h <= 21 ? 0.6 : 0.2;
+  const data = rooms.map((_,i) => +(1 + Math.random()*5*factor + (i===2?3:0)).toFixed(2));
+  if (energyChart) { energyChart.data.datasets[0].data = data; energyChart.update(); }
+  generateRecommendations(data, h);
+}
+function generateRecommendations(data, h) {
+  const th = parseFloat(document.getElementById('sl-en-th').value)||3;
+  const recs = [];
+  data.forEach((d,i) => { if(d>th) recs.push(`⚠️ ${rooms[i]}: ${d.toFixed(1)}kW > ${th.toFixed(1)}kW threshold — investigate unusual load`); });
+  if (h < 8 || h > 21) recs.push(`💡 After-hours: All rooms should be on minimum power. Current total: ${data.reduce((a,b)=>a+b,0).toFixed(1)}kW`);
+  if (!recs.length) recs.push('✅ All rooms within expected consumption for time of day');
+  document.getElementById('energy-recs').innerHTML = recs.map(r=>`<div style="margin-bottom:0.3rem;">${r}</div>`).join('');
+}
+function startExpD() {
+  stopExpD();
+  updateEnergyByTime(parseInt(document.getElementById('sl-tod').value)||10);
+  const intv = setInterval(() => {
+    const h = parseInt(document.getElementById('sl-tod').value)||10;
+    updateEnergyByTime(h);
+    if (energyChart) { energyChart.data.datasets[0].data = energyChart.data.datasets[0].data.map(v => Math.max(0.1,+(v+(Math.random()-0.5)*0.4).toFixed(2))); energyChart.update('none'); }
+  }, 3000/simSpeed);
+  simIntervals.push(intv);
+}
+function stopExpD() {}
+function resetExpD() { if(energyChart){energyChart.data.datasets[0].data=rooms.map(()=>2);energyChart.update();} document.getElementById('forecast-panel').style.display='none'; }
+function generateForecast() {
+  const hours = Array.from({length:24},(_,i)=>(i<10?'0':'')+i+':00');
+  const forecast = hours.map((_,i) => { const f=i>=8&&i<=17?1:i>=18&&i<=21?0.6:0.15; return +(8*f+Math.random()*3).toFixed(2); });
+  if (forecastChart) { forecastChart.data.labels=hours; forecastChart.data.datasets[0].data=forecast; forecastChart.update(); }
+  document.getElementById('forecast-panel').style.display='block';
+  showToast('24-hour forecast generated (illustrative moving average model)','info');
+}
+
+// ===== EXPERIMENT E =====
+function startExpE() {
+  stopExpE();
+  const intv = setInterval(() => {
+    CampusSim.step();
+    const z = CampusSim.zones;
+    document.getElementById('zs-classroom').textContent = (z['room-a101'].occupied?'Occupied':'Vacant')+' · '+z['room-a101'].temp+'°C';
+    document.getElementById('zs-lab').textContent       = (z['phys-lab'].occupied?'Occupied':'Vacant')+' · '+z['phys-lab'].temp+'°C';
+    document.getElementById('zs-library').textContent   = (z['library'].occupied?'Occupied':'Vacant')+' · '+z['library'].temp+'°C';
+    document.getElementById('zs-admin').textContent     = (z['admin'].occupied?'Occupied':'Vacant')+' · '+z['admin'].temp+'°C';
+    const avgTemp = Object.values(z).reduce((a,z)=>a+z.temp,0)/Object.values(z).length;
+    document.getElementById('e-temp').textContent   = avgTemp.toFixed(1);
+    document.getElementById('e-aq').textContent     = CampusSim.airQuality.toFixed(0);
+    const totalE = Object.values(z).reduce((a,z)=>a+z.energy,0);
+    document.getElementById('e-energy').textContent = totalE.toFixed(1);
+    document.getElementById('e-water').textContent  = CampusSim.waterLevel.toFixed(1);
+    document.getElementById('water-fill').style.width = CampusSim.waterLevel+'%';
+    const decs = CampusSim.getDecisions();
+    document.getElementById('campus-decisions').innerHTML = decs.map(d=>`<div class="alert-item ${d.level}" style="margin-bottom:0.3rem;"><span>${d.level==='success'?'✅':d.level==='danger'?'🔴':'⚠️'}</span><div><strong>[${d.method}]</strong> ${d.zone}: ${d.condition}<br><em>${d.action}</em></div></div>`).join('');
+    addLog(`SENSOR | campus avg temp: ${avgTemp.toFixed(1)}°C | AQ: ${CampusSim.airQuality.toFixed(0)}ppm | Energy: ${totalE.toFixed(1)}kW`,'val');
+    if (CampusSim.vibration > 0.8) addLog(`RULE | vibration ${CampusSim.vibration.toFixed(3)}g > 0.8g → inspection alert`,'warn');
+  }, 2000/simSpeed);
+  simIntervals.push(intv);
+}
+function stopExpE()  {}
+function resetExpE() { document.getElementById('event-log').innerHTML='<div style="color:#6e7681;">— Reset —</div>'; }
+
+function resetReadings() {
+  document.getElementById('rd-temp').textContent='26.0';
+  document.getElementById('rd-hum').textContent='58.0';
+  document.getElementById('rd-aq').textContent='142';
+}
+
+// ===== INIT ALL CHARTS =====
+function initAllCharts() {
+  const darkOpts = { responsive:true, maintainAspectRatio:false, animation:{duration:400}, plugins:{legend:{labels:{color:'#90a4b7',font:{size:10}}},tooltip:{backgroundColor:'#112240',titleColor:'#e8f4ff',bodyColor:'#90a4b7'}}, scales:{x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#90a4b7',maxTicksLimit:8,font:{size:9}}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#90a4b7',font:{size:9}}}} };
+  const mkChart = (id,type,labels,datasets,extraOpts={}) => { const el=document.getElementById(id); if(!el)return null; try{return new Chart(el,{type,data:{labels,datasets},options:{...darkOpts,...extraOpts}});}catch(e){return null;} };
+
+  envChart = mkChart('chart-env','line',[],[
+    {label:'Temp (°C)',data:[],borderColor:'#00bcd4',backgroundColor:'rgba(0,188,212,0.1)',tension:0.4,borderWidth:2,pointRadius:2},
+    {label:'Humidity (%)',data:[],borderColor:'#1976d2',backgroundColor:'rgba(25,118,210,0.08)',tension:0.4,borderWidth:2,pointRadius:2}
+  ]);
+  vibChart = mkChart('chart-vib','line',[],[
+    {label:'Vibration (g)',data:[],borderColor:'#ff8f00',backgroundColor:'rgba(255,143,0,0.1)',tension:0.1,borderWidth:2,pointRadius:2},
+    {label:'Threshold',data:[],borderColor:'rgba(244,67,54,0.7)',backgroundColor:'transparent',borderDash:[5,5],pointRadius:0,borderWidth:1.5}
+  ]);
+  agriChart = mkChart('chart-agri','line',[],[
+    {label:'Soil Moisture (%)',data:[],borderColor:'#00c853',backgroundColor:'rgba(0,200,83,0.1)',tension:0.4,borderWidth:2,pointRadius:2},
+    {label:'Crop Threshold',data:[],borderColor:'rgba(255,143,0,0.7)',backgroundColor:'transparent',borderDash:[5,5],pointRadius:0,borderWidth:1.5}
+  ]);
+  energyChart = mkChart('chart-energy','bar',rooms,[{label:'kW',data:[2,2.5,5.5,4,2,1.8],backgroundColor:['rgba(0,188,212,0.7)','rgba(0,188,212,0.7)','rgba(255,143,0,0.7)','rgba(0,188,212,0.7)','rgba(0,188,212,0.7)','rgba(0,188,212,0.7)'],borderRadius:4}]);
+  forecastChart = mkChart('chart-forecast','line',[],[{label:'Forecast kW',data:[],borderColor:'#4dd0e1',backgroundColor:'rgba(77,208,225,0.1)',tension:0.4,borderWidth:2,pointRadius:0}]);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initAllCharts();
+  initTabs(); updateProgress();
+  PortalState.setMode('simulation');
+});
+</script>
+</body>
+</html>

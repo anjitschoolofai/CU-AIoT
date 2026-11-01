@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardware Lab — AIoT FDP Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-portal="hardware">
+
+<div class="page-hero" style="margin:2rem;">
+  <div class="tag">🔌 Real Hardware Mode</div>
+  <h1>Hardware Lab</h1>
+  <p>Connect actual ESP32 or Raspberry Pi devices via MQTT to display live, verified sensor readings here.</p>
+  <div class="meta">
+    <span>Resource Person: <strong>Prof. R. Anjit Raja</strong></span>
+    <span>3–4 November 2026</span>
+  </div>
+</div>
+
+<div style="margin:0 2rem;">
+
+  <!-- Hardware Disconnected Banner -->
+  <div class="alert alert-warning" style="margin-bottom:1.5rem;">
+    <span class="alert-icon">⚠️</span>
+    <div>
+      <strong>Hardware Not Connected</strong><br>
+      No ESP32 or Raspberry Pi device has been detected. This mode shows <strong>only verified, real sensor data</strong> from a configured device.
+      <span class="label-disconnected" style="margin-left:0.5rem;">⚡ DISCONNECTED</span>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:2rem;">
+
+    <!-- Connection Instructions -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📡</span>
+        <h3>How to Connect a Device<small>ESP32 / Raspberry Pi via MQTT</small></h3>
+      </div>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+        To display real hardware data, configure your device to publish sensor readings as JSON to an MQTT broker accessible from this computer, then configure the connection below.
+      </p>
+      <div class="accordion">
+        <div class="acc-item open">
+          <div class="acc-header"><h4>1. Required Setup</h4><span class="acc-icon">▼</span></div>
+          <div class="acc-body" style="display:block;">
+            <ul style="line-height:2; padding-left:1rem;">
+              <li>An MQTT broker reachable from this browser (e.g. <code>broker.local:1883</code> or a cloud broker)</li>
+              <li>Your device (ESP32 / Raspberry Pi) publishing JSON over MQTT</li>
+              <li>A WebSocket-enabled broker for browser-side subscription (port 9001 by default)</li>
+              <li>Device firmware or Python script posting to the agreed topic</li>
+            </ul>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header"><h4>2. MQTT Topic & Payload Schema</h4><span class="acc-icon">▼</span></div>
+          <div class="acc-body">
+            <p>Publish to topic: <code>campus/[location]/[nodeid]/telemetry</code></p>
+            <div class="terminal" style="margin-top:0.75rem;">
+              <span class="comment">// Example MQTT payload (JSON)</span><br>
+              <span class="prompt">{</span><br>
+              &nbsp;&nbsp;<span class="value">"ts"</span>: <span class="cmd">"2026-11-03T09:14:32+05:30"</span>,<br>
+              &nbsp;&nbsp;<span class="value">"node"</span>: <span class="cmd">"esp32-node07"</span>,<br>
+              &nbsp;&nbsp;<span class="value">"temp_c"</span>: <span class="cmd">26.4</span>,<br>
+              &nbsp;&nbsp;<span class="value">"hum_pct"</span>: <span class="cmd">58.2</span>,<br>
+              &nbsp;&nbsp;<span class="value">"vib_mm_s"</span>: <span class="cmd">0.12</span>,<br>
+              &nbsp;&nbsp;<span class="value">"rssi"</span>: <span class="cmd">-67</span><br>
+              <span class="prompt">}</span>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header"><h4>3. ESP32 Arduino Sketch (Outline)</h4><span class="acc-icon">▼</span></div>
+          <div class="acc-body">
+            <div class="terminal">
+              <span class="comment">// Requires: PubSubClient, DHT, ArduinoJson libraries</span><br>
+              <span class="comment">// Configure WiFi SSID, password and broker IP in config.h</span><br>
+              <span class="comment">// NOTE: Never hardcode credentials — use a config file excluded from source control</span><br>
+              <br>
+              <span class="prompt">#include</span> <span class="cmd">&lt;WiFi.h&gt;</span><br>
+              <span class="prompt">#include</span> <span class="cmd">&lt;PubSubClient.h&gt;</span><br>
+              <span class="prompt">#include</span> <span class="cmd">&lt;DHT.h&gt;</span><br>
+              <span class="prompt">#include</span> <span class="cmd">&lt;ArduinoJson.h&gt;</span><br>
+              <br>
+              <span class="comment">// See manufacturer datasheets for correct wiring and voltage (3.3V for ESP32)</span><br>
+              <span class="output">void loop() {</span><br>
+              &nbsp;&nbsp;<span class="value">float t = dht.readTemperature();</span><br>
+              &nbsp;&nbsp;<span class="value">float h = dht.readHumidity();</span><br>
+              &nbsp;&nbsp;<span class="comment">// Validate readings before publishing</span><br>
+              &nbsp;&nbsp;<span class="value">if (!isnan(t) && !isnan(h)) publishReading(t, h);</span><br>
+              &nbsp;&nbsp;<span class="output">delay(5000);</span><br>
+              <span class="output">}</span>
+            </div>
+            <div class="alert alert-info" style="margin-top:0.75rem;">
+              <span class="alert-icon">ℹ️</span>
+              <span>Always consult the ESP32 and sensor datasheets for correct voltage (3.3V GPIO), current limits and wiring before connecting hardware.</span>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header"><h4>4. Raspberry Pi Python Script (Outline)</h4><span class="acc-icon">▼</span></div>
+          <div class="acc-body">
+            <div class="terminal">
+              <span class="comment"># Install: pip install paho-mqtt RPi.GPIO Adafruit_DHT</span><br>
+              <span class="comment"># Requires MQTT broker accessible on the network</span><br>
+              <br>
+              <span class="prompt">import</span> <span class="cmd">paho.mqtt.client as mqtt, json, time</span><br>
+              <span class="comment"># from Adafruit_DHT import DHT22, read_retry</span><br>
+              <br>
+              <span class="value">BROKER = "broker.local"  </span><span class="comment"># Replace with actual broker IP</span><br>
+              <span class="value">TOPIC  = "campus/lab/node01/telemetry"</span><br>
+              <br>
+              <span class="output">client = mqtt.Client()</span><br>
+              <span class="output">client.connect(BROKER, 1883)</span><br>
+              <br>
+              <span class="output">while True:</span><br>
+              &nbsp;&nbsp;<span class="comment"># humidity, temp = read_retry(DHT22, 4)</span><br>
+              &nbsp;&nbsp;<span class="value">payload = json.dumps({"ts": time.strftime("%H:%M:%S"), "temp_c": temp, "hum_pct": humidity})</span><br>
+              &nbsp;&nbsp;<span class="value">client.publish(TOPIC, payload)</span><br>
+              &nbsp;&nbsp;<span class="output">time.sleep(5)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connection Config Panel -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">⚙️</span>
+        <h3>Broker Configuration<small>Configure when hardware is available</small></h3>
+      </div>
+      <div class="form-group">
+        <label class="form-label">MQTT Broker Host</label>
+        <input type="text" class="form-control" id="broker-host" placeholder="e.g. 192.168.1.100 or broker.local" value="">
+      </div>
+      <div class="form-group">
+        <label class="form-label">WebSocket Port</label>
+        <input type="number" class="form-control" id="broker-port" placeholder="9001" value="9001">
+      </div>
+      <div class="form-group">
+        <label class="form-label">MQTT Topic Filter</label>
+        <input type="text" class="form-control" id="broker-topic" placeholder="campus/#" value="campus/#">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username (if required)</label>
+        <input type="text" class="form-control" id="broker-user" placeholder="Leave blank if no auth" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" id="broker-pass" placeholder="Leave blank if no auth" autocomplete="new-password">
+      </div>
+      <div class="alert alert-warning" style="margin-bottom:1rem;">
+        <span class="alert-icon">🔒</span>
+        <span style="font-size:0.8rem;">Credentials entered here are used only in this browser session and are not stored or transmitted beyond the MQTT connection. Never use production/sensitive credentials in a shared training environment.</span>
+      </div>
+      <button class="btn btn-primary" id="btn-connect-hw" onclick="attemptHardwareConnect()">🔌 Attempt Connection</button>
+      <button class="btn btn-outline btn-sm" style="margin-left:0.5rem;" onclick="window.location.href='../pages/lab/index.html'">🔬 Use Simulation Instead</button>
+
+      <!-- Connection Status -->
+      <div id="hw-status" style="margin-top:1rem; display:none;">
+        <div class="alert alert-info">
+          <span class="alert-icon">⏳</span>
+          <span id="hw-status-msg">Attempting connection...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Data Panel (hidden until connected) -->
+  <div id="hw-data-panel" style="display:none;">
+    <div class="section-title mb-2">📊 Live Hardware Readings <span class="label-live" id="hw-live-label">🟢 LIVE HARDWARE DATA</span></div>
+    <div class="grid-4" id="hw-sensor-cards"></div>
+  </div>
+
+  <!-- Simulation Fallback -->
+  <div class="card" id="hw-fallback" style="border-color: var(--amber);">
+    <div class="card-header">
+      <span class="icon">🔬</span>
+      <h3 style="color:var(--amber);">Hardware Not Available — Simulation Fallback</h3>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+      When physical hardware is not connected, all demonstrations can be carried out in <strong>Simulation Mode</strong> using the Virtual Lab. All simulated readings are clearly labelled and behave realistically for teaching purposes.
+    </p>
+    <div class="flex gap-2">
+      <a href="../pages/lab/index.html" class="btn btn-primary">🔬 Open Virtual Lab</a>
+      <a href="../pages/campus.html" class="btn btn-secondary">🏫 Smart Campus Simulation</a>
+    </div>
+  </div>
+
+</div><!-- end margin container -->
+
+<script src="../assets/js/portal.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+function attemptHardwareConnect() {
+  const host  = document.getElementById('broker-host').value.trim();
+  const port  = document.getElementById('broker-port').value || '9001';
+  const topic = document.getElementById('broker-topic').value.trim() || 'campus/#';
+  const statusDiv = document.getElementById('hw-status');
+  const statusMsg = document.getElementById('hw-status-msg');
+
+  if (!host) {
+    showToast('Please enter the MQTT broker host address.', 'warning');
+    return;
+  }
+
+  statusDiv.style.display = 'block';
+  statusMsg.textContent = `Connecting to ws://${host}:${port}/ ...`;
+
+  // Attempt WebSocket connection
+  try {
+    const ws = new WebSocket(`ws://${host}:${port}/mqtt`);
+    ws.onopen = () => {
+      statusMsg.textContent = `✅ Connected to broker at ${host}:${port}. Subscribing to ${topic} ...`;
+      statusDiv.querySelector('.alert').className = 'alert alert-success';
+      showToast('Hardware broker connected! Awaiting device data...', 'success');
+      document.getElementById('hw-fallback').style.display = 'none';
+      // NOTE: Full MQTT-over-WS implementation requires mqtt.js library
+      // For the FDP, the trainer should install mqtt.js: https://github.com/mqttjs/MQTT.js
+      statusMsg.innerHTML += '<br><small style="color:var(--text-muted)">Note: Full MQTT client requires mqtt.js. This is a connection test only. See setup guide.</small>';
+    };
+    ws.onerror = () => {
+      statusMsg.textContent = `❌ Could not connect to ${host}:${port}. Check broker address, port and that WebSocket support is enabled on the broker.`;
+      statusDiv.querySelector('.alert').className = 'alert alert-danger';
+      showToast('Connection failed. Check broker settings.', 'error');
+    };
+    ws.onclose = () => {
+      if (statusDiv.querySelector('.alert').classList.contains('alert-success')) return;
+      statusMsg.textContent = `Connection to ${host}:${port} closed or refused.`;
+    };
+    setTimeout(() => { if (ws.readyState === 0) { ws.close(); statusMsg.textContent = '❌ Connection timed out. Broker may be unreachable.'; statusDiv.querySelector('.alert').className = 'alert alert-danger'; } }, 5000);
+  } catch(e) {
+    statusMsg.textContent = `❌ Error: ${e.message}`;
+  }
+}
+
+// Mark hardware mode active
+document.addEventListener('DOMContentLoaded', () => {
+  PortalState.setMode('hardware');
+});
+</script>
+
+</body>
+</html>

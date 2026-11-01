@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecture — AIoT FDP Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    /* ---- Architecture page specific styles ---- */
+
+    /* Layer color accents */
+    .layer-c-1 { --lc: #00bcd4; }
+    .layer-c-2 { --lc: #1976d2; }
+    .layer-c-3 { --lc: #00897b; }
+    .layer-c-4 { --lc: #7b1fa2; }
+    .layer-c-5 { --lc: #ff8f00; }
+    .layer-c-6 { --lc: #00c853; }
+
+    .arch-layer { position: relative; }
+    .arch-layer .arch-layer-num { background: rgba(0,0,0,0.2); color: var(--lc, var(--cyan)); border-right: 2px solid var(--lc, var(--cyan)); }
+    .arch-layer:hover { border-color: var(--lc, var(--cyan)); box-shadow: 0 0 15px rgba(0,0,0,0.3); }
+    .arch-layer.selected { border-color: var(--lc, var(--cyan)); background: rgba(0,0,0,0.1); }
+    .arch-layer.selected .arch-layer-num { background: var(--lc, var(--cyan)); color: var(--navy); }
+    .arch-layer-badge {
+      display: inline-flex; align-items: center;
+      background: rgba(0,0,0,0.2); color: var(--lc, var(--cyan));
+      border: 1px solid var(--lc, var(--cyan));
+      font-size: 0.68rem; font-weight: 700; padding: 0.1rem 0.5rem;
+      border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    /* Detail panel */
+    .layer-detail-panel {
+      background: var(--navy-mid); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.75rem;
+      margin-top: 1rem; display: none;
+    }
+    .layer-detail-panel.visible { display: block; }
+    .ldp-header {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.25rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .ldp-icon { font-size: 2.5rem; }
+    .ldp-title { font-size: 1.1rem; font-weight: 700; color: var(--white); font-family: var(--font-head); }
+    .ldp-sub   { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .ldp-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    @media (max-width: 700px) { .ldp-grid { grid-template-columns: 1fr; } }
+    .ldp-section h4 { font-size: 0.82rem; font-weight: 700; color: var(--cyan-light); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.5rem; }
+    .ldp-section ul { list-style: none; padding: 0; margin: 0; }
+    .ldp-section li { font-size: 0.83rem; color: var(--text-muted); padding: 0.2rem 0; display: flex; align-items: flex-start; gap: 0.4rem; }
+    .ldp-section li::before { content: '›'; color: var(--cyan); flex-shrink: 0; }
+    .ldp-io {
+      display: flex; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap;
+    }
+    .ldp-io-box {
+      flex: 1; min-width: 180px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.85rem;
+    }
+    .ldp-io-box .io-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.4rem; }
+    .ldp-io-box .io-label.in  { color: var(--cyan); }
+    .ldp-io-box .io-label.out { color: var(--green); }
+    .ldp-io-box .io-label.fail { color: var(--red); }
+    .ldp-io-box p { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* Data flow trace */
+    .flow-trace {
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .flow-step {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem; transition: all var(--transition);
+    }
+    .flow-step.active {
+      border-color: var(--cyan); background: rgba(0,188,212,0.06);
+    }
+    .flow-step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(0,188,212,0.15); color: var(--cyan);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+    }
+    .flow-step.active .flow-step-num { background: var(--cyan); color: var(--navy); }
+    .flow-step-content { flex: 1; }
+    .flow-step-layer { font-size: 0.7rem; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.25rem; }
+    .flow-step-desc   { font-size: 0.85rem; color: var(--text-primary); font-weight: 500; }
+    .flow-step-detail { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem; font-family: var(--font-mono); }
+    .flow-connector   { text-align: center; color: var(--cyan); font-size: 1.1rem; }
+
+    /* Protocol tabs */
+    .protocol-tab-content { padding: 1.25rem 0; }
+    .proto-meta {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 700px) { .proto-meta { grid-template-columns: 1fr; } }
+    .proto-meta-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; }
+    .proto-meta-item .pm-key   { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.25rem; }
+    .proto-meta-item .pm-value { font-size: 0.9rem; color: var(--white); font-weight: 600; }
+
+    /* Comparison table */
+    .comparison-table-wrap { overflow-x: auto; }
+    .comparison-table th:first-child { min-width: 180px; }
+    .cell-edge  { color: var(--cyan);   font-weight: 600; }
+    .cell-cloud { color: var(--amber);  font-weight: 600; }
+    .cell-both  { color: var(--green);  font-weight: 600; }
+    .cell-check { color: var(--green);  font-size: 1rem; }
+    .cell-cross { color: var(--red);    font-size: 1rem; }
+
+    /* Layer comparison scroll */
+    .layer-compare-wrap { overflow-x: auto; }
+    .layer-compare-table th { min-width: 130px; }
+
+    /* Flow animation controls */
+    .trace-controls { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.25rem; }
+  </style>
+</head>
+<body data-portal="architecture">
+
+  <!-- PAGE CONTENT -->
+
+  <!-- 1. PAGE HERO -->
+  <div class="page-hero">
+    <div class="tag">🏛️ Reference Architecture · AIoT FDP 2026</div>
+    <h1>AIoT Architecture Explorer</h1>
+    <p>Explore the complete 6-layer AIoT reference architecture — from physical sensors to cloud analytics and decision-making. Click each layer to reveal technologies, data flows, design considerations, and failure points. Use this as your system design guide throughout the FDP.</p>
+    <div class="meta">
+      <span>🏗️ <strong>6 Layers</strong> — full stack</span>
+      <span>📡 <strong>4 Protocols</strong> — MQTT, HTTP, CoAP, WebSockets</span>
+      <span>☁️ <strong>Edge vs Cloud</strong> — decision matrix included</span>
+      <span>🎓 <strong>Day 1 + Day 2</strong> reference</span>
+    </div>
+  </div>
+
+  <!-- 2. INTERACTIVE 6-LAYER ARCHITECTURE -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🏗️</span>
+      <h3>Interactive 6-Layer Architecture <small>Click any layer to expand detailed information</small></h3>
+    </div>
+
+    <div class="arch-container">
+      <div class="arch-layers" id="arch-layers">
+
+        <!-- Layer 1: Physical/Sensing -->
+        <div class="arch-layer layer-c-1" id="layer-1" onclick="selectLayer(1)">
+          <div class="arch-layer-num">L1</div>
+          <div class="arch-layer-content">
+            <div class="arch-layer-title">Physical / Sensing Layer
+              <span class="arch-layer-badge" style="margin-left:0.75rem;">Sensing</span>
+            </div>
+            <div class="arch-layer-tech">DHT22 · DS18B20 · PIR · HC-SR04 · Soil Moisture · LDR · MQ-135 · MPU6050</div>
+            <div class="arch-layer-desc">
+              Responsible for physical measurement, analog-to-digital conversion, and basic actuation. This is where the physical world meets the digital — every byte in your AIoT system originates here.
+              <br><br><strong>Key responsibilities:</strong> Measure physical phenomena · Convert to electrical signals · ADC sampling · Initial conditioning
+            </div>
+          </div>
+          <div class="arch-layer-arrow">›</div>
+        </div>
+        <div class="arch-flow-arrow">↓</div>
+
+        <!-- Layer 2: Connectivity -->
+        <div class="arch-layer layer-c-2" id="layer-2" onclick="selectLayer(2)">
+          <div class="arch-layer-num">L2</div>
+          <div class="arch-layer-content">
+            <div class="arch-layer-title">Connectivity &amp; Messaging Layer
+              <span class="arch-layer-badge" style="margin-left:0.75rem;--lc:#1976d2;">Transport</span>
+            </div>
+            <div class="arch-layer-tech">Wi-Fi 802.11 · BLE 5.0 · Zigbee · LoRaWAN · MQTT v5 · HTTP/HTTPS · CoAP · WebSockets</div>
+            <div class="arch-layer-desc">
+              Handles reliable data transport from sensors to processing systems. Includes message queuing, protocol translation, and QoS guarantees. Protocol selection at this layer fundamentally shapes system latency, power consumption, and cost.
+              <br><br><strong>Key responsibilities:</strong> Reliable delivery · Message queuing · Protocol bridging · QoS negotiation · Encryption (TLS)
+            </div>
+          </div>
+          <div class="arch-layer-arrow">›</div>
+        </div>
+        <div class="arch-flow-arrow">↓</div>
+
+        <!-- Layer 3: Edge Processing -->
+        <div class="arch-layer layer-c-3" id="layer-3" onclick="selectLayer(3)">
+          <div class="arch-layer-num">L3</div>
+          <div class="arch-layer-content">
+            <div class="arch-layer-title">Edge &amp; Embedded Processing Layer
+              <span class="arch-layer-badge" style="margin-left:0.75rem;--lc:#00897b;">Edge</span>
+            </div>
+            <div class="arch-layer-tech">ESP32 · Raspberry Pi 4 · NVIDIA Jetson Nano · Arduino (limited) · STM32 · BeagleBone</div>
+            <div class="arch-layer-desc">
+              Performs local inference, data filtering, aggregation, and protocol bridging. Edge processing reduces latency to milliseconds, preserves privacy by keeping data local, and reduces cloud bandwidth/cost by pre-processing before upload.
+              <br><br><strong>Key responsibilities:</strong> Real-time filtering · Moving average smoothing · Local rule evaluation · Protocol translation · Firmware OTA updates
+            </div>
+          </div>
+          <div class="arch-layer-arrow">›</div>
+        </div>
+        <div class="arch-flow-arrow">↓</div>
+
+        <!-- Layer 4: Cloud -->
+        <div class="arch-layer layer-c-4" id="layer-4" onclick="selectLayer(4)">
+          <div class="arch-layer-num">L4</div>
+          <div class="arch-layer-content">
+            <div class="arch-layer-title">Cloud &amp; Data Platform Layer
+              <span class="arch-layer-badge" style="margin-left:0.75rem;--lc:#7b1fa2;">Cloud</span>
+            </div>
+            <div class="arch-layer-tech">AWS IoT Core · Azure IoT Hub · ThingsBoard · InfluxDB · Node-RED · TimescaleDB · Apache Kafka</div>
+            <div class="arch-layer-desc">
+              Provides long-term storage, global accessibility, and scalable stream processing. Cloud platforms enable data from thousands of devices to be aggregated, visualized, and analysed. Trade-off: requires internet connectivity and introduces latency.
+              <br><br><strong>Key responsibilities:</strong> Time-series storage · Multi-device aggregation · Historical analysis · Rule engine · REST/WebSocket APIs
+            </div>
+          </div>
+          <div class="arch-layer-arrow">›</div>
+        </div>
+        <div class="arch-flow-arrow">↓</div>
+
+        <!-- Layer 5: AI/ML Analytics -->
+        <div class="arch-layer layer-c-5" id="layer-5" onclick="selectLayer(5)">
+          <div class="arch-layer-num">L5</div>
+          <div class="arch-layer-content">
+            <div class="arch-layer-title">AI / ML Analytics Layer
+              <span class="arch-layer-badge" style="margin-left:0.75rem;--lc:#ff8f00;">Analytics</span>
+            </div>
+            <div class="arch-layer-tech">Python · scikit-learn · TensorFlow Lite · ONNX Runtime · Isolation Forest · Linear Regression · Decision Trees</div>
+            <div class="arch-layer-desc">
+              Applies machine learning and statistical models to sensor data for pattern recognition, prediction, and anomaly detection. For most campus applications, simple models (threshold rules, linear regression) outperform complex models and are far easier to explain and maintain.
+              <br><br><strong>Key responsibilities:</strong> Anomaly detection · Trend prediction · Classification · Recommendation generation · Model serving
+            </div>
+          </div>
+          <div class="arch-layer-arrow">›</div>
+        </div>
+        <div class="arch-flow-arrow">↓</div>
+
+        <!-- Layer 6: Application -->
+        <div class="arch-layer layer-c-6" id="layer-6" onclick="selectLayer(6)">
+          <div class="arch-layer-num">L6</div>
+          <div class="arch-layer-content">
+            <div class="arch-layer-title">Application, Visualization &amp; Decision Layer
+              <span class="arch-layer-badge" style="margin-left:0.75rem;--lc:#00c853;">Application</span>
+            </div>
+            <div class="arch-layer-tech">Grafana · ThingsBoard Dashboards · Custom React/Vue Apps · Mobile Apps · Actuator APIs · Webhooks</div>
+            <div class="arch-layer-desc">
+              The human-facing output layer — where decisions are displayed, alerts sent, and actuators triggered. Design here should prioritize clarity: operators must be able to understand alerts and take action within seconds. Closed-loop control (auto-actuation) requires safety interlocks.
+              <br><br><strong>Key responsibilities:</strong> Real-time visualization · Alert management · Actuator control · Report generation · Human-in-the-loop confirmation
+            </div>
+          </div>
+          <div class="arch-layer-arrow">›</div>
+        </div>
+
+      </div><!-- /.arch-layers -->
+    </div><!-- /.arch-container -->
+
+    <!-- Detail Panel (populated by JS) -->
+    <div class="layer-detail-panel" id="layer-detail-panel">
+      <div class="ldp-header">
+        <div class="ldp-icon" id="ldp-icon">🔍</div>
+        <div>
+          <div class="ldp-title" id="ldp-title">Select a layer above</div>
+          <div class="ldp-sub"  id="ldp-sub">Click any layer row to see detailed information</div>
+        </div>
+      </div>
+      <div class="ldp-grid" id="ldp-grid"></div>
+      <div class="ldp-io" id="ldp-io"></div>
+    </div>
+
+  </div><!-- /.card -->
+
+  <!-- 3. DATA FLOW TRACE -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">🔀</span>
+      <h3>Data Flow Trace <small>Step-by-step: temperature sensor → dashboard alert</small></h3>
+    </div>
+    <p class="section-subtitle">Follow a single temperature reading as it travels through all 6 layers of the AIoT stack.</p>
+
+    <div class="trace-controls">
+      <button class="btn btn-primary btn-sm" id="btn-trace-play">▶ Animate Trace</button>
+      <button class="btn btn-secondary btn-sm" id="btn-trace-reset">↺ Reset</button>
+      <span style="font-size:0.78rem;color:var(--text-muted);">Steps highlight automatically every 1.5 seconds</span>
+    </div>
+
+    <div class="flow-trace" id="flow-trace">
+
+      <div class="flow-step" id="fs-1">
+        <div class="flow-step-num">1</div>
+        <div class="flow-step-content">
+          <div class="flow-step-layer">Layer 1 — Physical Sensing</div>
+          <div class="flow-step-desc">Temperature sensor reads 31.2°C</div>
+          <div class="flow-step-detail">DHT22 sensor samples every 2 seconds. Internal ADC converts thermistor resistance to digital value. Output: 12-bit integer = 3120 (represents 31.20°C × 100)</div>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+
+      <div class="flow-step" id="fs-2">
+        <div class="flow-step-num">2</div>
+        <div class="flow-step-content">
+          <div class="flow-step-layer">Layer 1→2 — Signal &amp; GPIO</div>
+          <div class="flow-step-desc">DHT22 outputs 1-wire digital signal → ESP32 reads via GPIO pin</div>
+          <div class="flow-step-detail">GPIO pin 4 set as INPUT_PULLUP. ESP32 reads 1-wire protocol timing. Raw value: 31.2°C. No noise filtering yet — raw reading passed to processing.</div>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+
+      <div class="flow-step" id="fs-3">
+        <div class="flow-step-num">3</div>
+        <div class="flow-step-content">
+          <div class="flow-step-layer">Layer 3 — Edge Processing (ESP32)</div>
+          <div class="flow-step-desc">ESP32 applies moving average filter to remove noise</div>
+          <div class="flow-step-detail">5-point moving average: [30.8, 31.0, 31.1, 31.3, 31.2] → avg = 31.08°C. Spike filter: if |new - prev| > 5°C then discard. Filtered value: 31.1°C</div>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+
+      <div class="flow-step" id="fs-4">
+        <div class="flow-step-num">4</div>
+        <div class="flow-step-content">
+          <div class="flow-step-layer">Layer 2 — MQTT Publish</div>
+          <div class="flow-step-desc">ESP32 publishes JSON payload to MQTT topic</div>
+          <div class="flow-step-detail"><code>Topic: campus/room101/temperature</code><br><code>Payload: {"value": 31.1, "unit": "C", "device": "CAMPUS-TEMP-01", "ts": 1762128000}</code><br>QoS Level 1 (at least once delivery). TLS 1.3 encrypted.</div>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+
+      <div class="flow-step" id="fs-5">
+        <div class="flow-step-num">5</div>
+        <div class="flow-step-content">
+          <div class="flow-step-layer">Layer 4 — Cloud Platform (ThingsBoard)</div>
+          <div class="flow-step-desc">ThingsBoard MQTT broker receives and stores reading</div>
+          <div class="flow-step-detail">Message received at MQTT broker port 8883. ThingsBoard parses JSON and writes to InfluxDB time-series: measurement="temperature", device="room101", value=31.1. Dashboard auto-updates via WebSocket.</div>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+
+      <div class="flow-step" id="fs-6">
+        <div class="flow-step-num">6</div>
+        <div class="flow-step-content">
+          <div class="flow-step-layer">Layer 5 — AI/ML Analytics (Isolation Forest)</div>
+          <div class="flow-step-desc">Isolation Forest anomaly detector scores reading as 0.82 (elevated)</div>
+          <div class="flow-step-detail">Model trained on 30-day historical data (baseline: 24–28°C). Isolation score 0.82 → above threshold 0.75. Classification: ANOMALY. Confidence: 82%. Method: Isolation Forest (unsupervised, no labelled data needed)</div>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+
+      <div class="flow-step" id="fs-7">
+        <div class="flow-step-num">7</div>
+        <div class="flow-step-content">
+          <div class="flow-step-layer">Layer 6 — Application &amp; Decision</div>
+          <div class="flow-step-desc">Dashboard alert: "Temperature elevated — recommend ventilation"</div>
+          <div class="flow-step-detail">ThingsBoard rule chain triggers: 1) Push notification to facility manager app. 2) Email alert to room coordinator. 3) Actuator command sent to HVAC REST API: POST /api/hvac/room101 {"mode": "cool", "temp": 24}. 4) Alert logged to audit trail.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. LAYER COMPARISON TABLE -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">📋</span>
+      <h3>Layer Comparison Table <small>All 6 layers compared across key criteria</small></h3>
+    </div>
+    <div class="layer-compare-wrap">
+      <table class="data-table layer-compare-table">
+        <thead>
+          <tr>
+            <th>Criterion</th>
+            <th style="color:#00bcd4;">L1 Sensing</th>
+            <th style="color:#1976d2;">L2 Connectivity</th>
+            <th style="color:#00897b;">L3 Edge</th>
+            <th style="color:#7b1fa2;">L4 Cloud</th>
+            <th style="color:#ff8f00;">L5 AI/ML</th>
+            <th style="color:#00c853;">L6 Application</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Processing Location</strong></td>
+            <td>On-sensor</td>
+            <td>In-transit / broker</td>
+            <td>Edge device (local)</td>
+            <td>Remote server</td>
+            <td>Cloud / edge</td>
+            <td>Client (browser / app)</td>
+          </tr>
+          <tr>
+            <td><strong>Latency</strong></td>
+            <td class="mono">µs – ms</td>
+            <td class="mono">1–500 ms</td>
+            <td class="mono">5–50 ms</td>
+            <td class="mono">50–500 ms</td>
+            <td class="mono">100ms – 5s</td>
+            <td class="mono">Near-real-time</td>
+          </tr>
+          <tr>
+            <td><strong>Compute Required</strong></td>
+            <td>Minimal (ADC)</td>
+            <td>Very low</td>
+            <td>Low–medium</td>
+            <td>High (scalable)</td>
+            <td>Medium–high</td>
+            <td>Low (rendering)</td>
+          </tr>
+          <tr>
+            <td><strong>Internet Required</strong></td>
+            <td>No</td>
+            <td>Sometimes</td>
+            <td>No (local)</td>
+            <td>Yes</td>
+            <td>Often yes</td>
+            <td>Yes (usually)</td>
+          </tr>
+          <tr>
+            <td><strong>Data Volume</strong></td>
+            <td>Raw (large)</td>
+            <td>Medium (structured)</td>
+            <td>Filtered (reduced)</td>
+            <td>Aggregated</td>
+            <td>Scores / predictions</td>
+            <td>Minimal (display)</td>
+          </tr>
+          <tr>
+            <td><strong>Cost</strong></td>
+            <td>\$1–\$50/sensor</td>
+            <td>Router/gateway cost</td>
+            <td>\$5–\$200/node</td>
+            <td>\$10–\$500/month</td>
+            <td>Compute cost</td>
+            <td>Minimal</td>
+          </tr>
+          <tr>
+            <td><strong>Privacy</strong></td>
+            <td>Data stays local</td>
+            <td>Encrypted in transit</td>
+            <td>Can stay local</td>
+            <td>Data leaves premises</td>
+            <td>Data in cloud</td>
+            <td>Depends on config</td>
+          </tr>
+          <tr>
+            <td><strong>Failure Impact</strong></td>
+            <td>Single sensor lost</td>
+            <td>Zone offline</td>
+            <td>Local processing lost</td>
+            <td>All cloud features lost</td>
+            <td>Analytics degraded</td>
+            <td>UI unavailable</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5. PROTOCOL DEEP DIVE TABS -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">📡</span>
+      <h3>Protocol Deep Dive <small>Select a protocol to see technical details and code examples</small></h3>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="proto-mqtt" role="tab">MQTT</button>
+      <button class="tab-btn" data-tab="proto-http" role="tab">HTTP/REST</button>
+      <button class="tab-btn" data-tab="proto-coap" role="tab">CoAP</button>
+      <button class="tab-btn" data-tab="proto-ws" role="tab">WebSockets</button>
+    </div>
+
+    <!-- MQTT -->
+    <div class="tab-pane active" id="proto-mqtt">
+      <div class="protocol-tab-content">
+        <div class="proto-meta">
+          <div class="proto-meta-item">
+            <div class="pm-key">Full Name</div>
+            <div class="pm-value">Message Queuing Telemetry Transport</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Default Port</div>
+            <div class="pm-value">1883 (plain) · 8883 (TLS)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Transport</div>
+            <div class="pm-value">TCP (reliable, ordered)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Message Model</div>
+            <div class="pm-value">Publish / Subscribe via Broker</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Overhead</div>
+            <div class="pm-value">As low as 2 bytes header</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">QoS Levels</div>
+            <div class="pm-value">0 (fire-forget) · 1 (at-least-once) · 2 (exactly-once)</div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">MQTT is the de-facto standard for IoT messaging. A lightweight pub/sub protocol designed for constrained networks and devices. The broker decouples publishers from subscribers — devices publish data to topics, and any number of subscribers receive it without needing to know each other.</p>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">Publisher (ESP32 — MicroPython)</div>
+        <pre style="margin-bottom:1rem;">from umqtt.simple import MQTTClient
+import ujson, time
+
+CLIENT_ID = b"campus-esp32-01"
+BROKER    = b"192.168.1.100"   # Local MQTT broker IP
+TOPIC     = b"campus/room101/temperature"
+
+client = MQTTClient(CLIENT_ID, BROKER, port=1883)
+client.connect()
+
+while True:
+    temp = read_dht22_temperature()    # your sensor function
+    payload = ujson.dumps({
+        "value": temp,
+        "unit": "C",
+        "device": "CAMPUS-TEMP-01",
+        "ts": time.time()
+    })
+    client.publish(TOPIC, payload, qos=1)
+    time.sleep(2)</pre>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">Subscriber (Python — paho-mqtt)</div>
+        <pre>import paho.mqtt.client as mqtt, json
+
+def on_message(client, userdata, msg):
+    data = json.loads(msg.payload)
+    print(f"[{msg.topic}] Temp: {data['value']}°C")
+    if data['value'] > 30:
+        trigger_alert(data)          # your alert function
+
+client = mqtt.Client()
+client.on_message = on_message
+client.connect("192.168.1.100", 1883)
+client.subscribe("campus/+/temperature", qos=1)  # wildcard: all rooms
+client.loop_forever()</pre>
+        <div class="alert alert-info" style="margin-top:1rem;">
+          <span class="alert-icon">💡</span>
+          <div><strong>AIoT Use Cases:</strong> Real-time sensor telemetry · Device command &amp; control · Status updates · Threshold alerts · OTA firmware triggers. MQTT v5 adds request/response patterns, message expiry, and user properties for richer IoT workflows.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HTTP/REST -->
+    <div class="tab-pane" id="proto-http">
+      <div class="protocol-tab-content">
+        <div class="proto-meta">
+          <div class="proto-meta-item">
+            <div class="pm-key">Full Name</div>
+            <div class="pm-value">HyperText Transfer Protocol / REST</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Default Port</div>
+            <div class="pm-value">80 (HTTP) · 443 (HTTPS)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Message Model</div>
+            <div class="pm-value">Request / Response (polling)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Overhead</div>
+            <div class="pm-value">~200–800 bytes header</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">State</div>
+            <div class="pm-value">Stateless (each request independent)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Auth</div>
+            <div class="pm-value">API Key · JWT Bearer · OAuth 2.0</div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">HTTP/REST is familiar, widely supported, and excellent for configuration APIs, bulk data upload, and integration with web services. Not ideal for high-frequency telemetry (polling is inefficient) but great for actuator commands and dashboard data retrieval.</p>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">POST Sensor Data (ESP32 Arduino)</div>
+        <pre style="margin-bottom:1rem;">#include &lt;WiFi.h&gt;
+#include &lt;HTTPClient.h&gt;
+#include &lt;ArduinoJson.h&gt;
+
+const char* SERVER = "https://api.thingsboard.io/api/v1/TOKEN/telemetry";
+
+void postSensorData(float temp, float humidity) {
+    HTTPClient http;
+    http.begin(SERVER);
+    http.addHeader("Content-Type", "application/json");
+
+    StaticJsonDocument&lt;128&gt; doc;
+    doc["temperature"] = temp;
+    doc["humidity"]    = humidity;
+    String payload;
+    serializeJson(doc, payload);
+
+    int code = http.POST(payload);
+    Serial.printf("HTTP %d: %s\n", code, payload.c_str());
+    http.end();
+}</pre>
+        <div class="alert alert-warning">
+          <span class="alert-icon">⚠️</span>
+          <div><strong>When to prefer MQTT over HTTP:</strong> If your sensor sends data more than once every 5 seconds, HTTP overhead becomes significant. For high-frequency telemetry (&gt;1 Hz), use MQTT. Use HTTP for: configuration changes, bulk historical upload, actuator commands, webhook integrations.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CoAP -->
+    <div class="tab-pane" id="proto-coap">
+      <div class="protocol-tab-content">
+        <div class="proto-meta">
+          <div class="proto-meta-item">
+            <div class="pm-key">Full Name</div>
+            <div class="pm-value">Constrained Application Protocol</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Default Port</div>
+            <div class="pm-value">5683 (UDP) · 5684 (DTLS)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Transport</div>
+            <div class="pm-value">UDP (lightweight, no connection)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Message Model</div>
+            <div class="pm-value">REST-like over UDP · Confirmable / Non-confirmable</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Overhead</div>
+            <div class="pm-value">As low as 4 bytes header</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Standard</div>
+            <div class="pm-value">IETF RFC 7252</div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">CoAP is designed for constrained nodes and networks — it is essentially HTTP semantics (GET, POST, PUT, DELETE) over UDP, with a 4-byte binary header instead of HTTP's 200+ byte text headers. Ideal for battery-powered sensors on low-power networks (6LoWPAN, Zigbee, NB-IoT).</p>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">CoAP Client (Python — aiocoap)</div>
+        <pre style="margin-bottom:1rem;">import asyncio, aiocoap
+
+async def post_sensor():
+    protocol = await aiocoap.Context.create_client_context()
+
+    payload = b'{"temp": 31.2, "unit": "C"}'
+    request = aiocoap.Message(
+        code   = aiocoap.POST,
+        uri    = 'coap://192.168.1.50/sensors/temperature',
+        payload= payload
+    )
+    response = await protocol.request(request).response
+    print(f"CoAP response: {response.code}")
+
+asyncio.run(post_sensor())</pre>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">CoAP vs MQTT vs HTTP — quick comparison</div>
+        <table class="data-table" style="font-size:0.8rem;">
+          <thead><tr><th>Feature</th><th>CoAP</th><th>MQTT</th><th>HTTP</th></tr></thead>
+          <tbody>
+            <tr><td>Header size</td><td class="text-green">4 bytes</td><td class="text-green">2 bytes min</td><td class="text-amber">200+ bytes</td></tr>
+            <tr><td>Transport</td><td>UDP</td><td>TCP</td><td>TCP</td></tr>
+            <tr><td>Broker needed</td><td>No</td><td>Yes</td><td>No</td></tr>
+            <tr><td>Pub/Sub</td><td>Via observe</td><td>Native</td><td>Via SSE/polling</td></tr>
+            <tr><td>Best for</td><td>Constrained devices</td><td>IoT telemetry</td><td>Web integration</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WebSockets -->
+    <div class="tab-pane" id="proto-ws">
+      <div class="protocol-tab-content">
+        <div class="proto-meta">
+          <div class="proto-meta-item">
+            <div class="pm-key">Standard</div>
+            <div class="pm-value">IETF RFC 6455</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Default Port</div>
+            <div class="pm-value">80 (ws://) · 443 (wss://)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Transport</div>
+            <div class="pm-value">TCP (full-duplex, persistent)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Message Model</div>
+            <div class="pm-value">Full-duplex bidirectional streaming</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Overhead</div>
+            <div class="pm-value">2–14 bytes per frame (after handshake)</div>
+          </div>
+          <div class="proto-meta-item">
+            <div class="pm-key">Role in AIoT</div>
+            <div class="pm-value">Dashboard live updates · Browser-to-cloud</div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">WebSockets provide a persistent, full-duplex channel between browser and server — essential for live dashboards that update in real time. In AIoT systems, WebSockets typically appear at the Application layer (L6): the cloud platform pushes sensor updates to the dashboard browser via WebSocket, eliminating the need for inefficient polling.</p>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;">Browser Dashboard (JavaScript)</div>
+        <pre style="margin-bottom:1rem;">// Connect to ThingsBoard WebSocket subscription
+const token  = 'YOUR_DEVICE_TOKEN';
+const wsUrl  = `wss://thingsboard.io/api/ws/plugins/telemetry?token=${token}`;
+const socket = new WebSocket(wsUrl);
+
+socket.onopen = () => {
+  // Subscribe to telemetry keys
+  const cmd = { tsSubCmds: [{ entityType: "DEVICE", entityId: "...",
+                  scope: "LATEST_TELEMETRY", cmdId: 1 }], attrSubCmds: [] };
+  socket.send(JSON.stringify(cmd));
+  console.log("WebSocket connected — live updates active");
+};
+
+socket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  const temp = data.data?.temperature?.[0]?.[1];
+  if (temp !== undefined) {
+    document.getElementById('temp-display').textContent = temp + '°C';
+    updateChart(temp);      // your Chart.js update function
+  }
+};</pre>
+        <div class="alert alert-info">
+          <span class="alert-icon">💡</span>
+          <div><strong>WebSocket vs MQTT over WebSocket:</strong> MQTT itself can run over WebSocket (MQTT/WS on port 9001) — this is how browser-based MQTT clients work (e.g., MQTTX Web). ThingsBoard and other platforms expose WebSocket APIs for dashboard subscriptions, combining MQTT's pub/sub model with browser compatibility.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.card protocol tabs -->
+
+  <!-- 6. EDGE vs CLOUD DECISION MATRIX -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="icon">⚖️</span>
+      <h3>Edge vs Cloud Decision Matrix <small>When to process where</small></h3>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Use this matrix when designing your AIoT system's processing architecture. Many production systems use <strong>hybrid</strong> approaches — edge for latency-critical decisions, cloud for long-term analytics.</p>
+    <div class="comparison-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Criterion / Requirement</th>
+            <th style="color:#00bcd4;">→ Edge</th>
+            <th style="color:#ff8f00;">→ Cloud</th>
+            <th style="color:#00c853;">→ Both (Hybrid)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Latency &lt; 10 ms required</strong><br><small style="color:var(--text-muted);">e.g., motor stop, safety shutoff</small></td>
+            <td class="cell-edge">✅ Edge only<br><small>Cloud adds 50–500ms</small></td>
+            <td class="cell-cross">✗</td>
+            <td class="cell-cross">✗</td>
+          </tr>
+          <tr>
+            <td><strong>Privacy-sensitive data</strong><br><small style="color:var(--text-muted);">e.g., medical, biometric, CCTV</small></td>
+            <td class="cell-edge">✅ Process + store locally</td>
+            <td class="cell-cross">✗ Legal/GDPR risk</td>
+            <td class="cell-both">⚡ Anonymise at edge, send aggregates to cloud</td>
+          </tr>
+          <tr>
+            <td><strong>Unreliable internet connectivity</strong><br><small style="color:var(--text-muted);">e.g., rural campus, construction sites</small></td>
+            <td class="cell-edge">✅ Must work offline</td>
+            <td class="cell-cross">✗ Single point of failure</td>
+            <td class="cell-both">⚡ Edge-first with cloud sync when online</td>
+          </tr>
+          <tr>
+            <td><strong>Large-scale ML model training</strong><br><small style="color:var(--text-muted);">e.g., multi-week anomaly model</small></td>
+            <td class="cell-cross">✗ Insufficient compute</td>
+            <td class="cell-cloud">✅ Cloud GPU/TPU instances</td>
+            <td class="cell-cross">✗</td>
+          </tr>
+          <tr>
+            <td><strong>Real-time alerts (&lt; 1 second)</strong><br><small style="color:var(--text-muted);">e.g., fire, gas leak, vibration alarm</small></td>
+            <td class="cell-edge">✅ Local threshold rules</td>
+            <td class="cell-cross">✗ Too slow for safety</td>
+            <td class="cell-both">⚡ Alert at edge + log to cloud</td>
+          </tr>
+          <tr>
+            <td><strong>Long-term data storage (months+)</strong><br><small style="color:var(--text-muted);">e.g., regulatory compliance, trend analysis</small></td>
+            <td class="cell-cross">✗ Local storage limited</td>
+            <td class="cell-cloud">✅ Scalable cloud storage</td>
+            <td class="cell-both">⚡ Cache at edge, archive to cloud</td>
+          </tr>
+          <tr>
+            <td><strong>High compute ML inference</strong><br><small style="color:var(--text-muted);">e.g., image classification, NLP</small></td>
+            <td class="cell-cross">✗ Except Jetson/RPi with TFLite</td>
+            <td class="cell-cloud">✅ Full model in cloud</td>
+            <td class="cell-both">⚡ Lightweight model at edge, full model in cloud</td>
+          </tr>
+          <tr>
+            <td><strong>Multi-site aggregation</strong><br><small style="color:var(--text-muted);">e.g., campus + 5 remote buildings</small></td>
+            <td class="cell-cross">✗ No cross-site visibility</td>
+            <td class="cell-cloud">✅ Central aggregation</td>
+            <td class="cell-both">⚡ Each site has edge; cloud aggregates all</td>
+          </tr>
+          <tr>
+            <td><strong>Cost-sensitive deployment</strong><br><small style="color:var(--text-muted);">e.g., university budget constraints</small></td>
+            <td class="cell-edge">✅ One-time hardware cost</td>
+            <td class="cell-cross">✗ Ongoing subscription fees</td>
+            <td class="cell-both">⚡ Edge for data, free-tier cloud for dashboards</td>
+          </tr>
+          <tr>
+            <td><strong>Firmware &amp; OTA updates needed</strong><br><small style="color:var(--text-muted);">Managing 50+ sensor nodes</small></td>
+            <td class="cell-cross">✗ Hard to scale locally</td>
+            <td class="cell-cloud">✅ Cloud OTA management platforms</td>
+            <td class="cell-both">⚡ Cloud-triggered, edge-executed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert alert-success" style="margin-top:1.25rem;">
+      <span class="alert-icon">✅</span>
+      <div><strong>Recommended for campus AIoT (starting point):</strong> Hybrid architecture — ESP32/RPi edge devices run local threshold rules and alert immediately; summary data is sent to a free ThingsBoard Community Edition instance for dashboards and historical storage. Upgrade to cloud-managed services as scale grows.</div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/portal.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script>
+  'use strict';
+
+  /* =====================================================
+     LAYER DATA — full details for each layer
+     ===================================================== */
+  const LAYER_DATA = {
+    1: {
+      icon: '📡',
+      title: 'Layer 1 — Physical / Sensing Layer',
+      sub: 'Where the physical world becomes digital data',
+      color: '#00bcd4',
+      responsibilities: [
+        'Physical measurement of environment phenomena (temperature, humidity, motion, light, etc.)',
+        'Analog-to-Digital Conversion (ADC) — converting continuous signals to discrete values',
+        'Digital sensor protocols: 1-Wire (DHT22), I²C (BH1750, BME280), SPI (MAX31855)',
+        'Basic signal conditioning: amplification, reference voltage, pull-up resistors',
+        'Actuation: relay control, servo motors, solenoid valves',
+        'Power management: deep sleep modes for battery-powered sensors',
+      ],
+      technologies: [
+        'DHT22: Combined temperature (±0.5°C) + humidity (±2%) sensor, single-wire protocol',
+        'DS18B20: High-accuracy digital thermometer (-55°C to +125°C), 1-Wire bus',
+        'PIR (HC-SR501): Passive infrared motion detection, 5–12V, adjustable sensitivity',
+        'HC-SR04: Ultrasonic distance measurement (2cm–4m), two-pin trigger/echo',
+        'MQ-135: Electrochemical air quality (CO₂, NH₃, NOₓ, smoke), analog output',
+        'LDR + voltage divider: Simple light intensity, 0–1023 analog reading',
+        'MPU-6050: 6-axis IMU (3-axis gyro + 3-axis accelerometer) via I²C, vibration sensing',
+      ],
+      dataIn: 'Physical phenomena: heat, light, motion, sound, chemical concentration, displacement',
+      dataOut: 'Raw digital values (ADC counts, encoded bytes) via sensor-specific protocol',
+      designChoices: [
+        'Sensor placement: line-of-sight for PIR, shade for temperature, sealed for outdoor use',
+        'Sampling rate: Nyquist theorem — sample at 2× the highest frequency of interest',
+        'Power source: 3.3V vs 5V, battery vs mains, sleep duty cycle trade-offs',
+        'Calibration: Factory calibration vs field calibration; drift compensation',
+      ],
+      failurePoints: [
+        'Sensor drift: readings gradually shift from true value over weeks/months without recalibration',
+        'Noise: electrical interference, thermal noise; mitigate with shielding and software averaging',
+        'Power loss: battery depletion, brown-out causing erratic readings',
+        'Calibration errors: sensor installed in wrong location (e.g., temperature sensor near heat vent)',
+        'Physical damage: water ingress, dust, vibration — use IP-rated enclosures outdoors',
+      ]
+    },
+    2: {
+      icon: '📶',
+      title: 'Layer 2 — Connectivity & Messaging Layer',
+      sub: 'Reliable data transport from sensor to processing system',
+      color: '#1976d2',
+      responsibilities: [
+        'Reliable data transport with appropriate QoS guarantees',
+        'Message queuing and buffering during connectivity interruptions',
+        'Protocol translation: e.g., Zigbee → MQTT gateway bridging',
+        'Network topology management: star, mesh, tree networks',
+        'Security: TLS 1.3 encryption, certificate-based authentication',
+        'Bandwidth management: compression, batching, QoS throttling',
+      ],
+      technologies: [
+        'Wi-Fi (IEEE 802.11 b/g/n/ac): High bandwidth, short range (50–150m), ESP32 built-in',
+        'BLE 5.0: Low power, short range (10–100m), ideal for wearables and asset tracking',
+        'Zigbee (IEEE 802.15.4): Mesh networking, 250 kbps, 10–100m per hop, up to 65,000 nodes',
+        'LoRaWAN: Long range (1–10km), very low power, low data rate (250 bps–50 kbps)',
+        'MQTT v5: ISO/IEC 20922, pub/sub, 2-byte min header, QoS 0/1/2, ideal for IoT',
+        'HTTP/HTTPS: REST API integration, polling-based, familiar but higher overhead',
+        'CoAP (RFC 7252): REST semantics over UDP, 4-byte header, for constrained networks',
+      ],
+      dataIn: 'Structured sensor readings (JSON/CBOR/binary) from edge devices',
+      dataOut: 'Messages delivered to broker or server with QoS guarantees',
+      designChoices: [
+        'Protocol selection: MQTT for telemetry, HTTP for config APIs, WebSocket for dashboards',
+        'QoS level: QoS 0 for high-frequency non-critical, QoS 1 for alerts, QoS 2 for commands',
+        'Topic hierarchy: campus/{building}/{room}/{sensor} — hierarchical and filterable',
+        'Security: Always use TLS in production; client certificates for device identity',
+      ],
+      failurePoints: [
+        'Network congestion: too many devices publishing simultaneously — use backoff strategies',
+        'Packet loss: especially on UDP-based protocols (CoAP); implement retransmission',
+        'QoS mismatch: publisher uses QoS 1 but subscriber uses QoS 0 — messages may be lost',
+        'MQTT broker single point of failure — use clustered broker for production',
+        'Wi-Fi interference: 2.4GHz congestion in dense environments — use 5GHz where possible',
+      ]
+    },
+    3: {
+      icon: '⚙️',
+      title: 'Layer 3 — Edge & Embedded Processing Layer',
+      sub: 'Local intelligence at the network edge',
+      color: '#00897b',
+      responsibilities: [
+        'Local inference: running lightweight ML models (TFLite) or rule evaluation without cloud',
+        'Data filtering: moving average, Kalman filter, outlier rejection',
+        'Data aggregation: combining readings from multiple sensors before cloud upload',
+        'Protocol bridging: Zigbee → MQTT, BLE → Wi-Fi translation',
+        'Store-and-forward: buffering data during cloud connectivity loss',
+        'Firmware OTA update reception and validation',
+      ],
+      technologies: [
+        'ESP32 (Espressif): Dual-core 240MHz, Wi-Fi + BLE, 520KB SRAM, MicroPython/Arduino, ~₹300',
+        'Raspberry Pi 4: Quad-core 1.8GHz ARM, 2–8GB RAM, full Linux, Python — for complex edge tasks',
+        'NVIDIA Jetson Nano: 128-core GPU + 4-core ARM, TensorFlow/PyTorch — for vision/ML edge inference',
+        'Arduino Uno: 16MHz ATmega328P, 2KB RAM — too limited for networking; use for sensor-only nodes',
+        'STM32: ARM Cortex-M, ultra-low power, FreeRTOS, industrial-grade for harsh environments',
+        'Node-RED on RPi: Visual programming for MQTT routing, filtering, and transformation pipelines',
+      ],
+      dataIn: 'Raw sensor readings from GPIO, I²C, SPI, or incoming MQTT messages',
+      dataOut: 'Filtered/aggregated data uplinked to cloud; local alerts; actuator commands',
+      designChoices: [
+        'Hardware selection: ESP32 for most campus applications; RPi for more compute; Jetson for vision',
+        'Local vs cloud inference: if internet is unreliable, put decision logic on edge',
+        'Memory management: avoid dynamic allocation on microcontrollers; use static buffers',
+        'Watchdog timers: auto-restart if firmware hangs — essential for unattended deployment',
+      ],
+      failurePoints: [
+        'Limited RAM/flash: memory leaks crash the device; careful buffer management required',
+        'Firmware bugs: harder to debug on embedded devices; use UART logging and LED indicators',
+        'Power brown-out: sudden power loss corrupts flash; use atomic writes and verify on boot',
+        'Heat: ESP32 operates -40°C to +85°C but performance degrades at high ambient temperatures',
+        'SD card failure: if used for store-and-forward; wear levelling and error checking essential',
+      ]
+    },
+    4: {
+      icon: '☁️',
+      title: 'Layer 4 — Cloud & Data Platform Layer',
+      sub: 'Scalable storage, global access, and multi-device aggregation',
+      color: '#7b1fa2',
+      responsibilities: [
+        'Long-term time-series storage (months to years of sensor history)',
+        'Global accessibility: dashboards available from any device, anywhere',
+        'Scale-out processing: ingesting thousands of devices simultaneously',
+        'Rule engine: server-side threshold evaluation and alert routing',
+        'REST APIs for third-party integration (mobile apps, ERP, BMS)',
+        'Role-based access control: different views for admins, operators, facility managers',
+      ],
+      technologies: [
+        'ThingsBoard Community Edition: Open-source IoT platform, free self-hosted, MQTT + HTTP ingest',
+        'AWS IoT Core: Managed MQTT broker + rule engine + S3 storage, pay-per-message',
+        'Azure IoT Hub: Microsoft managed IoT service, device provisioning, digital twins',
+        'InfluxDB: Purpose-built time-series database, 10× faster than relational for sensor queries',
+        'Node-RED: Visual flow programming for data transformation, routing, and automation',
+        'Apache Kafka: High-throughput message streaming for large-scale IoT deployments',
+        'Grafana: Open-source dashboard and visualization; connects to InfluxDB, PostgreSQL, and more',
+      ],
+      dataIn: 'MQTT messages from edge devices / HTTP POST telemetry from gateways',
+      dataOut: 'Time-series data via REST API, WebSocket streams for dashboards, alert webhooks',
+      designChoices: [
+        'Self-hosted vs managed: ThingsBoard on university server (free, full control) vs AWS IoT Core (managed, metered)',
+        'Time-series DB selection: InfluxDB for high-frequency; PostgreSQL + TimescaleDB for relational needs',
+        'Retention policy: define data retention per sensor type; aggregate old data to save storage',
+        'Multi-tenancy: separate tenant per department or building for access control',
+      ],
+      failurePoints: [
+        'Internet dependency: cloud-only architecture fails completely during connectivity outage',
+        'Cloud outages: major providers (AWS, Azure) have periodic regional outages',
+        'Data latency: cloud adds 50–500ms per reading — unacceptable for safety-critical decisions',
+        'Cost overruns: message-based pricing (AWS IoT) can spike unexpectedly at scale',
+        'Vendor lock-in: proprietary cloud formats make migration difficult; prefer open standards (MQTT, InfluxDB)',
+      ]
+    },
+    5: {
+      icon: '🤖',
+      title: 'Layer 5 — AI/ML Analytics Layer',
+      sub: 'Pattern recognition, prediction, and anomaly detection',
+      color: '#ff8f00',
+      responsibilities: [
+        'Anomaly detection: identify unusual readings that deviate from normal patterns',
+        'Trend prediction: forecast future values (e.g., predict energy demand for next hour)',
+        'Classification: categorise sensor states (normal, warning, critical, fault)',
+        'Recommendation generation: suggest actions based on patterns',
+        'Model serving: inference API that other layers call to get predictions',
+        'Model retraining: periodic retraining as sensor baselines drift over seasons',
+      ],
+      technologies: [
+        'scikit-learn (Python): Isolation Forest, Random Forest, Linear Regression, SVM — best for campus AIoT',
+        'TensorFlow Lite: Quantised models for edge inference on ESP32/RPi — vision, audio classification',
+        'ONNX Runtime: Run models from any framework on any platform — interoperability',
+        'Pandas + NumPy: Data manipulation and feature engineering pipeline',
+        'Isolation Forest: Unsupervised anomaly detection — no labelled data needed, ideal for sensor data',
+        'Linear Regression: Simple, explainable trend prediction — often outperforms complex models on clean data',
+        'Decision Trees: Explainable classification — can be inspected and printed as rules',
+      ],
+      dataIn: 'Historical time-series sensor data and real-time streaming readings',
+      dataOut: 'Predictions (float), anomaly scores (0–1), classifications (string), recommendations (text)',
+      designChoices: [
+        'Model complexity: start simple (linear regression, threshold rules) before complex ML',
+        'Explainability requirement: in campus safety systems, decision trees and rules are preferred over black-box models',
+        'Training data volume: Isolation Forest works well with 2–4 weeks of normal data; neural nets need far more',
+        'Retraining schedule: monthly retraining recommended to adapt to seasonal and occupancy pattern changes',
+      ],
+      failurePoints: [
+        'Training data quality: garbage in, garbage out — noisy sensor data produces unreliable models',
+        'Concept drift: campus patterns change (semester vs vacation) — models become stale without retraining',
+        'Over-alerting: poorly tuned threshold causes alert fatigue; operators ignore all alerts',
+        'False negatives: missed anomalies due to insufficient training diversity',
+        'Explainability gap: stakeholders distrust (and may reject) unexplainable AI decisions',
+      ]
+    },
+    6: {
+      icon: '📊',
+      title: 'Layer 6 — Application, Visualization & Decision Layer',
+      sub: 'Human interface, alerts, and closed-loop actuator control',
+      color: '#00c853',
+      responsibilities: [
+        'Real-time data visualization on dashboards (Grafana, ThingsBoard, custom web apps)',
+        'Alert management: display, acknowledge, escalate, and audit alerts',
+        'Closed-loop control: automatic actuator commands based on decision engine outputs',
+        'Report generation: scheduled PDF/CSV reports for facility managers and administration',
+        'Human-in-the-loop: confirmation dialogs for high-risk actuator commands',
+        'Mobile notifications: push alerts to smartphones for on-call staff',
+      ],
+      technologies: [
+        'Grafana: Open-source dashboard platform, 50+ data source plugins, alerting, InfluxDB native',
+        'ThingsBoard Dashboards: Built-in widget library, MQTT subscription, multi-tenant',
+        'React / Vue.js: Custom web dashboard with Chart.js or D3.js for real-time WebSocket updates',
+        'Pushover / Telegram Bot API: Simple push notification delivery for alerts',
+        'REST Actuator APIs: HTTP POST commands to HVAC, lighting, irrigation controllers',
+        'Grafana Alerting: Rule-based alerts that post to Slack, email, PagerDuty, webhook',
+      ],
+      dataIn: 'Analytics outputs (scores, predictions, recommendations) and raw telemetry for display',
+      dataOut: 'Visual displays, push notifications, email alerts, actuator HTTP commands, audit logs',
+      designChoices: [
+        'Dashboard layout: operator view (alerts, current values) vs management view (trends, KPIs) vs public view',
+        'Alert hierarchy: severity levels (info → warning → critical → emergency) with appropriate escalation',
+        'Actuator safety: always include confirmation step + safety interlocks for automated control',
+        'Accessibility: dashboards must be readable on mobile devices in field conditions',
+      ],
+      failurePoints: [
+        'Alert fatigue: too many low-priority alerts cause operators to ignore all notifications',
+        'Slow dashboard: too many sensors on single dashboard panel causes browser performance issues',
+        'Actuator command failures: network loss between application and actuator creates split-brain state',
+        'Access control gaps: operators seeing data from the wrong campus zones',
+        'No audit trail: cannot reconstruct who did what during an incident — always log decisions',
+      ]
+    }
+  };
+
+  /* ---- Layer selection ---- */
+  let currentLayer = null;
+
+  function selectLayer(n) {
+    const data = LAYER_DATA[n];
+    if (!data) return;
+
+    // Toggle — click same layer to collapse
+    if (currentLayer === n) {
+      document.getElementById('layer-detail-panel').classList.remove('visible');
+      document.querySelectorAll('.arch-layer').forEach(l => l.classList.remove('selected'));
+      currentLayer = null;
+      return;
+    }
+    currentLayer = n;
+
+    // Highlight selected
+    document.querySelectorAll('.arch-layer').forEach((el, i) => {
+      el.classList.toggle('selected', i + 1 === n);
+    });
+
+    // Populate detail panel
+    const panel = document.getElementById('layer-detail-panel');
+    panel.style.setProperty('border-color', data.color);
+
+    document.getElementById('ldp-icon').textContent = data.icon;
+    document.getElementById('ldp-title').textContent = data.title;
+    document.getElementById('ldp-sub').textContent   = data.sub;
+
+    // Grid: responsibilities + technologies
+    document.getElementById('ldp-grid').innerHTML = `
+      <div class="ldp-section">
+        <h4>🎯 Responsibilities</h4>
+        <ul>${data.responsibilities.map(r => `<li>${r}</li>`).join('')}</ul>
+      </div>
+      <div class="ldp-section">
+        <h4>🛠️ Technologies</h4>
+        <ul>${data.technologies.map(t => `<li>${t}</li>`).join('')}</ul>
+      </div>
+      <div class="ldp-section">
+        <h4>⚠️ Failure Points</h4>
+        <ul>${data.failurePoints.map(f => `<li style="color:var(--red)">${f}</li>`).join('')}</ul>
+      </div>
+      <div class="ldp-section">
+        <h4>🎛️ Design Choices</h4>
+        <ul>${data.designChoices.map(d => `<li style="color:var(--amber)">${d}</li>`).join('')}</ul>
+      </div>`;
+
+    // IO boxes
+    document.getElementById('ldp-io').innerHTML = `
+      <div class="ldp-io-box">
+        <div class="io-label in">📥 Data In</div>
+        <p>${data.dataIn}</p>
+      </div>
+      <div class="ldp-io-box">
+        <div class="io-label out">📤 Data Out</div>
+        <p>${data.dataOut}</p>
+      </div>`;
+
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ---- Data Flow Trace Animation ---- */
+  let traceInterval = null;
+  let traceStep = 0;
+  const TRACE_STEPS = 7;
+
+  function animateTrace() {
+    traceStep = 0;
+    clearInterval(traceInterval);
+
+    // Reset all
+    document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
+
+    traceInterval = setInterval(() => {
+      document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
+      if (traceStep >= TRACE_STEPS) {
+        clearInterval(traceInterval);
+        // Light up all at end
+        document.querySelectorAll('.flow-step').forEach(el => el.classList.add('active'));
+        return;
+      }
+      const el = document.getElementById(`fs-${traceStep + 1}`);
+      if (el) {
+        el.classList.add('active');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      traceStep++;
+    }, 1500);
+  }
+
+  function resetTrace() {
+    clearInterval(traceInterval);
+    traceStep = 0;
+    document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
+  }
+
+  /* ---- Init ---- */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btn-trace-play').addEventListener('click', animateTrace);
+    document.getElementById('btn-trace-reset').addEventListener('click', resetTrace);
+
+    // Auto-init tabs (portal.js initTabs covers this, but belt-and-suspenders)
+    if (typeof initTabs === 'function') initTabs();
+
+    // Pre-select Layer 1 on load for immediate interest
+    setTimeout(() => selectLayer(1), 600);
+  });
+  </script>
+</body>
+</html>

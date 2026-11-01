@@ -1,0 +1,2164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assessment & Knowledge Checks | AIoT FDP Portal</title>
+  <meta name="description" content="Test your understanding of AIoT concepts with immediate feedback and scenario-based challenges." />
+
+  <!-- Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Portal Global Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/style.css" />
+
+  <!-- ═══════════════════════════════════════════════
+       PAGE-LEVEL STYLES
+       ═══════════════════════════════════════════════ -->
+  <style>
+    /* ── CSS Custom Properties (portal design system) ─────────────────── */
+    :root {
+      --navy:        #0a1628;
+      --navy-mid:    #112240;
+      --cyan:        #00bcd4;
+      --cyan-light:  #4dd0e1;
+      --amber:       #ff8f00;
+      --green:       #00c853;
+      --red:         #f44336;
+      --card-bg:     rgba(17, 34, 64, 0.85);
+      --border:      rgba(0, 188, 212, 0.2);
+      --text-primary:#e8f4ff;
+      --text-muted:  #90a4b7;
+      --radius:      12px;
+      --shadow:      0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ── Base Reset & Body ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--navy);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Page Hero ─────────────────────────────────────────────────────── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 50%, rgba(0,188,212,0.08) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,188,212,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .page-hero h1 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+
+    .page-hero .hero-subtitle {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ── Tab Row ───────────────────────────────────────────────────────── */
+    .tab-row {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 0;
+      background: rgba(10, 22, 40, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tab-row::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 130px;
+      padding: 1rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-muted);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+
+    .tab-btn:hover {
+      color: var(--cyan-light);
+      background: rgba(0,188,212,0.05);
+    }
+
+    .tab-btn.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+      background: rgba(0,188,212,0.08);
+    }
+
+    /* ── Main Content Container ────────────────────────────────────────── */
+    .assessment-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ── Tab Panels ────────────────────────────────────────────────────── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Quiz Intro ────────────────────────────────────────────────────── */
+    .quiz-intro {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .quiz-intro strong { color: var(--cyan-light); }
+
+    /* ── Quiz Question Card ────────────────────────────────────────────── */
+    .quiz-question {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s;
+    }
+
+    .quiz-question.answered-correct { border-color: rgba(0,200,83,0.5); }
+    .quiz-question.answered-wrong   { border-color: rgba(244,67,54,0.5); }
+
+    .question-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .question-number {
+      background: rgba(0,188,212,0.15);
+      color: var(--cyan);
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .quiz-question h3 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    /* ── Quiz Options ──────────────────────────────────────────────────── */
+    .quiz-options {
+      display: flex;
+      flex-column: column;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid rgba(0,188,212,0.15);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.93rem;
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.02);
+      position: relative;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--cyan);
+      background: rgba(0,188,212,0.07);
+    }
+
+    .quiz-option input[type="radio"] {
+      accent-color: var(--cyan);
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Post-submit states */
+    .quiz-option.correct {
+      background: rgba(0,200,83,0.12);
+      border-color: var(--green);
+      color: #b9f0ce;
+    }
+
+    .quiz-option.wrong {
+      background: rgba(244,67,54,0.10);
+      border-color: var(--red);
+      color: #f5a9a3;
+    }
+
+    .quiz-option.selected {
+      border-color: var(--cyan);
+      background: rgba(0,188,212,0.1);
+    }
+
+    .option-icon {
+      margin-left: auto;
+      font-size: 1rem;
+      display: none;
+    }
+
+    .quiz-option.correct .option-icon,
+    .quiz-option.wrong   .option-icon { display: inline; }
+
+    /* ── Question Feedback (per-question after submit) ─────────────────── */
+    .question-feedback {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+      display: none;
+    }
+
+    .question-feedback.show { display: block; }
+    .question-feedback.ok   { color: #7ae89a; }
+    .question-feedback.fail { color: #f5a9a3; }
+
+    /* ── Submit Button ─────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), var(--cyan-light));
+      color: var(--navy);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,188,212,0.4);
+    }
+
+    .btn-reset {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      margin-left: 1rem;
+    }
+
+    .btn-reset:hover {
+      background: rgba(255,255,255,0.12);
+      color: var(--text-primary);
+    }
+
+    .quiz-actions { margin-top: 1.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+
+    /* ── Result Box ────────────────────────────────────────────────────── */
+    .result-box {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-top: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .result-box.show { display: block; animation: fadeIn 0.4s ease; }
+
+    .score-badge {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      border: 4px solid;
+    }
+
+    .score-badge.excellent { color: var(--green);  border-color: var(--green);  background: rgba(0,200,83,0.12); }
+    .score-badge.good      { color: var(--amber);  border-color: var(--amber);  background: rgba(255,143,0,0.12); }
+    .score-badge.review    { color: var(--red);    border-color: var(--red);    background: rgba(244,67,54,0.12); }
+
+    .result-label {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .result-label.excellent { color: var(--green); }
+    .result-label.good      { color: var(--amber); }
+    .result-label.review    { color: var(--red); }
+
+    .result-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    /* ── Panel Section Headings ────────────────────────────────────────── */
+    .panel-heading {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+
+    .panel-subheading {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Scenario Cards ────────────────────────────────────────────────── */
+    .scenario-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .scenario-number {
+      display: inline-block;
+      background: rgba(0,188,212,0.15);
+      color: var(--cyan);
+      border-radius: 20px;
+      padding: 0.2rem 0.85rem;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .scenario-title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.85rem;
+    }
+
+    .scenario-description {
+      color: var(--text-muted);
+      font-size: 0.93rem;
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.03);
+      border-left: 3px solid var(--cyan);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .scenario-description .note {
+      display: block;
+      margin-top: 0.6rem;
+      color: var(--amber);
+      font-style: italic;
+      font-size: 0.88rem;
+    }
+
+    .scenario-question {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.85rem;
+    }
+
+    .scenario-explanation {
+      display: none;
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--cyan);
+      border-radius: 8px;
+      background: rgba(0,188,212,0.06);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .scenario-explanation.show { display: block; animation: fadeIn 0.3s ease; }
+    .scenario-explanation strong { color: var(--cyan-light); }
+
+    .btn-check {
+      background: rgba(0,188,212,0.12);
+      border: 1px solid var(--cyan);
+      color: var(--cyan-light);
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-check:hover { background: rgba(0,188,212,0.2); }
+    .btn-check:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── Progress Section (Final Tab) ──────────────────────────────────── */
+    .progress-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .progress-section h3 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--cyan-light);
+      margin-bottom: 0.75rem;
+    }
+
+    .modules-explored {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'Exo 2', sans-serif;
+      margin-bottom: 0.75rem;
+    }
+
+    .modules-explored span { color: var(--cyan); }
+
+    .progress-bar-container {
+      background: rgba(255,255,255,0.07);
+      border-radius: 100px;
+      height: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--cyan), var(--cyan-light));
+      transition: width 0.6s ease;
+    }
+
+    /* ── True / False Questions ────────────────────────────────────────── */
+    .tf-section { margin-bottom: 2rem; }
+
+    .tf-section h3 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--cyan-light);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tf-score {
+      margin-left: auto;
+      background: rgba(0,188,212,0.12);
+      color: var(--cyan);
+      border-radius: 20px;
+      padding: 0.2rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .tf-question {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .tf-question.correct-q { border-color: rgba(0,200,83,0.45); }
+    .tf-question.wrong-q   { border-color: rgba(244,67,54,0.45); }
+
+    .tf-statement {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      margin-bottom: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .tf-controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .tf-btn {
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tf-btn.true-btn  { background: rgba(0,200,83,0.1);   border-color: rgba(0,200,83,0.3);   color: #7ae89a; }
+    .tf-btn.false-btn { background: rgba(244,67,54,0.1);  border-color: rgba(244,67,54,0.3);  color: #f5a9a3; }
+
+    .tf-btn:hover { filter: brightness(1.2); transform: scale(1.03); }
+    .tf-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; filter: none; }
+    .tf-btn.selected-correct { background: rgba(0,200,83,0.25);  border-color: var(--green); }
+    .tf-btn.selected-wrong   { background: rgba(244,67,54,0.25); border-color: var(--red);   }
+
+    .tf-feedback {
+      display: none;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: 0.55rem 0.9rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+    }
+
+    .tf-feedback.show { display: block; }
+    .tf-result-icon { font-size: 1rem; margin-right: 0.35rem; }
+
+    /* ── Reflection Section ────────────────────────────────────────────── */
+    .reflection-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .reflection-section h3 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--cyan-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .reflection-prompt {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin-bottom: 1.1rem;
+    }
+
+    .reflection-textarea {
+      width: 100%;
+      min-height: 160px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.93rem;
+      line-height: 1.6;
+      resize: vertical;
+      transition: border-color 0.2s;
+      display: block;
+    }
+
+    .reflection-textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+
+    .word-count {
+      margin-top: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .word-count span { color: var(--cyan-light); font-weight: 600; }
+
+    .reflection-confirm {
+      display: none;
+      margin-top: 0.85rem;
+      padding: 0.65rem 1rem;
+      background: rgba(0,200,83,0.1);
+      border: 1px solid rgba(0,200,83,0.4);
+      border-radius: 8px;
+      color: #7ae89a;
+      font-size: 0.9rem;
+    }
+
+    .reflection-confirm.show { display: block; animation: fadeIn 0.3s ease; }
+
+    /* ── Completion Message ─────────────────────────────────────────────── */
+    .completion-message {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 2rem;
+      background: var(--card-bg);
+      border: 2px solid var(--cyan);
+      border-radius: var(--radius);
+      margin-top: 2rem;
+      box-shadow: 0 0 40px rgba(0,188,212,0.2), var(--shadow);
+      animation: glowPulse 3s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .completion-message.show { display: block; animation: completionReveal 0.6s ease forwards, glowPulse 3s ease-in-out 0.6s infinite; }
+
+    @keyframes completionReveal {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(0,188,212,0.2), var(--shadow); }
+      50%       { box-shadow: 0 0 60px rgba(0,188,212,0.4), 0 0 100px rgba(0,200,83,0.1), var(--shadow); }
+    }
+
+    .completion-message .trophy { font-size: 3.5rem; display: block; margin-bottom: 0.75rem; }
+    .completion-message h2 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .completion-message p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .completion-message .signature {
+      margin-top: 1.5rem;
+      font-style: italic;
+      color: var(--cyan-light);
+      font-size: 0.88rem;
+    }
+
+    /* Confetti particles */
+    .confetti-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .confetti-particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      opacity: 0;
+      animation: confettiFall 4s ease-in infinite;
+    }
+
+    @keyframes confettiFall {
+      0%   { opacity: 1; transform: translateY(-20px) rotate(0deg) scale(1); }
+      80%  { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(320px) rotate(720deg) scale(0.5); }
+    }
+
+    /* ── Divider ───────────────────────────────────────────────────────── */
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+
+    /* ── Responsive ────────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .tab-btn { font-size: 0.8rem; padding: 0.75rem 0.75rem; min-width: 100px; }
+      .assessment-body { padding: 1.5rem 1rem 3rem; }
+      .quiz-question { padding: 1.1rem; }
+      .scenario-card { padding: 1.25rem; }
+    }
+  </style>
+</head>
+
+<body data-portal="assessment">
+
+  <!-- ═══════════════════════════════════════════════════
+       NAV INJECTION TARGET — portal.js / nav.js
+       ═══════════════════════════════════════════════════ -->
+  <div id="portal-nav"></div>
+
+  <!-- ═══════════════════════════════════════════════════
+       1. PAGE HERO
+       ═══════════════════════════════════════════════════ -->
+  <section class="page-hero" aria-labelledby="page-title">
+    <h1 id="page-title">📝 Assessment &amp; Knowledge Checks</h1>
+    <p class="hero-subtitle">
+      Test your understanding of AIoT concepts — immediate feedback and scenario-based challenges
+    </p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       2. TAB NAVIGATION ROW
+       ═══════════════════════════════════════════════════ -->
+  <nav class="tab-row" role="tablist" aria-label="Assessment sections">
+    <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="quiz-day1"      id="tab-day1"      data-tab="quiz-day1">Day 1 Quiz</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="quiz-day2"      id="tab-day2"      data-tab="quiz-day2">Day 2 Quiz</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="quiz-scenarios" id="tab-scenarios" data-tab="quiz-scenarios">Scenario Questions</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="quiz-final"     id="tab-final"     data-tab="quiz-final">Final Check</button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+       ASSESSMENT BODY
+       ═══════════════════════════════════════════════════ -->
+  <main class="assessment-body">
+
+    <!-- ─────────────────────────────────────────────────
+         3. DAY 1 QUIZ TAB PANEL
+         ───────────────────────────────────────────────── -->
+    <section class="tab-panel active" id="quiz-day1" role="tabpanel" aria-labelledby="tab-day1">
+
+      <div class="quiz-intro">
+        <strong>Day 1 Quiz</strong> — 10 multiple-choice questions covering
+        <strong>Day 1 AIoT foundations</strong>. Select one answer per question, then
+        submit to see your score and per-question feedback.
+      </div>
+
+      <form id="form-day1" novalidate>
+
+        <!-- Q1 -->
+        <article class="quiz-question" id="qq1-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">1</span>
+            <h3>What does the acronym 'AIoT' stand for?</h3>
+          </div>
+          <div class="quiz-options" role="group" aria-labelledby="qq1-d1">
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q1d1" value="a" /> Artificial Intelligence of Things
+              <span class="option-icon" aria-hidden="true"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q1d1" value="b" /> Automated Internet of Things
+              <span class="option-icon" aria-hidden="true"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q1d1" value="c" /> Advanced IoT Framework
+              <span class="option-icon" aria-hidden="true"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q1d1" value="d" /> Algorithmic IoT Platform
+              <span class="option-icon" aria-hidden="true"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q2 -->
+        <article class="quiz-question" id="qq2-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">2</span>
+            <h3>Which communication protocol uses a publish-subscribe model with named topics?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q2d1" value="a" /> HTTP (HyperText Transfer Protocol)
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q2d1" value="b" /> FTP (File Transfer Protocol)
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q2d1" value="c" /> MQTT (Message Queuing Telemetry Transport)
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q2d1" value="d" /> SMTP (Simple Mail Transfer Protocol)
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q3 -->
+        <article class="quiz-question" id="qq3-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">3</span>
+            <h3>In the AIoT architecture, which layer is responsible for performing local (on-device) inference?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q3d1" value="a" /> Sensing / Perception Layer
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q3d1" value="b" /> Cloud / Remote Layer
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q3d1" value="c" /> Edge / Embedded Processing Layer
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q3d1" value="d" /> Application / Presentation Layer
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q4 -->
+        <article class="quiz-question" id="qq4-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">4</span>
+            <h3>The DHT22 sensor measures which two parameters?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q4d1" value="a" /> Light intensity and atmospheric pressure
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q4d1" value="b" /> Temperature and relative humidity
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q4d1" value="c" /> Gas concentration and vibration
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q4d1" value="d" /> Soil moisture and pH level
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q5 -->
+        <article class="quiz-question" id="qq5-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">5</span>
+            <h3>LoRaWAN is best suited for which type of IoT scenario?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q5d1" value="a" /> High-speed video streaming in data centres
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q5d1" value="b" /> Low-power, long-range sensor data transmission
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q5d1" value="c" /> Short-range, high-bandwidth home audio
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q5d1" value="d" /> Local network multiplayer gaming
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q6 -->
+        <article class="quiz-question" id="qq6-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">6</span>
+            <h3>Which algorithm is commonly used for unsupervised anomaly detection in sensor data?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q6d1" value="a" /> Linear Regression
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q6d1" value="b" /> K-Means Clustering
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q6d1" value="c" /> Isolation Forest
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q6d1" value="d" /> Naïve Bayes Classifier
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q7 -->
+        <article class="quiz-question" id="qq7-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">7</span>
+            <h3>Edge computing processes data:</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q7d1" value="a" /> Exclusively in remote data centres
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q7d1" value="b" /> Only within physical sensor hardware itself
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q7d1" value="c" /> Close to the data source, before sending to cloud
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q7d1" value="d" /> Only on the public internet backbone
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q8 -->
+        <article class="quiz-question" id="qq8-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">8</span>
+            <h3>In an MQTT system, the broker acts as:</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q8d1" value="a" /> A type of sensor node
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q8d1" value="b" /> An intermediary that routes messages between publishers and subscribers
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q8d1" value="c" /> A cloud-side database for storing time-series data
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q8d1" value="d" /> An embedded edge computer
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q9 -->
+        <article class="quiz-question" id="qq9-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">9</span>
+            <h3>Which feature makes the ESP32 microcontroller particularly suitable for IoT applications?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q9d1" value="a" /> Exceptionally large onboard RAM (&gt;1 GB)
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q9d1" value="b" /> Built-in Wi-Fi and Bluetooth connectivity
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q9d1" value="c" /> High voltage tolerance on all GPIO pins (5 V tolerant)
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q9d1" value="d" /> Dedicated GPU for graphics processing
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Q10 -->
+        <article class="quiz-question" id="qq10-d1">
+          <div class="question-header">
+            <span class="question-number" aria-hidden="true">10</span>
+            <h3>What is 'sensor fusion'?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q10d1" value="a" /> Physically heating multiple sensors to improve sensitivity
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q10d1" value="b" /> Combining data from multiple sensors to achieve better accuracy or richer information than any single sensor provides
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q10d1" value="c" /> Fusing multiple sensor hardware units into a single chip
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q10d1" value="d" /> Aggregating data from all sensors into a single cloud database
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Submit / Reset Actions -->
+        <div class="quiz-actions">
+          <button type="button" id="submit-day1" class="btn btn-primary">
+            ✔ Submit Day 1 Quiz
+          </button>
+          <button type="button" id="reset-day1" class="btn btn-reset" style="display:none;">
+            🔄 Try Again
+          </button>
+        </div>
+
+      </form><!-- /#form-day1 -->
+
+      <!-- Results Area -->
+      <div id="result-day1" class="result-box" role="alert" aria-live="polite">
+        <div class="score-badge" id="badge-day1"></div>
+        <p class="result-label" id="label-day1"></p>
+        <p class="result-subtitle" id="subtitle-day1"></p>
+      </div>
+
+    </section><!-- /#quiz-day1 -->
+
+
+    <!-- ─────────────────────────────────────────────────
+         4. DAY 2 QUIZ TAB PANEL
+         ───────────────────────────────────────────────── -->
+    <section class="tab-panel" id="quiz-day2" role="tabpanel" aria-labelledby="tab-day2">
+
+      <div class="quiz-intro">
+        <strong>Day 2 Quiz</strong> — 8 multiple-choice questions covering
+        <strong>smart system design, advanced AI, and responsible deployment</strong>.
+        Select one answer per question, then submit.
+      </div>
+
+      <form id="form-day2" novalidate>
+
+        <!-- D2 Q1 -->
+        <article class="quiz-question" id="qq1-d2">
+          <div class="question-header">
+            <span class="question-number">1</span>
+            <h3>In the Smart-System Design Methodology introduced in Day 2, what is the first and most critical step?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q1d2" value="a" /> Selecting the most suitable sensors for the application
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q1d2" value="b" /> Problem identification and requirements analysis
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q1d2" value="c" /> Deploying the system on production hardware
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q1d2" value="d" /> Designing the security architecture
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- D2 Q2 -->
+        <article class="quiz-question" id="qq2-d2">
+          <div class="question-header">
+            <span class="question-number">2</span>
+            <h3>A 'digital twin' is best described as:</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q2d2" value="a" /> Two physically identical sensor units for redundancy
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q2d2" value="b" /> A virtual, real-time replica of a physical system that mirrors its state and behaviour
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q2d2" value="c" /> A cloud-based backup storage system for IoT data
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q2d2" value="d" /> A dual-protocol communication stack for IoT devices
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- D2 Q3 -->
+        <article class="quiz-question" id="qq3-d2">
+          <div class="question-header">
+            <span class="question-number">3</span>
+            <h3>TinyML refers to:</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q3d2" value="a" /> Machine learning trained on very small datasets
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q3d2" value="b" /> Running ML model inference on resource-constrained, low-power embedded devices
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q3d2" value="c" /> Minimising cloud infrastructure usage for ML workloads
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q3d2" value="d" /> Arrays of miniaturised sensor elements
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- D2 Q4 -->
+        <article class="quiz-question" id="qq4-d2">
+          <div class="question-header">
+            <span class="question-number">4</span>
+            <h3>Which of the following is a NON-FUNCTIONAL requirement for an AIoT system?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q4d2" value="a" /> The system shall monitor indoor temperature in the classroom
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q4d2" value="b" /> The system shall process sensor readings and produce an alert within 100 milliseconds
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q4d2" value="c" /> The system shall use the MQTT protocol for messaging
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q4d2" value="d" /> Temperature sensors shall be DHT22 type
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- D2 Q5 -->
+        <article class="quiz-question" id="qq5-d2">
+          <div class="question-header">
+            <span class="question-number">5</span>
+            <h3>Data drift in a deployed ML model refers to:</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q5d2" value="a" /> Physical movement of data packets through the network
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q5d2" value="b" /> A change in the statistical properties of input data over time, causing model performance degradation
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q5d2" value="c" /> Physical drift in sensor calibration values over time
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q5d2" value="d" /> Drift in network packet timing causing latency
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- D2 Q6 -->
+        <article class="quiz-question" id="qq6-d2">
+          <div class="question-header">
+            <span class="question-number">6</span>
+            <h3>Federated Learning primarily addresses which concern?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q6d2" value="a" /> Centralising all training data in one secure server
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q6d2" value="b" /> Training ML models across distributed devices while keeping raw data local, protecting data privacy
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q6d2" value="c" /> Federating access credentials across multiple cloud accounts
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q6d2" value="d" /> Federating communication between heterogeneous sensor protocols
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- D2 Q7 -->
+        <article class="quiz-question" id="qq7-d2">
+          <div class="question-header">
+            <span class="question-number">7</span>
+            <h3>Which of the following best represents a responsible AI consideration for AIoT systems?</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q7d2" value="a" /> Maximising model accuracy regardless of computational cost or privacy implications
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q7d2" value="b" /> Ensuring the system is fair, transparent, privacy-preserving, and maintains appropriate human oversight
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q7d2" value="c" /> Always deploying the most complex and capable ML model available
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q7d2" value="d" /> Removing human oversight to allow fully autonomous AI decision-making
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- D2 Q8 -->
+        <article class="quiz-question" id="qq8-d2">
+          <div class="question-header">
+            <span class="question-number">8</span>
+            <h3>ETSI EN 303 645 is an international standard specifically addressing:</h3>
+          </div>
+          <div class="quiz-options" role="group">
+            <label class="quiz-option">
+              <input type="radio" name="q8d2" value="a" /> The MQTT v5.0 messaging protocol specification
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option" data-correct="true">
+              <input type="radio" name="q8d2" value="b" /> Cybersecurity requirements for consumer IoT devices
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q8d2" value="c" /> The LoRaWAN LPWAN protocol specification
+              <span class="option-icon"></span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q8d2" value="d" /> Cloud storage encryption requirements
+              <span class="option-icon"></span>
+            </label>
+          </div>
+          <p class="question-feedback" aria-live="polite"></p>
+        </article>
+
+        <!-- Submit Actions -->
+        <div class="quiz-actions">
+          <button type="button" id="submit-day2" class="btn btn-primary">
+            ✔ Submit Day 2 Quiz
+          </button>
+          <button type="button" id="reset-day2" class="btn btn-reset" style="display:none;">
+            🔄 Try Again
+          </button>
+        </div>
+
+      </form><!-- /#form-day2 -->
+
+      <!-- Results Area -->
+      <div id="result-day2" class="result-box" role="alert" aria-live="polite">
+        <div class="score-badge" id="badge-day2"></div>
+        <p class="result-label" id="label-day2"></p>
+        <p class="result-subtitle" id="subtitle-day2"></p>
+      </div>
+
+    </section><!-- /#quiz-day2 -->
+
+
+    <!-- ─────────────────────────────────────────────────
+         5. SCENARIO QUESTIONS TAB PANEL
+         ───────────────────────────────────────────────── -->
+    <section class="tab-panel" id="quiz-scenarios" role="tabpanel" aria-labelledby="tab-scenarios">
+
+      <h2 class="panel-heading">🧩 Architecture Scenario Challenges</h2>
+      <p class="panel-subheading">
+        Apply your knowledge to realistic AIoT design decisions. These questions test systems thinking.
+      </p>
+
+      <!-- Scenario 1 -->
+      <article class="scenario-card" aria-labelledby="sc1-title">
+        <span class="scenario-number">Scenario 1 — Healthcare</span>
+        <h3 class="scenario-title" id="sc1-title">Hospital Patient Monitoring System</h3>
+
+        <blockquote class="scenario-description">
+          You are a biomedical engineer designing an AIoT monitoring system for a
+          20-patient hospital ward. Patient heart rate, SpO₂, and respiratory rate
+          data must be processed with a maximum latency of 100 milliseconds per alert.
+          Internet connectivity to the hospital's main server is sometimes interrupted
+          for 5–10 minutes. Patient data is highly sensitive under healthcare privacy
+          regulations.
+          <span class="note">
+            ⚕️ Note: This scenario is for educational systems design discussion only —
+            not a specification for a real clinical system.
+          </span>
+        </blockquote>
+
+        <p class="scenario-question">Which data processing architecture is most appropriate?</p>
+
+        <div class="quiz-options" role="group" aria-labelledby="sc1-title">
+          <label class="quiz-option">
+            <input type="radio" name="sc1" value="a" />
+            Cloud-only processing — send all data to a remote cloud server for AI analysis
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option" data-correct="true">
+            <input type="radio" name="sc1" value="b" />
+            Edge processing on a local hospital server or gateway
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="sc1" value="c" />
+            Direct peer-to-peer between sensor devices with no central processing
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="sc1" value="d" />
+            No real-time processing — batch upload data nightly
+            <span class="option-icon"></span>
+          </label>
+        </div>
+
+        <div class="quiz-actions" style="margin-top:1.25rem;">
+          <button class="btn-check" data-scenario="sc1">Check Answer</button>
+        </div>
+
+        <div class="scenario-explanation" id="exp-sc1" role="alert">
+          <strong>✅ Correct answer: Edge processing on a local hospital server or gateway.</strong><br><br>
+          Edge processing on a local hospital server ensures the 100 ms latency requirement is met
+          regardless of internet connectivity. Latency to a remote cloud server over the internet
+          would typically exceed 100 ms, and cloud-only processing would fail entirely during
+          internet outages. Patient data remaining on-premises also satisfies privacy requirements
+          more directly. Cloud can receive aggregated or summary data when connectivity is available.
+        </div>
+      </article>
+
+      <!-- Scenario 2 -->
+      <article class="scenario-card" aria-labelledby="sc2-title">
+        <span class="scenario-number">Scenario 2 — Industrial</span>
+        <h3 class="scenario-title" id="sc2-title">Manufacturing Equipment Bearing Fault Detection</h3>
+
+        <blockquote class="scenario-description">
+          A manufacturing plant wants to detect equipment bearing failures before they
+          cause unplanned downtime. They have 3 months of vibration sensor data recorded
+          during normal operation. However, actual bearing fault events are rare — they
+          have only 5 labeled examples of fault-condition data from past incidents.
+        </blockquote>
+
+        <p class="scenario-question">Which machine learning approach is most appropriate given this data situation?</p>
+
+        <div class="quiz-options" role="group" aria-labelledby="sc2-title">
+          <label class="quiz-option">
+            <input type="radio" name="sc2" value="a" />
+            Supervised classification — train a Random Forest on normal vs. fault examples using the 5 fault samples
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option" data-correct="true">
+            <input type="radio" name="sc2" value="b" />
+            Anomaly detection / Isolation Forest — learn 'normal' behaviour and flag statistical deviations
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="sc2" value="c" />
+            K-Means clustering — cluster the combined data to find fault patterns
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="sc2" value="d" />
+            Simple threshold rules only — no ML, just vibration amplitude limits
+            <span class="option-icon"></span>
+          </label>
+        </div>
+
+        <div class="quiz-actions" style="margin-top:1.25rem;">
+          <button class="btn-check" data-scenario="sc2">Check Answer</button>
+        </div>
+
+        <div class="scenario-explanation" id="exp-sc2" role="alert">
+          <strong>✅ Correct answer: Anomaly detection / Isolation Forest.</strong><br><br>
+          With only 5 labeled fault examples, a supervised classifier will be severely imbalanced
+          and unreliable — it cannot generalise from 5 examples. Anomaly detection algorithms like
+          Isolation Forest learn what 'normal' looks like from the abundant normal data, and flag
+          readings that deviate significantly. This is the standard approach when fault data is scarce
+          (which is typical in real industrial settings). Simple threshold rules (option D) are valid
+          as a baseline but miss subtle multi-dimensional patterns that anomaly detection captures.
+          K-Means (option C) is unsupervised clustering and not well-suited to this binary-anomaly
+          detection task.
+        </div>
+      </article>
+
+      <!-- Scenario 3 -->
+      <article class="scenario-card" aria-labelledby="sc3-title">
+        <span class="scenario-number">Scenario 3 — Agriculture</span>
+        <h3 class="scenario-title" id="sc3-title">Smart Agriculture Soil Monitoring Network</h3>
+
+        <blockquote class="scenario-description">
+          A smart agriculture cooperative wants to deploy soil moisture sensors across
+          50 farm plots distributed across a 15-kilometre radius from the nearest town.
+          Each sensor should transmit soil moisture readings every 5 minutes. Farms have
+          no reliable mains power — sensors must run on small solar + battery power for
+          months. Cost is a significant constraint.
+        </blockquote>
+
+        <p class="scenario-question">Which wireless connectivity technology is most appropriate?</p>
+
+        <div class="quiz-options" role="group" aria-labelledby="sc3-title">
+          <label class="quiz-option">
+            <input type="radio" name="sc3" value="a" />
+            Wi-Fi (802.11) — standard campus/home wireless
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="sc3" value="b" />
+            Bluetooth Low Energy (BLE) — personal area network
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option" data-correct="true">
+            <input type="radio" name="sc3" value="c" />
+            LoRaWAN (Long Range Wide Area Network)
+            <span class="option-icon"></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="sc3" value="d" />
+            5G Cellular — for high-speed connectivity
+            <span class="option-icon"></span>
+          </label>
+        </div>
+
+        <div class="quiz-actions" style="margin-top:1.25rem;">
+          <button class="btn-check" data-scenario="sc3">Check Answer</button>
+        </div>
+
+        <div class="scenario-explanation" id="exp-sc3" role="alert">
+          <strong>✅ Correct answer: LoRaWAN (Long Range Wide Area Network).</strong><br><br>
+          LoRaWAN is specifically designed for this exact scenario: long range (up to 15 km in
+          rural open terrain with line-of-sight), very low power consumption (nodes can run on
+          battery/solar for months or years), low data rate (perfect for small sensor readings
+          every few minutes), and low infrastructure cost. Wi-Fi range is typically 50–100 m.
+          Bluetooth range is typically 10–30 m. 5G provides high speeds but has high power
+          consumption, high device cost, and requires cellular coverage which may be absent in
+          remote agricultural areas.
+        </div>
+      </article>
+
+    </section><!-- /#quiz-scenarios -->
+
+
+    <!-- ─────────────────────────────────────────────────
+         6. FINAL KNOWLEDGE CHECK TAB PANEL
+         ───────────────────────────────────────────────── -->
+    <section class="tab-panel" id="quiz-final" role="tabpanel" aria-labelledby="tab-final">
+
+      <h2 class="panel-heading">🎯 Final Knowledge Check</h2>
+      <div class="section-divider"></div>
+
+      <!-- Section A: Progress Summary -->
+      <div class="progress-section" aria-labelledby="progress-heading">
+        <h3 id="progress-heading">📊 Section A — Your Portal Progress</h3>
+        <p class="modules-explored" id="modules-count">
+          Modules Explored: <span id="completed-count">0</span> / <span id="total-count">8</span>
+        </p>
+        <div class="progress-bar-container" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="8" aria-label="Modules completed">
+          <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+        <p style="margin-top:0.6rem; font-size:0.85rem; color:var(--text-muted);">
+          Navigate portal modules to increase your completion count.
+        </p>
+      </div>
+
+      <!-- Section B: True/False -->
+      <div class="tf-section" aria-labelledby="tf-heading">
+        <h3 id="tf-heading">
+          ⚡ Section B — Rapid-Fire True / False
+          <span class="tf-score" id="tf-score-display" aria-live="polite">0 / 5 correct</span>
+        </h3>
+
+        <!-- TF1 -->
+        <div class="tf-question" id="tf1">
+          <p class="tf-statement">
+            <strong>Statement 1:</strong>
+            MQTT requires a persistent internet connection to function.
+          </p>
+          <div class="tf-controls">
+            <button class="tf-btn true-btn"  data-tf="tf1" data-val="true">True</button>
+            <button class="tf-btn false-btn" data-tf="tf1" data-val="false">False</button>
+          </div>
+          <p class="tf-feedback" id="fb-tf1" aria-live="polite">
+            <span class="tf-result-icon"></span>
+            MQTT works on local networks without internet access. A broker can run on a local Raspberry Pi.
+          </p>
+        </div>
+
+        <!-- TF2 -->
+        <div class="tf-question" id="tf2">
+          <p class="tf-statement">
+            <strong>Statement 2:</strong>
+            A rule-based threshold system always requires less data to implement than a trained ML model.
+          </p>
+          <div class="tf-controls">
+            <button class="tf-btn true-btn"  data-tf="tf2" data-val="true">True</button>
+            <button class="tf-btn false-btn" data-tf="tf2" data-val="false">False</button>
+          </div>
+          <p class="tf-feedback" id="fb-tf2" aria-live="polite">
+            <span class="tf-result-icon"></span>
+            Rule-based systems rely on expert-defined thresholds rather than training data. They can be deployed immediately but may be less adaptive than ML.
+          </p>
+        </div>
+
+        <!-- TF3 -->
+        <div class="tf-question" id="tf3">
+          <p class="tf-statement">
+            <strong>Statement 3:</strong>
+            Edge computing and cloud computing are mutually exclusive — you must choose one.
+          </p>
+          <div class="tf-controls">
+            <button class="tf-btn true-btn"  data-tf="tf3" data-val="true">True</button>
+            <button class="tf-btn false-btn" data-tf="tf3" data-val="false">False</button>
+          </div>
+          <p class="tf-feedback" id="fb-tf3" aria-live="polite">
+            <span class="tf-result-icon"></span>
+            Most AIoT systems use both: edge for low-latency local decisions, cloud for analytics, storage, and advanced processing.
+          </p>
+        </div>
+
+        <!-- TF4 -->
+        <div class="tf-question" id="tf4">
+          <p class="tf-statement">
+            <strong>Statement 4:</strong>
+            A DHT22 sensor can directly diagnose medical conditions without clinical validation.
+          </p>
+          <div class="tf-controls">
+            <button class="tf-btn true-btn"  data-tf="tf4" data-val="true">True</button>
+            <button class="tf-btn false-btn" data-tf="tf4" data-val="false">False</button>
+          </div>
+          <p class="tf-feedback" id="fb-tf4" aria-live="polite">
+            <span class="tf-result-icon"></span>
+            Sensors and systems must be clinically validated and regulatory approved for any medical use. Consumer sensors are not medical devices.
+          </p>
+        </div>
+
+        <!-- TF5 -->
+        <div class="tf-question" id="tf5">
+          <p class="tf-statement">
+            <strong>Statement 5:</strong>
+            LoRaWAN is designed for high-bandwidth, low-latency applications like video streaming.
+          </p>
+          <div class="tf-controls">
+            <button class="tf-btn true-btn"  data-tf="tf5" data-val="true">True</button>
+            <button class="tf-btn false-btn" data-tf="tf5" data-val="false">False</button>
+          </div>
+          <p class="tf-feedback" id="fb-tf5" aria-live="polite">
+            <span class="tf-result-icon"></span>
+            LoRaWAN is designed for low-bandwidth, low-power, long-range applications with low data rates. It is not suitable for video streaming.
+          </p>
+        </div>
+
+      </div><!-- /.tf-section -->
+
+      <!-- Section C: Reflection -->
+      <div class="section-divider"></div>
+
+      <div class="reflection-section" aria-labelledby="reflection-heading">
+        <h3 id="reflection-heading">💭 Section C — Design Reflection</h3>
+        <p class="reflection-prompt">
+          Based on what you have learned in this Faculty Development Programme, describe one AIoT
+          application system you would design or implement at your own institution. Consider:
+          <em>What problem would it solve? What sensors and connectivity would you use?
+          What AI/ML method (if any) is appropriate?</em>
+        </p>
+
+        <textarea
+          id="reflection-input"
+          class="reflection-textarea"
+          rows="6"
+          placeholder="Describe your AIoT application idea here..."
+          aria-label="Design reflection"
+          aria-describedby="word-count-label"
+        ></textarea>
+
+        <p class="word-count" id="word-count-label">
+          Word count: <span id="word-count">0</span>
+        </p>
+
+        <div class="quiz-actions">
+          <button type="button" id="save-reflection" class="btn btn-primary">
+            💾 Save Reflection
+          </button>
+        </div>
+
+        <div class="reflection-confirm" id="reflection-confirm" role="alert">
+          ✅ Reflection saved successfully. Thank you for your thoughtful response!
+        </div>
+      </div>
+
+      <!-- Section D: Completion Message -->
+      <div class="section-divider"></div>
+
+      <div class="completion-message" id="completion-message" role="status" aria-live="polite">
+        <!-- CSS confetti particles (generated by JS) -->
+        <div class="confetti-container" id="confetti-container" aria-hidden="true"></div>
+
+        <span class="trophy" aria-hidden="true">🎓</span>
+        <h2>Assessment Complete!</h2>
+        <p>You have completed the AIoT FDP Knowledge Assessment.</p>
+        <p>
+          <strong>Summary:</strong> Day 1 Quiz, Day 2 Quiz, Scenario Challenges, and Reflection saved.
+        </p>
+        <p>
+          Thank you for participating in the Faculty Development Programme on
+          <strong>Artificial Intelligence of Things</strong>.
+        </p>
+        <p class="signature">
+          — Prof. R. Anjit Raja &nbsp;|&nbsp; Crescent University &nbsp;|&nbsp; 3–4 November 2026
+        </p>
+      </div>
+
+    </section><!-- /#quiz-final -->
+
+  </main><!-- /.assessment-body -->
+
+
+  <!-- ═══════════════════════════════════════════════════
+       PORTAL SCRIPTS
+       ═══════════════════════════════════════════════════ -->
+  <script src="../assets/js/portal.js"></script>
+  <script src="../assets/js/nav.js"></script>
+
+  <!-- ═══════════════════════════════════════════════════
+       PAGE INLINE SCRIPT
+       ═══════════════════════════════════════════════════ -->
+  <script>
+  /* ====================================================
+     AIoT FDP — assessment.html inline logic
+     ====================================================
+     Sections:
+       1. Tab switching
+       2. Quiz engine (generic, handles Day 1 + Day 2)
+       3. Scenario "Check Answer" buttons
+       4. Final tab: progress, true/false, reflection, completion
+     ==================================================== */
+
+  (function () {
+    'use strict';
+
+    /* ──────────────────────────────────────────────────
+       1. TAB SWITCHING
+       ────────────────────────────────────────────────── */
+
+    const tabBtns  = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    /**
+     * Activate a named tab panel.
+     * @param {string} targetId  — the panel id to show
+     */
+    function activateTab(targetId) {
+      tabBtns.forEach(btn => {
+        const isTarget = btn.dataset.tab === targetId;
+        btn.classList.toggle('active', isTarget);
+        btn.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+      });
+
+      tabPanels.forEach(panel => {
+        panel.classList.toggle('active', panel.id === targetId);
+      });
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        activateTab(target);
+        window.location.hash = target.replace('quiz-', '');
+      });
+    });
+
+    /* Activate tab from URL hash on load */
+    (function initFromHash() {
+      const hash = window.location.hash.replace('#', '');
+      const validIds = ['day1', 'day2', 'scenarios', 'final'];
+      if (hash && validIds.includes(hash)) {
+        activateTab('quiz-' + hash);
+      }
+    })();
+
+    /* ──────────────────────────────────────────────────
+       2. QUIZ ENGINE
+       ────────────────────────────────────────────────── */
+
+    /**
+     * Apply visual feedback to all quiz-option labels inside a quiz-question.
+     * @param {HTMLElement} questionEl
+     * @param {boolean}     isCorrect
+     * @param {HTMLElement} selectedLabel
+     */
+    function styleOptions(questionEl, isCorrect, selectedLabel) {
+      const opts = questionEl.querySelectorAll('.quiz-option');
+      opts.forEach(label => {
+        const radio = label.querySelector('input[type="radio"]');
+        radio.disabled = true;
+
+        if (label.dataset.correct === 'true') {
+          label.classList.add('correct');
+          label.querySelector('.option-icon').textContent = '✅';
+        }
+        if (label === selectedLabel && !isCorrect) {
+          label.classList.add('wrong');
+          label.querySelector('.option-icon').textContent = '❌';
+        }
+      });
+
+      questionEl.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+    }
+
+    /**
+     * Generic quiz scorer.
+     * @param {HTMLFormElement} formEl
+     * @param {number}          total   — total number of questions
+     * @param {string}          namePrefix — e.g. 'q' + n + 'd1'
+     * @param {object}          resultEls — { box, badge, label, subtitle }
+     */
+    function scoreQuiz(formEl, total, namePrefix, resultEls) {
+      let score = 0;
+
+      for (let i = 1; i <= total; i++) {
+        const name   = namePrefix(i);
+        const checked = formEl.querySelector(`input[name="${name}"]:checked`);
+        const qEl    = formEl.querySelectorAll('.quiz-question')[i - 1];
+        const feedbackEl = qEl.querySelector('.question-feedback');
+
+        if (!checked) {
+          /* No answer selected — mark as wrong visually */
+          feedbackEl.textContent = '⚠ No answer selected.';
+          feedbackEl.className   = 'question-feedback show fail';
+          qEl.classList.add('answered-wrong');
+          continue;
+        }
+
+        const selectedLabel = checked.closest('label.quiz-option');
+        const isCorrect = selectedLabel.dataset.correct === 'true';
+
+        styleOptions(qEl, isCorrect, selectedLabel);
+
+        if (isCorrect) {
+          score++;
+          feedbackEl.textContent = '✅ Correct!';
+          feedbackEl.className   = 'question-feedback show ok';
+        } else {
+          const correctLabel = qEl.querySelector('label[data-correct="true"]');
+          const correctText  = correctLabel ? correctLabel.textContent.trim() : '';
+          feedbackEl.textContent = `❌ Incorrect. Correct answer: ${correctText}`;
+          feedbackEl.className   = 'question-feedback show fail';
+        }
+      }
+
+      return score;
+    }
+
+    /**
+     * Render result box.
+     * @param {number} score
+     * @param {number} total
+     * @param {object} els  — { box, badge, label, subtitle }
+     * @param {number} threshold — score at which 'good' vs 'excellent' splits (total * 0.8)
+     */
+    function renderResult(score, total, els, threshold) {
+      const pct = score / total;
+      let tier, tierLabel, tierSub;
+
+      if (pct >= (threshold || 0.8)) {
+        tier = 'excellent';
+        tierLabel = '🌟 Excellent!';
+        tierSub   = `Outstanding performance — ${score} out of ${total}. Strong AIoT foundations!`;
+      } else if (pct >= 0.6) {
+        tier = 'good';
+        tierLabel = '👍 Good Work!';
+        tierSub   = `Solid understanding — ${score} out of ${total}. A quick review of any gaps will reinforce your knowledge.`;
+      } else {
+        tier = 'review';
+        tierLabel = '📚 Review Needed';
+        tierSub   = `You scored ${score} out of ${total}. We recommend revisiting the related module content.`;
+      }
+
+      els.badge.textContent = `${score}/${total}`;
+      els.badge.className   = `score-badge ${tier}`;
+      els.label.textContent = tierLabel;
+      els.label.className   = `result-label ${tier}`;
+      els.subtitle.textContent = tierSub;
+      els.box.classList.add('show');
+      els.box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ── Day 1 Quiz ─────────────────────────────────────────────────────── */
+
+    const submitDay1 = document.getElementById('submit-day1');
+    const resetDay1  = document.getElementById('reset-day1');
+    const formDay1   = document.getElementById('form-day1');
+    const resultDay1 = {
+      box:      document.getElementById('result-day1'),
+      badge:    document.getElementById('badge-day1'),
+      label:    document.getElementById('label-day1'),
+      subtitle: document.getElementById('subtitle-day1')
+    };
+
+    submitDay1.addEventListener('click', () => {
+      const score = scoreQuiz(formDay1, 10, i => `q${i}d1`, resultDay1);
+      renderResult(score, 10, resultDay1, 0.8);
+      submitDay1.style.display = 'none';
+      resetDay1.style.display  = 'inline-flex';
+    });
+
+    resetDay1.addEventListener('click', () => {
+      formDay1.reset();
+      formDay1.querySelectorAll('.quiz-question').forEach(qEl => {
+        qEl.className = 'quiz-question';
+        qEl.querySelectorAll('.quiz-option').forEach(l => {
+          l.className = 'quiz-option';
+          l.querySelector('.option-icon').textContent = '';
+          l.querySelector('input').disabled = false;
+        });
+        const fb = qEl.querySelector('.question-feedback');
+        fb.className = 'question-feedback';
+        fb.textContent = '';
+      });
+      resultDay1.box.classList.remove('show');
+      submitDay1.style.display = 'inline-flex';
+      resetDay1.style.display  = 'none';
+    });
+
+    /* ── Day 2 Quiz ─────────────────────────────────────────────────────── */
+
+    const submitDay2 = document.getElementById('submit-day2');
+    const resetDay2  = document.getElementById('reset-day2');
+    const formDay2   = document.getElementById('form-day2');
+    const resultDay2 = {
+      box:      document.getElementById('result-day2'),
+      badge:    document.getElementById('badge-day2'),
+      label:    document.getElementById('label-day2'),
+      subtitle: document.getElementById('subtitle-day2')
+    };
+
+    submitDay2.addEventListener('click', () => {
+      const score = scoreQuiz(formDay2, 8, i => `q${i}d2`, resultDay2);
+      /* For 8 questions, excellent = 7 or 8 (≈87.5%), good = 5–6 */
+      renderResult(score, 8, resultDay2, 0.875);
+      submitDay2.style.display = 'none';
+      resetDay2.style.display  = 'inline-flex';
+    });
+
+    resetDay2.addEventListener('click', () => {
+      formDay2.reset();
+      formDay2.querySelectorAll('.quiz-question').forEach(qEl => {
+        qEl.className = 'quiz-question';
+        qEl.querySelectorAll('.quiz-option').forEach(l => {
+          l.className = 'quiz-option';
+          l.querySelector('.option-icon').textContent = '';
+          l.querySelector('input').disabled = false;
+        });
+        const fb = qEl.querySelector('.question-feedback');
+        fb.className = 'question-feedback';
+        fb.textContent = '';
+      });
+      resultDay2.box.classList.remove('show');
+      submitDay2.style.display = 'inline-flex';
+      resetDay2.style.display  = 'none';
+    });
+
+    /* ──────────────────────────────────────────────────
+       3. SCENARIO CHECK-ANSWER BUTTONS
+       ────────────────────────────────────────────────── */
+
+    document.querySelectorAll('.btn-check').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const scId   = btn.dataset.scenario;          // e.g. 'sc1'
+        const card   = btn.closest('.scenario-card');
+        const opts   = card.querySelectorAll('.quiz-option');
+        const expBox = document.getElementById('exp-' + scId);
+        const checked = card.querySelector(`input[name="${scId}"]:checked`);
+
+        if (!checked) {
+          btn.textContent = '⚠ Please select an option first';
+          setTimeout(() => { btn.textContent = 'Check Answer'; }, 2000);
+          return;
+        }
+
+        /* Style all options */
+        opts.forEach(label => {
+          label.querySelector('input').disabled = true;
+          if (label.dataset.correct === 'true') {
+            label.classList.add('correct');
+            label.querySelector('.option-icon').textContent = '✅';
+          }
+          if (label.querySelector('input') === checked && label.dataset.correct !== 'true') {
+            label.classList.add('wrong');
+            label.querySelector('.option-icon').textContent = '❌';
+          }
+        });
+
+        /* Show explanation */
+        expBox.classList.add('show');
+        btn.disabled = true;
+        btn.textContent = '✔ Answer Checked';
+      });
+    });
+
+    /* ──────────────────────────────────────────────────
+       4. FINAL TAB LOGIC
+       ────────────────────────────────────────────────── */
+
+    /* ── 4a. Progress counter (read localStorage 'aiot_completed') ──────── */
+
+    function updateProgress() {
+      const totalModules = 8;
+      let completed = 0;
+
+      try {
+        const raw = localStorage.getItem('aiot_completed');
+        if (raw) {
+          const arr = JSON.parse(raw);
+          completed = Array.isArray(arr) ? arr.length : 0;
+        }
+      } catch (e) { completed = 0; }
+
+      completed = Math.min(completed, totalModules);
+      const pct = Math.round((completed / totalModules) * 100);
+
+      document.getElementById('completed-count').textContent = completed;
+      document.getElementById('total-count').textContent     = totalModules;
+
+      const bar = document.getElementById('progress-bar');
+      bar.style.width = pct + '%';
+      bar.closest('[role="progressbar"]').setAttribute('aria-valuenow', completed);
+    }
+
+    /* Update progress when final tab becomes active */
+    document.getElementById('tab-final').addEventListener('click', updateProgress);
+    updateProgress(); /* also run on load */
+
+    /* ── 4b. True/False handlers ────────────────────────────────────────── */
+
+    /**
+     * Correct answers:
+     *   tf1 → false
+     *   tf2 → true
+     *   tf3 → false
+     *   tf4 → false
+     *   tf5 → false
+     */
+    const TF_ANSWERS = {
+      tf1: 'false',
+      tf2: 'true',
+      tf3: 'false',
+      tf4: 'false',
+      tf5: 'false'
+    };
+
+    let tfCorrectCount = 0;
+    let tfAnswered     = 0;
+
+    document.querySelectorAll('.tf-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tfId   = btn.dataset.tf;
+        const val    = btn.dataset.val;          // 'true' or 'false'
+        const qEl    = document.getElementById(tfId);
+        const fbEl   = document.getElementById('fb-' + tfId);
+        const allBtns = qEl.querySelectorAll('.tf-btn');
+        const correct = TF_ANSWERS[tfId];
+
+        /* Lock this question */
+        allBtns.forEach(b => { b.disabled = true; });
+
+        const isCorrect = val === correct;
+
+        if (isCorrect) {
+          btn.classList.add('selected-correct');
+          qEl.classList.add('correct-q');
+          fbEl.querySelector('.tf-result-icon').textContent = '✅ ';
+          tfCorrectCount++;
+        } else {
+          btn.classList.add('selected-wrong');
+          qEl.classList.add('wrong-q');
+          fbEl.querySelector('.tf-result-icon').textContent = '❌ ';
+          /* Highlight the correct button */
+          allBtns.forEach(b => {
+            if (b.dataset.val === correct) b.classList.add('selected-correct');
+          });
+        }
+
+        fbEl.classList.add('show');
+        tfAnswered++;
+
+        document.getElementById('tf-score-display').textContent =
+          `${tfCorrectCount} / 5 correct`;
+
+        checkCompletion();
+      });
+    });
+
+    /* ── 4c. Reflection textarea word count ─────────────────────────────── */
+
+    const reflectionEl   = document.getElementById('reflection-input');
+    const wordCountEl    = document.getElementById('word-count');
+    let   reflectionDone = false;
+
+    reflectionEl.addEventListener('input', () => {
+      const words = reflectionEl.value.trim()
+        ? reflectionEl.value.trim().split(/\s+/).length
+        : 0;
+      wordCountEl.textContent = words;
+    });
+
+    /* Restore saved reflection */
+    try {
+      const saved = localStorage.getItem('aiot_reflection');
+      if (saved) {
+        reflectionEl.value = saved;
+        reflectionEl.dispatchEvent(new Event('input'));
+      }
+    } catch (e) {}
+
+    /* Save Reflection */
+    document.getElementById('save-reflection').addEventListener('click', () => {
+      const text = reflectionEl.value.trim();
+      if (!text) {
+        reflectionEl.focus();
+        reflectionEl.style.borderColor = 'var(--red)';
+        setTimeout(() => { reflectionEl.style.borderColor = ''; }, 1500);
+        return;
+      }
+      try { localStorage.setItem('aiot_reflection', text); } catch (e) {}
+      document.getElementById('reflection-confirm').classList.add('show');
+      reflectionDone = true;
+      checkCompletion();
+    });
+
+    /* ── 4d. Completion checker ─────────────────────────────────────────── */
+
+    function checkCompletion() {
+      if (tfAnswered >= 5 && reflectionDone) {
+        showCompletion();
+      }
+    }
+
+    function showCompletion() {
+      const msgEl = document.getElementById('completion-message');
+      if (msgEl.classList.contains('show')) return; /* already shown */
+      msgEl.classList.add('show');
+      msgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      spawnConfetti();
+
+      /* Notify PortalState if available */
+      try {
+        if (typeof PortalState !== 'undefined' && PortalState.markComplete) {
+          PortalState.markComplete('assessment');
+        }
+      } catch (e) {}
+    }
+
+    /* ── 4e. Confetti animation ─────────────────────────────────────────── */
+
+    function spawnConfetti() {
+      const container = document.getElementById('confetti-container');
+      const colors    = [
+        'var(--cyan)', 'var(--cyan-light)', 'var(--green)',
+        'var(--amber)', '#a78bfa', '#f472b6'
+      ];
+      const count = 60;
+
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-particle';
+        el.style.cssText = [
+          `left: ${Math.random() * 100}%`,
+          `background: ${colors[Math.floor(Math.random() * colors.length)]}`,
+          `animation-delay: ${(Math.random() * 3).toFixed(2)}s`,
+          `animation-duration: ${(3 + Math.random() * 2).toFixed(2)}s`,
+          `width: ${6 + Math.random() * 6}px`,
+          `height: ${6 + Math.random() * 6}px`,
+          `border-radius: ${Math.random() > 0.5 ? '50%' : '2px'}`
+        ].join(';');
+        container.appendChild(el);
+      }
+    }
+
+    /* ── If reflection was already saved, mark as done ──────────────────── */
+    try {
+      if (localStorage.getItem('aiot_reflection')) {
+        reflectionDone = true;
+        document.getElementById('reflection-confirm').classList.add('show');
+      }
+    } catch (e) {}
+
+  })(); /* end IIFE */
+  </script>
+
+</body>
+</html>

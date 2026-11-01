@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources — AIoT FDP Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-portal="resources">
+
+<div class="page-hero">
+  <div class="tag">📂 Resource Library</div>
+  <h1>Resources &amp; References</h1>
+  <p>Standards, documentation, tools, datasets and reference materials for the AIoT FDP. All references are credible and publicly available. URLs and citations should be verified by the instructor before use.</p>
+  <div class="meta">
+    <span>Resource Person: <strong>Prof. R. Anjit Raja</strong></span>
+    <span>Crescent University · 3–4 November 2026</span>
+  </div>
+</div>
+
+<div class="alert alert-info" style="margin-bottom:1.5rem;">
+  <span class="alert-icon">ℹ️</span>
+  <span>All references below point to official documentation and credible sources. No URLs have been fabricated. Verify links are current before the FDP session. Do not use unverified third-party content as authoritative sources in training.</span>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="tab-standards">📏 Standards</button>
+  <button class="tab-btn" data-tab="tab-platforms">☁️ Platforms & Tools</button>
+  <button class="tab-btn" data-tab="tab-datasets">📊 Sample Datasets</button>
+  <button class="tab-btn" data-tab="tab-hardware">🔌 Hardware Refs</button>
+  <button class="tab-btn" data-tab="tab-reading">📚 Further Reading</button>
+</div>
+
+<!-- STANDARDS TAB -->
+<div class="tab-pane active" id="tab-standards">
+  <h2 class="section-title mb-2">Industry Standards &amp; Specifications</h2>
+  <p class="section-subtitle">Authoritative standards bodies and key specifications relevant to AIoT development.</p>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Standard / Specification</th>
+          <th>Issuing Body</th>
+          <th>Relevance to AIoT</th>
+          <th>Find at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono">MQTT v5.0</span></td>
+          <td>OASIS</td>
+          <td>IoT messaging protocol — publish/subscribe, QoS, retained messages</td>
+          <td><code>docs.oasis-open.org/mqtt</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">CoAP (RFC 7252)</span></td>
+          <td>IETF</td>
+          <td>Constrained Application Protocol for low-power IoT devices</td>
+          <td><code>datatracker.ietf.org/doc/rfc7252</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">ETSI EN 303 645</span></td>
+          <td>ETSI</td>
+          <td>Cybersecurity baseline for consumer IoT devices — 13 security provisions</td>
+          <td><code>etsi.org/deliver/etsi_en/303600_303699/303645</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">LoRaWAN Specification v1.1</span></td>
+          <td>LoRa Alliance</td>
+          <td>Low-power wide-area network MAC layer protocol for LPWAN IoT</td>
+          <td><code>lora-alliance.org/technical-specifications</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">OPC UA (IEC 62541)</span></td>
+          <td>OPC Foundation / IEC</td>
+          <td>Industrial IoT interoperability standard — machine-to-machine communication</td>
+          <td><code>opcfoundation.org/about/opc-technologies/opc-ua</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">NIST IR 8259A</span></td>
+          <td>NIST</td>
+          <td>IoT Device Cybersecurity Capability Core Baseline</td>
+          <td><code>nvlpubs.nist.gov/nistpubs/ir/2020/NIST.IR.8259A.pdf</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">IEEE 802.15.4</span></td>
+          <td>IEEE</td>
+          <td>PHY and MAC standard for Zigbee, Thread, 6LoWPAN</td>
+          <td><code>standards.ieee.org/ieee/802.15.4</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">ISO/IEC 30141</span></td>
+          <td>ISO / IEC</td>
+          <td>IoT Reference Architecture — conceptual and functional framework</td>
+          <td><code>iso.org/standard/65695.html</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">TensorFlow Lite Docs</span></td>
+          <td>Google (Apache 2.0)</td>
+          <td>Edge ML inference framework for microcontrollers and embedded Linux</td>
+          <td><code>tensorflow.org/lite</code></td>
+        </tr>
+        <tr>
+          <td><span class="mono">ONNX Runtime</span></td>
+          <td>Microsoft / Linux Foundation</td>
+          <td>Portable ML model inference runtime (FP32, INT8, FP16)</td>
+          <td><code>onnxruntime.ai</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PLATFORMS & TOOLS -->
+<div class="tab-pane" id="tab-platforms">
+  <h2 class="section-title mb-2">Platforms, Frameworks &amp; Tools</h2>
+  <div class="grid-auto">
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">🔴</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">Node-RED</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Flow-based visual programming for IoT data wiring and dashboard integration. Runs on Raspberry Pi, local PC, or cloud.</p>
+      <code>nodered.org</code>
+      <div class="alert alert-info" style="margin-top:0.75rem; font-size:0.78rem;">
+        <span>Free, open-source. Install: <code>npm install -g --unsafe-perm node-red</code></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">📊</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">Grafana</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Open-source data visualization and alerting dashboard. Works with InfluxDB, PostgreSQL, Prometheus and more.</p>
+      <code>grafana.com</code>
+    </div>
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">🟡</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">ThingsBoard</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Open-source IoT platform for device management, data collection, processing and visualization. Free Community Edition available.</p>
+      <code>thingsboard.io</code>
+    </div>
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">🦟</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">Eclipse Mosquitto</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Lightweight open-source MQTT broker. Easy to install on Raspberry Pi or PC. Supports TLS and authentication.</p>
+      <code>mosquitto.org</code>
+    </div>
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">🐍</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">scikit-learn</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Python ML library — Random Forest, SVM, Isolation Forest, K-Means and more. Excellent for sensor data analysis.</p>
+      <code>scikit-learn.org</code>
+    </div>
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">📉</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">InfluxDB</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Purpose-built time-series database for IoT telemetry. Pairs well with Grafana and Telegraf for sensor data pipelines.</p>
+      <code>influxdata.com</code>
+    </div>
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">🔵</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">Arduino IDE</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Official IDE for Arduino and ESP32 development. Add ESP32 board support via Boards Manager.</p>
+      <code>arduino.cc/en/software</code>
+    </div>
+
+    <div class="card">
+      <div style="font-size:1.8rem; margin-bottom:0.5rem;">🎯</div>
+      <h4 style="color:var(--white); margin-bottom:0.3rem;">MQTTX</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Cross-platform MQTT client for testing and debugging. GUI and CLI versions. Useful for FDP demonstrations.</p>
+      <code>mqttx.app</code>
+    </div>
+
+  </div>
+</div>
+
+<!-- DATASETS -->
+<div class="tab-pane" id="tab-datasets">
+  <h2 class="section-title mb-2">Sample &amp; Synthetic Datasets</h2>
+  <p class="section-subtitle">Publicly available datasets for sensor data analysis exercises. Always verify the license before use.</p>
+  <div class="alert alert-warning" style="margin-bottom:1rem;">
+    <span class="alert-icon">⚠️</span>
+    <span>Datasets listed here are from public repositories. The portal does not host or validate external datasets. Verify availability and licensing before use in training.</span>
+  </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table class="data-table">
+      <thead>
+        <tr><th>Dataset</th><th>Source</th><th>Description</th><th>Use Case</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UCI HAR Dataset</td>
+          <td>UCI ML Repository</td>
+          <td>Human Activity Recognition using smartphone accelerometer &amp; gyroscope</td>
+          <td>Classification, edge ML</td>
+        </tr>
+        <tr>
+          <td>Air Quality Dataset</td>
+          <td>UCI ML Repository</td>
+          <td>Hourly gas sensor responses in Italian city</td>
+          <td>Regression, anomaly detection</td>
+        </tr>
+        <tr>
+          <td>NASA CMAPSS</td>
+          <td>NASA / Prognostics Center</td>
+          <td>Turbofan engine degradation simulation data</td>
+          <td>Predictive maintenance</td>
+        </tr>
+        <tr>
+          <td>Household Power Consumption</td>
+          <td>UCI ML Repository</td>
+          <td>Individual household electric power consumption measurements</td>
+          <td>Energy anomaly detection</td>
+        </tr>
+        <tr>
+          <td>Soil Moisture Data</td>
+          <td>USDA National Resources Conservation Service</td>
+          <td>Soil moisture readings across multiple sites</td>
+          <td>Smart agriculture</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.75rem;">Search at: <code>archive.ics.uci.edu/ml</code> · <code>kaggle.com/datasets</code> · <code>data.nasa.gov</code></p>
+</div>
+
+<!-- HARDWARE REFS -->
+<div class="tab-pane" id="tab-hardware">
+  <h2 class="section-title mb-2">Hardware Reference Guides</h2>
+  <div class="alert alert-info" style="margin-bottom:1rem;">
+    <span class="alert-icon">🔌</span>
+    <span>Always consult the official manufacturer datasheet before connecting any sensor or module. Pay attention to voltage levels (3.3V vs 5V), current limits and GPIO pin compatibility. The portal does not provide hardware wiring advice that supersedes manufacturer documentation.</span>
+  </div>
+  <div class="grid-auto">
+    <div class="card">
+      <h4 style="color:var(--cyan); margin-bottom:0.5rem;">ESP32 DevKit</h4>
+      <ul style="font-size:0.82rem; color:var(--text-muted); line-height:1.9; padding-left:1rem;">
+        <li>240MHz dual-core Xtensa LX6</li>
+        <li>520KB SRAM, 4MB Flash</li>
+        <li>Wi-Fi 802.11 b/g/n + BLE 4.2</li>
+        <li>GPIO: 34 pins (3.3V logic)</li>
+        <li>ADC: 12-bit, DAC: 8-bit</li>
+        <li>UART, SPI, I2C, I2S, PWM</li>
+        <li>Datasheet: <code>espressif.com/en/products/socs/esp32</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="color:var(--cyan); margin-bottom:0.5rem;">DHT22 Sensor</h4>
+      <ul style="font-size:0.82rem; color:var(--text-muted); line-height:1.9; padding-left:1rem;">
+        <li>Temperature: -40 to 80°C (±0.5°C)</li>
+        <li>Humidity: 0–100%RH (±2–5%)</li>
+        <li>Supply voltage: 3.3–6V DC</li>
+        <li>Single-wire digital interface</li>
+        <li>4.7kΩ pull-up resistor on data line</li>
+        <li>Sample rate: max 0.5 Hz</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="color:var(--cyan); margin-bottom:0.5rem;">Raspberry Pi 4B</h4>
+      <ul style="font-size:0.82rem; color:var(--text-muted); line-height:1.9; padding-left:1rem;">
+        <li>1.8GHz quad-core Cortex-A72</li>
+        <li>2/4/8GB LPDDR4 RAM</li>
+        <li>Wi-Fi 802.11ac, BLE 5.0</li>
+        <li>GPIO: 40-pin (3.3V logic — do NOT connect 5V to GPIO)</li>
+        <li>USB 3.0, Gigabit Ethernet, 2× micro-HDMI</li>
+        <li>OS: Raspberry Pi OS (Debian-based)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="color:var(--cyan); margin-bottom:0.5rem;">HC-SR04 Ultrasonic</h4>
+      <ul style="font-size:0.82rem; color:var(--text-muted); line-height:1.9; padding-left:1rem;">
+        <li>Range: 2cm – 400cm</li>
+        <li>Supply: 5V (use voltage divider for 3.3V GPIO)</li>
+        <li>Trigger: 10µs pulse; Echo: proportional duration</li>
+        <li>Distance = (echo_time × 343 m/s) / 2</li>
+        <li>Beam angle: 15°</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- FURTHER READING -->
+<div class="tab-pane" id="tab-reading">
+  <h2 class="section-title mb-2">Further Reading &amp; Research Directions</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h4 style="color:var(--cyan); margin-bottom:0.75rem;">📘 Recommended Book Areas</h4>
+      <ul style="font-size:0.82rem; color:var(--text-muted); line-height:2.1; padding-left:1rem;">
+        <li><em>Internet of Things</em> — A. Whitmore, A. Agarwal, L. Da Xu (Springer)</li>
+        <li><em>Designing the Internet of Things</em> — A. McEwen, H. Cassimally (Wiley)</li>
+        <li><em>TinyML</em> — P. Warden, D. Situnayake (O'Reilly)</li>
+        <li><em>Hands-On Machine Learning</em> — A. Géron (O'Reilly)</li>
+        <li><em>Introduction to IoT</em> — Coursera / IEEE Learning Network</li>
+      </ul>
+      <p style="font-size:0.72rem; color:var(--text-muted); margin-top:0.5rem;">Titles are illustrative references. Verify edition, publisher and availability before recommending to participants.</p>
+    </div>
+    <div class="card">
+      <h4 style="color:var(--cyan); margin-bottom:0.75rem;">🔭 Emerging Research Directions</h4>
+      <div class="grid-2" style="gap:0.6rem;">
+        <div style="background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:0.75rem; font-size:0.8rem;">
+          <div style="font-weight:700; color:var(--white); margin-bottom:0.2rem;">TinyML</div>
+          <div style="color:var(--text-muted);">ML inference on microcontrollers (Cortex-M, ESP32). Deployed capability — see TF Lite Micro.</div>
+          <div style="margin-top:0.4rem;"><span style="background:rgba(0,200,83,0.15);color:var(--green);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">DEPLOYED</span></div>
+        </div>
+        <div style="background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:0.75rem; font-size:0.8rem;">
+          <div style="font-weight:700; color:var(--white); margin-bottom:0.2rem;">Federated Learning</div>
+          <div style="color:var(--text-muted);">Train models across distributed devices without sharing raw data. Active research area.</div>
+          <div style="margin-top:0.4rem;"><span style="background:rgba(255,143,0,0.15);color:var(--amber);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">RESEARCH</span></div>
+        </div>
+        <div style="background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:0.75rem; font-size:0.8rem;">
+          <div style="font-weight:700; color:var(--white); margin-bottom:0.2rem;">Digital Twins</div>
+          <div style="color:var(--text-muted);">Virtual replicas of physical systems for real-time monitoring and what-if simulation.</div>
+          <div style="margin-top:0.4rem;"><span style="background:rgba(0,200,83,0.15);color:var(--green);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">DEPLOYED</span></div>
+        </div>
+        <div style="background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:0.75rem; font-size:0.8rem;">
+          <div style="font-weight:700; color:var(--white); margin-bottom:0.2rem;">Generative AI + IoT</div>
+          <div style="color:var(--text-muted);">LLMs for natural language IoT control, anomaly explanation and report generation. Emerging.</div>
+          <div style="margin-top:0.4rem;"><span style="background:rgba(255,143,0,0.15);color:var(--amber);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">EMERGING</span></div>
+        </div>
+        <div style="background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:0.75rem; font-size:0.8rem;">
+          <div style="font-weight:700; color:var(--white); margin-bottom:0.2rem;">5G / 6G + IoT</div>
+          <div style="color:var(--text-muted);">Ultra-low latency, massive device density for industrial and vehicular IoT. 5G deployed, 6G research.</div>
+          <div style="margin-top:0.4rem;"><span style="background:rgba(255,143,0,0.15);color:var(--amber);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">5G DEPLOYED / 6G RESEARCH</span></div>
+        </div>
+        <div style="background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:0.75rem; font-size:0.8rem;">
+          <div style="font-weight:700; color:var(--white); margin-bottom:0.2rem;">Agentic AI Systems</div>
+          <div style="color:var(--text-muted);">Autonomous AI agents that monitor, decide and act across IoT pipelines. Very early research stage.</div>
+          <div style="margin-top:0.4rem;"><span style="background:rgba(255,143,0,0.15);color:var(--amber);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">EMERGING RESEARCH</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/portal.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => { initTabs && initTabs(); initAccordion && initAccordion(); });</script>
+</body>
+</html>

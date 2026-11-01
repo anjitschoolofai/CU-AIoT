@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Studio &amp; Design Canvas — AIoT FDP Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    /* Project Studio Custom Styles */
+    .canvas-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 1200px) {
+      .canvas-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .canvas-grid { grid-template-columns: 1fr; }
+    }
+
+    .canvas-block {
+      background: var(--card-bg);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 220px;
+    }
+    .canvas-block:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.15);
+    }
+    .canvas-block.filled {
+      border-style: solid;
+      border-color: rgba(0, 188, 212, 0.4);
+      background: rgba(17, 34, 64, 0.95);
+    }
+    .canvas-block-num {
+      position: absolute;
+      top: 0.85rem; right: 0.85rem;
+      font-size: 0.7rem; font-weight: 800;
+      color: var(--cyan); background: rgba(0, 188, 212, 0.12);
+      padding: 0.1rem 0.45rem; border-radius: 4px;
+    }
+    .canvas-block-title {
+      font-size: 0.92rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.35rem;
+      display: flex; align-items: center; gap: 0.45rem;
+    }
+    .canvas-block-desc {
+      font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.75rem;
+    }
+    .canvas-block-content {
+      font-size: 0.82rem; color: var(--text-primary);
+      flex: 1; line-height: 1.55; white-space: pre-wrap;
+      background: rgba(10, 22, 40, 0.4); border-radius: 6px;
+      padding: 0.65rem; border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 0.75rem;
+    }
+    .canvas-block-actions {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: auto; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Template Cards */
+    .template-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: all var(--transition);
+    }
+    .template-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    /* Validator Alert Box */
+    .validation-panel {
+      background: rgba(10, 22, 40, 0.85);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem 1.5rem; margin: 1.5rem 0;
+    }
+
+    /* Rubric Slider Box */
+    .rubric-item {
+      background: rgba(10, 22, 40, 0.6);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 1.25rem; margin-bottom: 1rem;
+    }
+    .rubric-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body data-portal="projects">
+
+<!-- ================= HERO ================= -->
+<div class="page-hero">
+  <div class="tag">🚀 Capstone Studio &amp; Design Canvas</div>
+  <h1>AIoT Project Studio &amp; Architecture Canvas</h1>
+  <p>
+    Formulate, validate, and evaluate complete end-to-end AIoT systems. Utilize the 8-block interactive architecture canvas, 
+    load production-grade faculty templates, perform automated sanity checks, and conduct rigorous peer reviews.
+  </p>
+  <div class="meta">
+    <span>👤 Resource Person: <strong>Prof. R. Anjit Raja</strong></span>
+    <span>🏫 <strong>Crescent University</strong></span>
+    <span>📅 <strong>4 November 2026 (Day 2 Capstone)</strong></span>
+    <span>🎯 <strong>8-Block System Stack &bull; 6 Turnkey Presets</strong></span>
+  </div>
+</div>
+
+<!-- ================= TOP TABS ================= -->
+<div class="tabs" style="margin-bottom:1.5rem;">
+  <button class="tab-btn active" data-tab="tab-canvas">🎨 8-Block AIoT Design Canvas</button>
+  <button class="tab-btn" data-tab="tab-templates">📂 Faculty Project Templates (6)</button>
+  <button class="tab-btn" data-tab="tab-rubric">⚖️ Peer Review &amp; Evaluation Rubric</button>
+  <button class="tab-btn" data-tab="tab-export">📄 Proposal Export &amp; Presentation</button>
+</div>
+
+<!-- ================= TAB 1: DESIGN CANVAS ================= -->
+<div class="tab-pane active" id="tab-canvas">
+
+  <!-- Action Bar -->
+  <div class="card mb-2" style="padding:1rem 1.25rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <span style="font-size:1.2rem; color:var(--cyan);">📋</span>
+        <div>
+          <h4 style="margin:0; font-size:0.95rem; color:var(--white);">Active Proposal: <span id="active-proposal-title" style="color:var(--cyan);">Smart Campus Environmental &amp; Occupancy System</span></h4>
+          <span style="font-size:0.75rem; color:var(--text-muted);" id="save-status">Saved locally &bull; Ready for review</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <button class="btn btn-sm btn-secondary" id="btn-validate-canvas">🔍 Run Architecture Validation</button>
+        <button class="btn btn-sm btn-outline" id="btn-save-canvas">💾 Save Proposal</button>
+        <button class="btn btn-sm btn-outline" id="btn-reset-canvas">🗑️ Clear Canvas</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Real-Time Architecture Validation Banner -->
+  <div class="validation-panel" id="validation-box">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+      <div style="display:flex; align-items:center; gap:0.6rem;">
+        <span style="font-size:1.2rem;" id="val-badge-icon">✅</span>
+        <h4 style="margin:0; font-size:0.95rem; color:var(--white);">AIoT Architecture Health &amp; Sanity Check</h4>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <span style="font-size:0.75rem; color:var(--text-muted);">Readiness Score:</span>
+        <span style="font-size:1rem; font-weight:800; color:var(--cyan); font-family:var(--font-mono);" id="val-score">95 / 100</span>
+      </div>
+    </div>
+    <div id="validation-messages" style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.82rem;">
+      <div style="color:#69f0ae;">✔ <strong>Layer Partitioning:</strong> Clean separation between MCU edge filtering and cloud storage.</div>
+      <div style="color:#69f0ae;">✔ <strong>Protocol Match:</strong> MQTT v5.0 with QoS 1 selected for intermittent WiFi reliability.</div>
+      <div style="color:#69f0ae;">✔ <strong>Latency Feasibility:</strong> 85 ms local relay actuation loop meets environmental control SLA.</div>
+    </div>
+  </div>
+
+  <!-- 8-Block Grid -->
+  <div class="canvas-grid" id="aiot-canvas-container">
+
+    <!-- Block 1 -->
+    <div class="canvas-block filled" data-block-id="1">
+      <span class="canvas-block-num">01</span>
+      <div class="canvas-block-title"><span>🎯</span> Problem &amp; Scope</div>
+      <div class="canvas-block-desc">Target domain, operational pain point, KPIs, and user stakeholders.</div>
+      <div class="canvas-block-content" id="block-1-text">Campus academic classrooms waste 38% electrical energy in lighting and HVAC during unoccupied periods. Goal: cut energy by &gt;30% while maintaining IAQ CO2 &lt; 900 ppm.</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="1">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+    <!-- Block 2 -->
+    <div class="canvas-block filled" data-block-id="2">
+      <span class="canvas-block-num">02</span>
+      <div class="canvas-block-title"><span>📡</span> Physical Sensing</div>
+      <div class="canvas-block-desc">Sensors, transducers, sample rates, electrical bus interfaces.</div>
+      <div class="canvas-block-content" id="block-2-text">Sensors: BME280 (Temp/Hum/Press) via I2C at 0.2 Hz; SCD30 (NDIR CO2) via I2C at 0.1 Hz; RCWL-0516 Doppler radar motion sensor via GPIO interrupt.</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="2">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+    <!-- Block 3 -->
+    <div class="canvas-block filled" data-block-id="3">
+      <span class="canvas-block-num">03</span>
+      <div class="canvas-block-title"><span>⚡</span> Edge Computing</div>
+      <div class="canvas-block-desc">MCU / Gateway, local filtering, feature extraction, TinyML model.</div>
+      <div class="canvas-block-content" id="block-3-text">Hardware: ESP32 dual-core Xtensa @ 240 MHz.
+Task: Rolling 5-minute statistical mean, debouncing radar triggers, running 8-rule occupancy inference engine locally.</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="3">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+    <!-- Block 4 -->
+    <div class="canvas-block filled" data-block-id="4">
+      <span class="canvas-block-num">04</span>
+      <div class="canvas-block-title"><span>🌐</span> Connectivity</div>
+      <div class="canvas-block-desc">Transmission protocol, payload schema, QoS, frequency, security.</div>
+      <div class="canvas-block-content" id="block-4-text">Transport: MQTT v5.0 over TLS 1.3 on campus WPA2-Enterprise Wi-Fi.
+Topic: campus/academic/hall-a/telemetry.
+QoS: 1 (at least once).
+Telemetry interval: 30s nominal, instant on motion change.</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="4">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+    <!-- Block 5 -->
+    <div class="canvas-block filled" data-block-id="5">
+      <span class="canvas-block-num">05</span>
+      <div class="canvas-block-title"><span>☁️</span> Cloud Platform</div>
+      <div class="canvas-block-desc">Message broker, time-series DB, telemetry ingestion pipeline.</div>
+      <div class="canvas-block-content" id="block-5-text">Broker: EMQX Enterprise cluster on campus private cloud.
+Storage: InfluxDB 2.7 time-series database.
+Ingestion rate: ~400 events/minute with automated 90-day downsampling retention.</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="5">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+    <!-- Block 6 -->
+    <div class="canvas-block filled" data-block-id="6">
+      <span class="canvas-block-num">06</span>
+      <div class="canvas-block-title"><span>🧠</span> AI / Analytics</div>
+      <div class="canvas-block-desc">Prediction models, anomaly detection, training pipeline, drift tracking.</div>
+      <div class="canvas-block-content" id="block-6-text">Models: Random Forest Regressor for 1-hour ahead indoor thermal prediction + Isolation Forest for HVAC sensor drift.
+Retrained weekly on aggregated campus dataset.</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="6">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+    <!-- Block 7 -->
+    <div class="canvas-block filled" data-block-id="7">
+      <span class="canvas-block-num">07</span>
+      <div class="canvas-block-title"><span>⚙️</span> Actuation &amp; UX</div>
+      <div class="canvas-block-desc">Relays, motor controls, web dashboard, mobile alerts, webhooks.</div>
+      <div class="canvas-block-content" id="block-7-text">Actuation: Solid-state relay bank (optocoupled) controlling classroom lighting circuits &amp; MODBUS thermostat setpoints.
+UX: Real-time Grafana dashboard + Telegram alert bot for facility managers.</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="7">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+    <!-- Block 8 -->
+    <div class="canvas-block filled" data-block-id="8">
+      <span class="canvas-block-num">08</span>
+      <div class="canvas-block-title"><span>🔒</span> Security &amp; Ethics</div>
+      <div class="canvas-block-desc">Device authentication, TLS encryption, data minimization, failsafe.</div>
+      <div class="canvas-block-content" id="block-8-text">Security: ESP32 secure boot + encrypted NVS credentials. 
+Failsafe: Physical manual wall override switches bypass relays if network/controller drops.
+Privacy: Radar &amp; CO2 used (NO optical cameras).</div>
+      <div class="canvas-block-actions">
+        <button class="btn btn-sm btn-outline edit-block-btn" data-block="8">✏️ Edit Block</button>
+        <span style="font-size:0.7rem; color:var(--green);">✓ Configured</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= TAB 2: FACULTY PROJECT TEMPLATES ================= -->
+<div class="tab-pane" id="tab-templates">
+  <div class="section-title mb-1">📂 Turnkey Faculty Project Templates <span class="accent">— 6 Verified Blueprints</span></div>
+  <p class="section-subtitle">
+    Select any template to inspect its architectural specifications and instantly load it into the active 8-block design canvas.
+  </p>
+
+  <div class="grid-3" style="gap:1.5rem; margin-bottom:2rem;">
+
+    <!-- Template 1 -->
+    <div class="template-card">
+      <div>
+        <div style="font-size:0.7rem; font-weight:700; color:var(--cyan); text-transform:uppercase; margin-bottom:0.4rem;">
+          🏫 Campus Automation
+        </div>
+        <h3 style="font-size:1.05rem; color:var(--white); margin-bottom:0.5rem;">Smart Campus Environmental &amp; Occupancy System</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+          Classroom IAQ monitoring with Doppler radar occupancy detection, automated lighting relays, and predictive HVAC thermal inertia control.
+        </p>
+        <div style="background:rgba(10,22,40,0.5); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-size:0.75rem; margin-bottom:1rem;">
+          <div><strong>Hardware:</strong> ESP32 + BME280 + SCD30 + SSR</div>
+          <div><strong>Protocol:</strong> MQTT v5.0 over TLS 1.3</div>
+          <div><strong>AI Model:</strong> Random Forest + Drift Autoencoder</div>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary load-template-btn" data-template-idx="0">📥 Load into Canvas</button>
+    </div>
+
+    <!-- Template 2 -->
+    <div class="template-card">
+      <div>
+        <div style="font-size:0.7rem; font-weight:700; color:#f48fb1; text-transform:uppercase; margin-bottom:0.4rem;">
+          💉 Cold-Chain Healthcare
+        </div>
+        <h3 style="font-size:1.05rem; color:var(--white); margin-bottom:0.5rem;">Vaccine Cold-Chain Thermal Anomaly Detector</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+          Continuous temperature logging in mobile vaccine coolers with battery telemetry, GSM cellular uplink, and sudden excursion anomaly alerts.
+        </p>
+        <div style="background:rgba(10,22,40,0.5); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-size:0.75rem; margin-bottom:1rem;">
+          <div><strong>Hardware:</strong> ESP32-C3 + DS18B20 + SIM7600 4G LTE</div>
+          <div><strong>Protocol:</strong> HTTPS REST + CoAP Fallback</div>
+          <div><strong>AI Model:</strong> 1D Temperature Slope Anomaly Isolation</div>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary load-template-btn" data-template-idx="1">📥 Load into Canvas</button>
+    </div>
+
+    <!-- Template 3 -->
+    <div class="template-card">
+      <div>
+        <div style="font-size:0.7rem; font-weight:700; color:#81c784; text-transform:uppercase; margin-bottom:0.4rem;">
+          🌾 Precision Agriculture
+        </div>
+        <h3 style="font-size:1.05rem; color:var(--white); margin-bottom:0.5rem;">Microclimate Soil Telemetry &amp; Drip Irrigation</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+          Solar-powered soil moisture probes across remote crop zones with LoRaWAN gateways, weather forecasts, and autonomous valve scheduling.
+        </p>
+        <div style="background:rgba(10,22,40,0.5); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-size:0.75rem; margin-bottom:1rem;">
+          <div><strong>Hardware:</strong> Atmega328P / ESP32 + LoRa SX1276 + 12V Solenoid</div>
+          <div><strong>Protocol:</strong> LoRaWAN Class A (865–867 MHz)</div>
+          <div><strong>AI Model:</strong> XGBoost Evapotranspiration Estimator</div>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary load-template-btn" data-template-idx="2">📥 Load into Canvas</button>
+    </div>
+
+    <!-- Template 4 -->
+    <div class="template-card">
+      <div>
+        <div style="font-size:0.7rem; font-weight:700; color:#ffb74d; text-transform:uppercase; margin-bottom:0.4rem;">
+          ⚙️ Industrial Maintenance
+        </div>
+        <h3 style="font-size:1.05rem; color:var(--white); margin-bottom:0.5rem;">Motor Vibration Predictive Maintenance (Edge FFT)</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+          High-frequency accelerometer on rotating induction motors performing on-device spectral analysis and early bearing flaw categorization.
+        </p>
+        <div style="background:rgba(10,22,40,0.5); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-size:0.75rem; margin-bottom:1rem;">
+          <div><strong>Hardware:</strong> STM32H7 / ESP32-S3 + ADXL355 3-Axis Accel</div>
+          <div><strong>Protocol:</strong> Industrial OPC UA + MQTT</div>
+          <div><strong>AI Model:</strong> 1024-pt FFT Spectral Energy + IsoForest</div>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary load-template-btn" data-template-idx="3">📥 Load into Canvas</button>
+    </div>
+
+    <!-- Template 5 -->
+    <div class="template-card">
+      <div>
+        <div style="font-size:0.7rem; font-weight:700; color:#64b5f6; text-transform:uppercase; margin-bottom:0.4rem;">
+          💧 Municipal Infrastructure
+        </div>
+        <h3 style="font-size:1.05rem; color:var(--white); margin-bottom:0.5rem;">Smart Water Quality &amp; Pipeline Leakage Detection</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+          Pressure transducers and ultrasonic water meters along urban supply mains detecting burst anomalies and transient pressure wave drops.
+        </p>
+        <div style="background:rgba(10,22,40,0.5); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-size:0.75rem; margin-bottom:1rem;">
+          <div><strong>Hardware:</strong> ESP32 + 4–20mA Pressure Transmitters + NB-IoT</div>
+          <div><strong>Protocol:</strong> CoAP / LwM2M over NB-IoT</div>
+          <div><strong>AI Model:</strong> Dynamic Hydraulic Transient Kalman Filter</div>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary load-template-btn" data-template-idx="4">📥 Load into Canvas</button>
+    </div>
+
+    <!-- Template 6 -->
+    <div class="template-card">
+      <div>
+        <div style="font-size:0.7rem; font-weight:700; color:#ba68c8; text-transform:uppercase; margin-bottom:0.4rem;">
+          🚦 Urban Edge Vision
+        </div>
+        <h3 style="font-size:1.05rem; color:var(--white); margin-bottom:0.5rem;">Intersection Traffic Optimizer with Edge Vision</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+          Embedded camera computing local vehicle and pedestrian queue lengths in real-time to adjust traffic signal green durations dynamically.
+        </p>
+        <div style="background:rgba(10,22,40,0.5); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-size:0.75rem; margin-bottom:1rem;">
+          <div><strong>Hardware:</strong> Raspberry Pi 5 / Jetson Orin Nano + CSI Cam</div>
+          <div><strong>Protocol:</strong> MQTT over Ethernet / 5G SA</div>
+          <div><strong>AI Model:</strong> YOLOv8-Nano (TensorRT Quantized)</div>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary load-template-btn" data-template-idx="5">📥 Load into Canvas</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= TAB 3: RUBRIC & PEER REVIEW ================= -->
+<div class="tab-pane" id="tab-rubric">
+  <div class="section-title mb-1">⚖️ Capstone Architecture Rubric &amp; Peer Evaluation</div>
+  <p class="section-subtitle">
+    Standardized 5-criteria grading framework for faculty project presentations and peer review (Day 2 Module 9).
+  </p>
+
+  <div class="card mb-3">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+      <div>
+        <h3 style="color:var(--white); font-size:1.1rem; margin-bottom:0.25rem;">Peer Review Evaluation Form</h3>
+        <span style="font-size:0.8rem; color:var(--text-muted);">Adjust the score sliders below to evaluate the proposal architecture.</span>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.72rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Overall Assessment Score</div>
+        <div style="font-size:1.8rem; font-weight:800; color:var(--cyan); font-family:var(--font-mono);" id="rubric-total-score">88 / 100</div>
+        <div id="rubric-grade-badge"><span class="badge" style="background:var(--green); font-size:0.75rem;">PROFICIENT (DISTINCTION)</span></div>
+      </div>
+    </div>
+
+    <!-- Criteria 1 -->
+    <div class="rubric-item">
+      <div class="rubric-header">
+        <div>
+          <strong style="color:var(--white); font-size:0.9rem;">1. Problem Definition &amp; Stakeholder Value</strong>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Clarity of pain point, quantifiable KPIs, and identification of user personas.</div>
+        </div>
+        <span class="mono" style="color:var(--cyan); font-weight:700;" id="score-val-1">18 / 20</span>
+      </div>
+      <input type="range" class="rubric-slider" data-criterion="1" min="0" max="20" value="18" style="width:100%; accent-color:var(--cyan);">
+    </div>
+
+    <!-- Criteria 2 -->
+    <div class="rubric-item">
+      <div class="rubric-header">
+        <div>
+          <strong style="color:var(--white); font-size:0.9rem;">2. 6-Layer Architecture &amp; Protocol Partitioning</strong>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Clear division of responsibilities across physical, edge, network, transport, cloud and app layers.</div>
+        </div>
+        <span class="mono" style="color:var(--cyan); font-weight:700;" id="score-val-2">17 / 20</span>
+      </div>
+      <input type="range" class="rubric-slider" data-criterion="2" min="0" max="20" value="17" style="width:100%; accent-color:var(--cyan);">
+    </div>
+
+    <!-- Criteria 3 -->
+    <div class="rubric-item">
+      <div class="rubric-header">
+        <div>
+          <strong style="color:var(--white); font-size:0.9rem;">3. AI / TinyML Model Selection &amp; Edge/Cloud Suitability</strong>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Justification of algorithm complexity relative to compute constraints and latency requirements.</div>
+        </div>
+        <span class="mono" style="color:var(--cyan); font-weight:700;" id="score-val-3">18 / 20</span>
+      </div>
+      <input type="range" class="rubric-slider" data-criterion="3" min="0" max="20" value="18" style="width:100%; accent-color:var(--cyan);">
+    </div>
+
+    <!-- Criteria 4 -->
+    <div class="rubric-item">
+      <div class="rubric-header">
+        <div>
+          <strong style="color:var(--white); font-size:0.9rem;">4. Security, Ethics, Governance &amp; Failsafe Design</strong>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Zero-trust network boundaries, encryption, data minimization, and mechanical/failsafe overrides.</div>
+        </div>
+        <span class="mono" style="color:var(--cyan); font-weight:700;" id="score-val-4">17 / 20</span>
+      </div>
+      <input type="range" class="rubric-slider" data-criterion="4" min="0" max="20" value="17" style="width:100%; accent-color:var(--cyan);">
+    </div>
+
+    <!-- Criteria 5 -->
+    <div class="rubric-item">
+      <div class="rubric-header">
+        <div>
+          <strong style="color:var(--white); font-size:0.9rem;">5. Implementation Feasibility, Cost &amp; Presentation Quality</strong>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Realistic bill of materials, power budget analysis, and clear schematic communication.</div>
+        </div>
+        <span class="mono" style="color:var(--cyan); font-weight:700;" id="score-val-5">18 / 20</span>
+      </div>
+      <input type="range" class="rubric-slider" data-criterion="5" min="0" max="20" value="18" style="width:100%; accent-color:var(--cyan);">
+    </div>
+
+    <div style="margin-top:1.25rem;">
+      <label style="font-size:0.8rem; font-weight:600; color:var(--cyan); display:block; margin-bottom:0.4rem;">
+        Qualitative Peer Review Feedback &amp; Recommendations:
+      </label>
+      <textarea id="peer-feedback-text" rows="3" style="width:100%; background:rgba(10,22,40,0.8); border:1px solid var(--border); border-radius:6px; color:var(--white); padding:0.75rem; font-size:0.82rem;" placeholder="Enter specific feedback on edge device selection, security hardening, or model trade-offs...">Strong architectural foundation. The local Doppler radar debouncing on ESP32 nicely preserves network bandwidth. Suggest adding watchdog timer specs for unmonitored classroom deployment.</textarea>
+      <div style="margin-top:0.75rem; display:flex; justify-content:flex-end;">
+        <button class="btn btn-sm btn-primary" onclick="showToast('Peer evaluation recorded successfully!', 'success');">
+          💾 Save Peer Evaluation
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TAB 4: EXPORT & PRESENTATION ================= -->
+<div class="tab-pane" id="tab-export">
+  <div class="section-title mb-1">📄 Export Proposal &amp; Classroom Submission</div>
+  <p class="section-subtitle">
+    Download the active design canvas as structured machine-readable JSON, formatted Markdown, or printable PDF.
+  </p>
+
+  <div class="grid-2" style="gap:1.5rem;">
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📦</span>
+        <h3>Export File Formats</h3>
+      </div>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:1rem;">
+        Export your complete 8-block AIoT proposal for classroom archival or submission to Google Classroom.
+      </p>
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        <button class="btn btn-primary" id="btn-export-json">
+          📥 Download Proposal as JSON (.json)
+        </button>
+        <button class="btn btn-secondary" id="btn-copy-markdown">
+          📋 Copy Formatted Markdown Proposal
+        </button>
+        <button class="btn btn-outline" onclick="window.print();">
+          🖨️ Print / Save as PDF Document
+        </button>
+      </div>
+
+      <div class="alert alert-info" style="margin-top:1.5rem; font-size:0.8rem;">
+        <span class="alert-icon">🏫</span>
+        <div>
+          <strong>Classroom Submission:</strong>
+          Google Classroom Code: <code>yfnftpdn</code> &bull; Resource Person: <strong>Prof. R. Anjit Raja</strong>.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">👁️</span>
+        <h3>Proposal Live Preview</h3>
+      </div>
+      <div style="background:#060d17; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:1rem; font-family:var(--font-mono); font-size:0.74rem; color:var(--off-white); max-height:360px; overflow-y:auto;" id="export-preview-box">
+        <!-- Rendered JSON / MD preview -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= EDIT BLOCK MODAL ================= -->
+<div id="edit-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.75); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div style="background:var(--navy-mid); border:1px solid var(--cyan); border-radius:var(--radius); width:90%; max-width:580px; padding:1.75rem; box-shadow:var(--shadow-glow);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+      <h3 style="color:var(--white); font-size:1.1rem; margin:0;" id="modal-block-title">Edit Canvas Block</h3>
+      <button style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;" id="modal-close-btn">&times;</button>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="font-size:0.78rem; color:var(--cyan); font-weight:700; display:block; margin-bottom:0.4rem;">
+        Block Content &amp; Architectural Specifications:
+      </label>
+      <textarea id="modal-block-textarea" rows="6" style="width:100%; background:rgba(10,22,40,0.85); border:1px solid var(--border); border-radius:6px; color:var(--white); padding:0.85rem; font-size:0.84rem; line-height:1.6;"></textarea>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <button class="btn btn-sm btn-outline" id="modal-cancel-btn">Cancel</button>
+      <button class="btn btn-sm btn-primary" id="modal-save-btn">💾 Save Block Changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/nav.js"></script>
+<script src="../assets/js/portal.js"></script>
+<script>
+/* =========================================================================
+   PROJECT STUDIO & 8-BLOCK CANVAS CONTROLLER
+   ========================================================================= */
+
+// Turnkey Faculty Project Templates
+const TEMPLATES = [
+  {
+    title: "Smart Campus Environmental & Occupancy System",
+    blocks: [
+      "Classroom academic facilities waste 38% electrical energy in lighting and HVAC during unoccupied periods. Goal: cut energy by >30% while maintaining IAQ CO2 < 900 ppm.",
+      "Sensors: BME280 (Temp/Hum/Press) via I2C at 0.2 Hz; SCD30 (NDIR CO2) via I2C at 0.1 Hz; RCWL-0516 Doppler radar motion sensor via GPIO interrupt.",
+      "Hardware: ESP32 dual-core Xtensa @ 240 MHz.\nTask: Rolling 5-minute statistical mean, debouncing radar triggers, running 8-rule occupancy inference engine locally.",
+      "Transport: MQTT v5.0 over TLS 1.3 on campus WPA2-Enterprise Wi-Fi.\nTopic: campus/academic/hall-a/telemetry.\nQoS: 1 (at least once).\nInterval: 30s nominal, instant on motion change.",
+      "Broker: EMQX Enterprise cluster on campus private cloud.\nStorage: InfluxDB 2.7 time-series database.\nIngestion rate: ~400 events/minute with automated 90-day downsampling retention.",
+      "Models: Random Forest Regressor for 1-hour ahead indoor thermal prediction + Isolation Forest for HVAC sensor drift.\nRetrained weekly on aggregated campus dataset.",
+      "Actuation: Solid-state relay bank (optocoupled) controlling classroom lighting circuits & MODBUS thermostat setpoints.\nUX: Real-time Grafana dashboard + Telegram alert bot.",
+      "Security: ESP32 secure boot + encrypted NVS credentials.\nFailsafe: Physical manual wall override switches bypass relays if network drops.\nPrivacy: Radar & CO2 used (NO optical cameras)."
+    ]
+  },
+  {
+    title: "Vaccine Cold-Chain Thermal Anomaly Detector",
+    blocks: [
+      "Biological vaccines and insulin spoil if stored outside 2°C–8°C envelope during transit. Pain point: unseen thermal excursions in rural mobile clinics.",
+      "Sensors: Waterproof DS18B20 digital thermal probe (±0.5°C accuracy) inside vaccine cooler; Hall effect lid open/close contact sensor; INA219 battery voltage monitor.",
+      "Hardware: ESP32-C3 RISC-V SoC with deep sleep power management (15 µA sleep current). Local buffer stores up to 10,000 readings if cellular drops.",
+      "Transport: Cellular LTE Cat-M1 via SIM7080G module sending lightweight JSON via MQTT-SN/HTTPS. Fallback to SMS alert if data channel fails.",
+      "Broker: AWS IoT Core with DynamoDB serverless cold store and Amazon Timestream for real-time tracking.",
+      "AI Model: 1D Thermal Gradient Change-Point Detection (CUSUM algorithm) running on MCU to distinguish normal brief door opens from cooling failure.",
+      "Actuation: Local piezo buzzer on cooler for delivery driver + automated SMS dispatch to logistics manager via Twilio webhook.",
+      "Security: TLS 1.3 with hardware-based elliptic curve private key (ATECC608A crypto co-processor). Tamper detection logs any enclosure breach."
+    ]
+  },
+  {
+    title: "Microclimate Soil Telemetry & Drip Irrigation",
+    blocks: [
+      "Agricultural water scarcity in arid regions; over-irrigation leaches soil nutrients. Goal: optimize soil moisture across 25 acres with solar LoRa nodes.",
+      "Sensors: Capacitive soil moisture sensors at 15cm and 45cm depths; solar irradiance sensor; ambient DHT22 temp/humidity.",
+      "Hardware: Low-power ATmega328P / ESP32 node operating from 2000 mAh LiFePO4 battery recharged by 2W solar panel.",
+      "Transport: LoRaWAN 865 MHz (India frequency band) Class A uplink every 15 minutes to solar-powered central gateway 2.5 km away.",
+      "Broker: The Things Network (TTN) routing payload via Webhook to ThingsBoard IoT platform.",
+      "AI Model: Penman-Monteith potential evapotranspiration regression combined with XGBoost crop water requirement classifier.",
+      "Actuation: 12V DC latching solenoid valves driven by MOSFET H-bridge powered by pump station solar battery.",
+      "Security: LoRaWAN 128-bit AES network and application session encryption keys securely provisioned via OTAA."
+    ]
+  },
+  {
+    title: "Motor Vibration Predictive Maintenance (Edge FFT)",
+    blocks: [
+      "Unscheduled electric motor breakdowns halt assembly lines causing expensive factory downtime. Goal: detect bearing fluting 100+ operating hours before seizure.",
+      "Sensors: ADXL355 triaxial industrial accelerometer (±2g to ±8g, low noise) mounted via magnetic stud to motor bearing housing.",
+      "Hardware: STM32H7 / ESP32-S3 executing 1024-point real-time FFT (Fast Fourier Transform) directly in internal SRAM at 10 kHz sampling.",
+      "Transport: Industrial Modbus TCP and MQTT over shielded Cat6 Ethernet; publish only harmonic peak frequencies and vibration RMS.",
+      "Broker: HiveMQ On-Premise Industrial Broker bridging to TimescaleDB for historical vibration spectral trending.",
+      "AI Model: Unsupervised Autoencoder anomaly detection model trained on baseline healthy motor spectra. Reconstruction error triggers alert.",
+      "Actuation: PLC interlock signal triggers warning beacon on shop floor and automatically schedules work order in CMMS (Maintenance software).",
+      "Security: Factory OT network isolation; zero internet exposure; air-gapped VLAN with strict firewall ACL rules."
+    ]
+  },
+  {
+    title: "Smart Water Quality & Pipeline Leakage Detection",
+    blocks: [
+      "Urban drinking water distribution networks lose 25% treated water to subterranean pipe ruptures and unauthorized tapping.",
+      "Sensors: 4–20mA piezoresistive water pressure transmitters installed at pipe distribution junctions; ultrasonic transit-time flow meters.",
+      "Hardware: Industrial IP68 submersible battery-powered RTU (Remote Terminal Unit) logging pressure pulses at 100 Hz during hydraulic shocks.",
+      "Transport: NB-IoT (Narrowband IoT) cellular uplink using CoAP / LwM2M protocols optimized for subterranean meter pits.",
+      "Broker: Private cellular APN terminating at municipal SCADA command server running PostgreSQL + PostGIS spatial database.",
+      "AI Model: Transient Pressure Wave Analysis (Kalman Filter) comparing arrival times across neighbor nodes to pinpoint pipe rupture within 15 meters.",
+      "Actuation: Motorized butterfly isolation valves close autonomously to isolate ruptured street sector before flooding occurs.",
+      "Security: Secure DTLS channel with SIM card IMEI binding to prevent unauthorized command injection."
+    ]
+  },
+  {
+    title: "Intersection Traffic Optimizer with Edge Vision",
+    blocks: [
+      "Fixed-time traffic signals cause unnecessary idling at empty cross-streets, increasing fuel burn and commuter delays during peak hours.",
+      "Sensors: High-definition IP camera streaming RTSP video feed overlooking 4-way intersection lanes.",
+      "Hardware: Edge AI computer (NVIDIA Jetson Orin Nano / Raspberry Pi 5 with Coral TPU) installed inside traffic controller cabinet.",
+      "Transport: Gigabit Ethernet to traffic signal controller cabinet; low-bandwidth 5G link to Central Traffic Management center.",
+      "Broker: Central MQTT broker receiving 10-second lane occupancy counts and average queue lengths.",
+      "AI Model: YOLOv8-Nano object detector detecting cars, buses, bikes, and pedestrians in real-time at 25 FPS.",
+      "Actuation: NTCIP interface directly modulating traffic signal controller phase timings (extending green light when queues exceed 8 vehicles).",
+      "Security: On-edge video processing: NO video recorded or uploaded to cloud. Only numeric lane count metadata transmitted."
+    ]
+  }
+];
+
+let activeBlockEdit = null;
+
+function initProjectStudio() {
+  setupCanvasEvents();
+  setupRubricEvents();
+  setupExportEvents();
+  updateExportPreview();
+  runArchitectureValidation();
+}
+
+function setupCanvasEvents() {
+  // Edit block buttons
+  document.querySelectorAll('.edit-block-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const blockNum = btn.dataset.block;
+      openEditModal(blockNum);
+    });
+  });
+
+  // Modal events
+  document.getElementById('modal-close-btn').addEventListener('click', closeEditModal);
+  document.getElementById('modal-cancel-btn').addEventListener('click', closeEditModal);
+  document.getElementById('modal-save-btn').addEventListener('click', saveModalBlock);
+
+  // Validate canvas button
+  document.getElementById('btn-validate-canvas').addEventListener('click', () => {
+    runArchitectureValidation();
+    showToast('Architecture validation complete! Review health check below.', 'success');
+  });
+
+  // Save proposal
+  document.getElementById('btn-save-canvas').addEventListener('click', () => {
+    saveProposalToStorage();
+    showToast('Proposal draft saved to local storage.', 'success');
+  });
+
+  // Reset canvas
+  document.getElementById('btn-reset-canvas').addEventListener('click', () => {
+    if (confirm('Clear canvas contents to start a blank custom proposal?')) {
+      for (let i = 1; i <= 8; i++) {
+        document.getElementById(`block-${i}-text`).textContent = `[Block ${i} unconfigured. Click 'Edit Block' to enter specifications.]`;
+      }
+      document.getElementById('active-proposal-title').textContent = "Custom User Proposal";
+      runArchitectureValidation();
+      updateExportPreview();
+      showToast('Canvas cleared.', 'info');
+    }
+  });
+
+  // Load template buttons
+  document.querySelectorAll('.load-template-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.templateIdx, 10);
+      loadTemplate(idx);
+    });
+  });
+}
+
+function openEditModal(blockNum) {
+  activeBlockEdit = blockNum;
+  const blockEl = document.querySelector(`.canvas-block[data-block-id="${blockNum}"]`);
+  const title = blockEl.querySelector('.canvas-block-title').textContent.trim();
+  const currentText = document.getElementById(`block-${blockNum}-text`).textContent.trim();
+
+  document.getElementById('modal-block-title').textContent = `Edit Block ${blockNum}: ${title}`;
+  document.getElementById('modal-block-textarea').value = currentText;
+  
+  const modal = document.getElementById('edit-modal');
+  modal.style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+  activeBlockEdit = null;
+}
+
+function saveModalBlock() {
+  if (!activeBlockEdit) return;
+  const newText = document.getElementById('modal-block-textarea').value.trim();
+  document.getElementById(`block-${activeBlockEdit}-text`).textContent = newText;
+  closeEditModal();
+  runArchitectureValidation();
+  updateExportPreview();
+  showToast(`Block ${activeBlockEdit} updated!`, 'success');
+}
+
+function loadTemplate(idx) {
+  const t = TEMPLATES[idx];
+  document.getElementById('active-proposal-title').textContent = t.title;
+
+  t.blocks.forEach((content, i) => {
+    document.getElementById(`block-${i + 1}-text`).textContent = content;
+  });
+
+  // Switch to canvas tab
+  document.querySelector('.tab-btn[data-tab="tab-canvas"]').click();
+  runArchitectureValidation();
+  updateExportPreview();
+  showToast(`Loaded preset template: "${t.title}"`, 'success');
+}
+
+function runArchitectureValidation() {
+  const b2 = document.getElementById('block-2-text').textContent.toLowerCase();
+  const b3 = document.getElementById('block-3-text').textContent.toLowerCase();
+  const b4 = document.getElementById('block-4-text').textContent.toLowerCase();
+  const b8 = document.getElementById('block-8-text').textContent.toLowerCase();
+
+  const msgs = [];
+  let score = 100;
+
+  // Check 1: Security & TLS
+  if (!b4.includes('tls') && !b4.includes('secure') && !b8.includes('tls') && !b8.includes('encrypt')) {
+    msgs.push(`<div style="color:#ffb74d;">⚠️ <strong>Security Caution:</strong> Unencrypted transport detected. Specify TLS 1.3 or AES encryption for field communications.</div>`);
+    score -= 15;
+  } else {
+    msgs.push(`<div style="color:#69f0ae;">✔ <strong>Security:</strong> Strong transport encryption or secure hardware enclave specified.</div>`);
+  }
+
+  // Check 2: Edge compute alignment
+  if (b2.includes('camera') || b2.includes('vision') || b2.includes('10 khz') || b2.includes('fft')) {
+    if (!b3.includes('esp32-s3') && !b3.includes('stm32h7') && !b3.includes('jetson') && !b3.includes('rpi') && !b3.includes('raspberry')) {
+      msgs.push(`<div style="color:#ff8a80;">❌ <strong>Compute Bottleneck:</strong> High-bandwidth sensing (vision/high-kHz vibration) requires high-performance MCU/SBC (e.g. Jetson, RPi5, or STM32H7).</div>`);
+      score -= 20;
+    } else {
+      msgs.push(`<div style="color:#69f0ae;">✔ <strong>Compute Scaling:</strong> High-bandwidth sensor adequately paired with capable edge accelerator.</div>`);
+    }
+  } else {
+    msgs.push(`<div style="color:#69f0ae;">✔ <strong>Compute Feasibility:</strong> Microcontroller selection matches telemetry processing load.</div>`);
+  }
+
+  // Check 3: Failsafe override
+  if (!b8.includes('override') && !b8.includes('failsafe') && !b8.includes('manual') && !b8.includes('watchdog')) {
+    msgs.push(`<div style="color:#ffb74d;">⚠️ <strong>Reliability:</strong> No manual override or hardware watchdog documented in security/governance block.</div>`);
+    score -= 10;
+  } else {
+    msgs.push(`<div style="color:#69f0ae;">✔ <strong>Reliability &amp; Failsafe:</strong> Hardware override and recovery logic documented.</div>`);
+  }
+
+  document.getElementById('val-score').textContent = `${Math.max(40, score)} / 100`;
+  document.getElementById('validation-messages').innerHTML = msgs.join('');
+}
+
+function setupRubricEvents() {
+  const sliders = document.querySelectorAll('.rubric-slider');
+  sliders.forEach(slider => {
+    slider.addEventListener('input', updateRubricScore);
+  });
+}
+
+function updateRubricScore() {
+  let total = 0;
+  for (let i = 1; i <= 5; i++) {
+    const val = parseInt(document.querySelector(`.rubric-slider[data-criterion="${i}"]`).value, 10);
+    document.getElementById(`score-val-${i}`).textContent = `${val} / 20`;
+    total += val;
+  }
+
+  document.getElementById('rubric-total-score').textContent = `${total} / 100`;
+  
+  const badgeWrap = document.getElementById('rubric-grade-badge');
+  if (total >= 90) {
+    badgeWrap.innerHTML = `<span class="badge" style="background:var(--green); font-size:0.75rem;">EXEMPLARY (HIGH DISTINCTION)</span>`;
+  } else if (total >= 75) {
+    badgeWrap.innerHTML = `<span class="badge" style="background:var(--cyan); font-size:0.75rem;">PROFICIENT (DISTINCTION)</span>`;
+  } else if (total >= 60) {
+    badgeWrap.innerHTML = `<span class="badge" style="background:var(--amber); font-size:0.75rem;">DEVELOPING (PASS STANDARD)</span>`;
+  } else {
+    badgeWrap.innerHTML = `<span class="badge" style="background:var(--red); font-size:0.75rem;">NEEDS REVISION</span>`;
+  }
+}
+
+function setupExportEvents() {
+  document.getElementById('btn-export-json').addEventListener('click', exportProposalJSON);
+  document.getElementById('btn-copy-markdown').addEventListener('click', copyProposalMarkdown);
+}
+
+function getProposalData() {
+  const title = document.getElementById('active-proposal-title').textContent;
+  const blocks = {};
+  for (let i = 1; i <= 8; i++) {
+    const blockEl = document.querySelector(`.canvas-block[data-block-id="${i}"]`);
+    const blockName = blockEl.querySelector('.canvas-block-title').textContent.trim();
+    const content = document.getElementById(`block-${i}-text`).textContent.trim();
+    blocks[`block_${i}`] = { name: blockName, content: content };
+  }
+  return {
+    proposal_title: title,
+    author: "FDP Participant",
+    resource_person: "Prof. R. Anjit Raja",
+    institution: "Crescent University",
+    event: "Two-Day AIoT Faculty Development Programme 2026",
+    exported_at: new Date().toISOString(),
+    canvas: blocks
+  };
+}
+
+function updateExportPreview() {
+  const data = getProposalData();
+  const box = document.getElementById('export-preview-box');
+  if (box) {
+    box.textContent = JSON.stringify(data, null, 2);
+  }
+}
+
+function exportProposalJSON() {
+  const data = getProposalData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `aiot-proposal-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Downloaded Proposal as JSON file!', 'success');
+}
+
+function copyProposalMarkdown() {
+  const data = getProposalData();
+  let md = `# AIoT Capstone System Proposal: ${data.proposal_title}\n\n`;
+  md += `**Institution:** Crescent University &bull; **FDP Resource Person:** Prof. R. Anjit Raja\n\n`;
+  md += `## 8-Block Architecture Specifications\n\n`;
+  
+  for (let i = 1; i <= 8; i++) {
+    const b = data.canvas[`block_${i}`];
+    md += `### ${b.name}\n${b.content}\n\n`;
+  }
+
+  navigator.clipboard.writeText(md).then(() => {
+    showToast('Proposal copied as Markdown to clipboard!', 'success');
+  });
+}
+
+function saveProposalToStorage() {
+  const data = getProposalData();
+  localStorage.setItem('aiot_active_proposal', JSON.stringify(data));
+}
+
+// Init on DOM load
+document.addEventListener('DOMContentLoaded', initProjectStudio);
+</script>
+
+</body>
+</html>

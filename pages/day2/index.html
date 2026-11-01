@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 2 — AIoT FDP Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .step-flow { display:flex; flex-direction:column; gap:0; }
+    .step-flow-item { display:flex; align-items:flex-start; gap:1rem; position:relative; }
+    .step-flow-item::before { content:''; position:absolute; left:18px; top:36px; bottom:-16px; width:2px; background:linear-gradient(to bottom,var(--cyan),transparent); }
+    .step-flow-item:last-child::before { display:none; }
+    .step-circ { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--blue)); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.78rem; color:var(--navy); flex-shrink:0; }
+    .step-body { flex:1; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; margin-bottom:1rem; }
+    .step-body h5 { font-size:0.88rem; color:var(--white); margin-bottom:0.2rem; }
+    .step-body p { font-size:0.78rem; color:var(--text-muted); }
+    .step-body .key-q { font-size:0.74rem; color:var(--cyan); font-style:italic; margin-top:0.3rem; }
+    .pattern-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem; transition:all 0.25s; }
+    .pattern-card:hover { border-color:var(--cyan); transform:translateY(-2px); }
+    .sector-badge { display:inline-block; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:0.15rem 0.5rem; border-radius:4px; margin-bottom:0.5rem; }
+    .canvas-wrapper { display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; margin:1rem 0; }
+    .canvas-cell { border:1.5px dashed var(--border); border-radius:8px; padding:0.9rem; min-height:90px; cursor:pointer; transition:all 0.25s; text-align:center; }
+    .canvas-cell:hover { border-color:var(--cyan); background:rgba(0,188,212,0.04); }
+    .canvas-cell.filled { border-style:solid; border-color:rgba(0,188,212,0.5); background:rgba(0,188,212,0.06); }
+    .canvas-cell .cc-label { font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.07em; }
+    .canvas-cell .cc-value { font-size:0.82rem; color:var(--cyan); margin-top:0.25rem; font-weight:600; }
+    .rubric-table td,rubric-table th { vertical-align:top; }
+    .tl-row { display:grid; grid-template-columns:100px 1fr; gap:1rem; align-items:start; margin-bottom:0.6rem; }
+    .tl-time-box { background:rgba(0,188,212,0.1); border:1px solid rgba(0,188,212,0.25); border-radius:6px; padding:0.3rem 0.5rem; text-align:center; font-size:0.72rem; font-weight:700; color:var(--cyan); }
+    .tl-content { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:0.6rem 1rem; font-size:0.82rem; color:var(--text-primary); }
+  </style>
+</head>
+<body data-portal="day2">
+
+<!-- ======== PAGE HERO ======== -->
+<div class="page-hero">
+  <div class="tag">📗 Day 2 · 4 November 2026</div>
+  <h1>Designing Smart Systems with AIoT</h1>
+  <p>Technologies, Applications and Use Cases — Building on Day 1's foundation to design, evaluate and present integrated smart-system solutions for real-world domains.</p>
+  <div class="meta">
+    <span>👤 <strong>Prof. R. Anjit Raja</strong></span>
+    <span>⏱️ <strong>~7 hours</strong></span>
+    <span>📚 <strong>9 Modules</strong></span>
+    <span>📅 <strong>4 November 2026</strong></span>
+  </div>
+</div>
+
+<!-- ======== CONTINUITY BRIDGE ======== -->
+<div class="card mb-3" style="border-color:rgba(0,188,212,0.35);">
+  <div class="card-header"><span class="icon">🌉</span><h3>Continuity Bridge — Building on Day 1</h3></div>
+  <div style="display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:1rem;">
+    <div style="background:rgba(21,101,192,0.12);border:1px solid rgba(21,101,192,0.3);border-radius:10px;padding:1.1rem;">
+      <div style="font-size:0.7rem;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;">3 November — Day 1</div>
+      <h4 style="color:var(--white);font-size:0.95rem;margin-bottom:0.4rem;">🏗️ Understand &amp; Experiment</h4>
+      <p style="font-size:0.78rem;color:var(--text-muted);">AIoT components, 6-layer architecture, sensor types, connectivity protocols, edge/cloud processing, AI/ML for sensor data, Smart Campus integrated demo</p>
+    </div>
+    <div style="text-align:center;font-size:2rem;color:var(--cyan);">→</div>
+    <div style="background:rgba(0,188,212,0.08);border:1px solid rgba(0,188,212,0.35);border-radius:10px;padding:1.1rem;">
+      <div style="font-size:0.7rem;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;">4 November — Day 2</div>
+      <h4 style="color:var(--white);font-size:0.95rem;margin-bottom:0.4rem;">🎨 Design &amp; Apply</h4>
+      <p style="font-size:0.78rem;color:var(--text-muted);">Design methodology, architecture patterns, sector studios, data/model engineering, security/ethics, capstone design challenge, peer review</p>
+    </div>
+  </div>
+  <div class="alert alert-info mt-2">
+    <span class="alert-icon">💡</span>
+    <span>The <strong>Smart Campus</strong> demonstration from Day 1 is revisited today as a complete design case study. Participants will extend it through requirements analysis, architecture decisions, validation planning and capstone design.</span>
+  </div>
+</div>
+
+<!-- ======== DAY 2 TIMELINE ======== -->
+<div class="card mb-3">
+  <div class="card-header"><span class="icon">🗓️</span><h3>Day 2 Delivery Schedule <small>4 November 2026 — Suggested timings</small></h3></div>
+  <div class="tl-row"><div class="tl-time-box">45 min</div><div class="tl-content">📐 Smart-System Design Methodology <span style="font-size:0.74rem;color:var(--text-muted);">— Module 1–2</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">60 min</div><div class="tl-content">🔁 Architecture Patterns &amp; Integration <span style="font-size:0.74rem;color:var(--text-muted);">— Module 3</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">90 min</div><div class="tl-content">🏭 Sector-Based Design Studios <span style="font-size:0.74rem;color:var(--text-muted);">— Module 4</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">60 min</div><div class="tl-content">📊 AIoT Data/Model Engineering &amp; Deployment <span style="font-size:0.74rem;color:var(--text-muted);">— Module 5–6</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">45 min</div><div class="tl-content">🔒 Security, Ethics &amp; Sustainability by Design <span style="font-size:0.74rem;color:var(--text-muted);">— Module 7</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">90 min</div><div class="tl-content">🚀 Capstone Design Challenge &amp; Peer Review <span style="font-size:0.74rem;color:var(--text-muted);">— Module 8–9</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">30 min</div><div class="tl-content">📝 Assessment, Reflection &amp; Next Steps <span style="font-size:0.74rem;color:var(--text-muted);">— Module 9 + Assessment page</span></div></div>
+</div>
+
+<!-- ======== MODULE CARDS ======== -->
+<div class="section-title mb-1">📗 Day 2 Modules <span class="accent">— 9 Modules</span></div>
+<p class="section-subtitle">Scroll down for full module content, or click to jump.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2rem;">
+  <div class="module-card" data-module-id="d2m1" onclick="document.getElementById('d2mod1').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 1</div><h4>From Components to Smart-System Design</h4><p>Requirements, stakeholders, system boundaries, trade-offs</p><span class="duration-tag">45 min</span></div>
+  <div class="module-card" data-module-id="d2m2" onclick="document.getElementById('d2mod2').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 2</div><h4>Smart-System Design Methodology</h4><p>14-step repeatable design workflow</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d2m3" onclick="document.getElementById('d2mod3').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 3</div><h4>Application Architecture Patterns</h4><p>8 patterns: monitoring, predictive, digital twins, and more</p><span class="duration-tag">60 min</span></div>
+  <div class="module-card" data-module-id="d2m4" onclick="document.getElementById('d2mod4').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 4</div><h4>Sector-Based Design Studios</h4><p>Healthcare, Agriculture, Industry, Energy, Smart Cities</p><span class="duration-tag">90 min</span></div>
+  <div class="module-card" data-module-id="d2m5" onclick="document.getElementById('d2mod5').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 5</div><h4>AIoT Data &amp; Model Engineering</h4><p>Schema, labelling, drift, feature selection, deployment</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d2m6" onclick="document.getElementById('d2mod6').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 6</div><h4>Integration, Reliability &amp; Deployment</h4><p>Provisioning, fault tolerance, observability, maintenance</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d2m7" onclick="document.getElementById('d2mod7').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 7</div><h4>Security, Ethics &amp; Sustainability</h4><p>Privacy, governance, responsible AI, environmental impact</p><span class="duration-tag">45 min</span></div>
+  <div class="module-card" data-module-id="d2m8" onclick="document.getElementById('d2mod8').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 8</div><h4>Capstone Smart-System Design Challenge</h4><p>Interactive design canvas — build your complete AIoT proposal</p><span class="duration-tag">60 min</span></div>
+  <div class="module-card" data-module-id="d2m9" onclick="document.getElementById('d2mod9').scrollIntoView({behavior:'smooth'})"><div style="font-size:0.65rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:0.3rem;">Module 9</div><h4>Presentation, Peer Review &amp; Assessment</h4><p>Architecture rubric, peer evaluation, reflection</p><span class="duration-tag">60 min</span></div>
+</div>
+
+<!-- ======== MOD 1 ======== -->
+<div id="d2mod1" class="card mb-3">
+  <div class="card-header"><span class="icon">📐</span><h3>Module 1 — From AIoT Components to Smart-System Design</h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE</span>
+  <div class="grid-2" style="gap:1rem;">
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.6rem;">Requirements Framework</h5>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <table class="data-table">
+          <thead><tr><th>Type</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Functional</strong></td><td>System shall monitor temperature every 5 min</td></tr>
+            <tr><td><strong>Non-Functional</strong></td><td>System shall respond to alerts within 500ms</td></tr>
+            <tr><td><strong>Constraint</strong></td><td>Must operate on battery &gt; 6 months</td></tr>
+            <tr><td><strong>Quality Attribute</strong></td><td>99.5% uptime; data loss &lt; 0.1%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.6rem;">Component Trade-Off Matrix</h5>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <table class="data-table">
+          <thead><tr><th>Platform</th><th>Cost</th><th>Compute</th><th>Power</th><th>Edge AI</th></tr></thead>
+          <tbody>
+            <tr><td>Arduino</td><td style="color:var(--green);">Low</td><td style="color:var(--red);">Low</td><td style="color:var(--green);">Low</td><td style="color:var(--red);">No</td></tr>
+            <tr><td>ESP32</td><td style="color:var(--green);">Low</td><td style="color:var(--amber);">Medium</td><td style="color:var(--amber);">Medium</td><td style="color:var(--amber);">TinyML</td></tr>
+            <tr><td>RPi 4</td><td style="color:var(--amber);">Medium</td><td style="color:var(--green);">High</td><td style="color:var(--red);">High</td><td style="color:var(--green);">Yes</td></tr>
+            <tr><td>Jetson</td><td style="color:var(--red);">High</td><td style="color:var(--green);">Very High</td><td style="color:var(--red);">High</td><td style="color:var(--green);">GPU ML</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MOD 2 — METHODOLOGY ======== -->
+<div id="d2mod2" class="card mb-3">
+  <div class="card-header"><span class="icon">🔄</span><h3>Module 2 — Smart-System Design Methodology <small>A 14-step repeatable workflow</small></h3></div>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Apply this workflow to any AIoT design problem — from a simple classroom monitor to a complex industrial predictive maintenance system.</p>
+  <div class="step-flow">
+    <div class="step-flow-item"><div class="step-circ">1</div><div class="step-body"><h5>Problem Identification</h5><p>Define the pain point. Quantify impact. Confirm that AIoT adds value over simpler solutions.</p><div class="key-q">❓ What specifically is the problem? Who is affected? What is the cost of inaction?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">2</div><div class="step-body"><h5>Requirements Analysis</h5><p>Gather functional and non-functional requirements. Identify stakeholders, constraints and success criteria.</p><div class="key-q">❓ What must the system do? How fast/reliable/private/cheap must it be?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">3</div><div class="step-body"><h5>Sensing Strategy</h5><p>Identify what physical quantities to measure, appropriate sensor types, placement, sampling rates and calibration needs.</p><div class="key-q">❓ What physical phenomenon indicates the problem? Which sensor measures it reliably?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">4</div><div class="step-body"><h5>Device &amp; Hardware Selection</h5><p>Choose microcontroller/SBC based on compute, power, connectivity, cost and AI requirements.</p><div class="key-q">❓ Does inference need to run locally? What is the power budget? Is battery needed?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">5</div><div class="step-body"><h5>Connectivity Planning</h5><p>Select wireless/wired protocol based on range, data rate, power, topology and infrastructure availability.</p><div class="key-q">❓ How far is the gateway? How often does data need to arrive? Is internet available?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">6</div><div class="step-body"><h5>Edge/Cloud Partitioning</h5><p>Decide which processing happens at the edge vs cloud based on latency, privacy, bandwidth and compute needs.</p><div class="key-q">❓ What decisions need to be made instantly? What data must not leave the device?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">7</div><div class="step-body"><h5>Data Pipeline Design</h5><p>Define data schema, ingestion path, storage format, time-series structure and data quality checks.</p><div class="key-q">❓ What is the JSON/CSV schema? Where is it stored? How are missing values handled?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">8</div><div class="step-body"><h5>AI/ML Method Selection</h5><p>Choose the appropriate algorithm based on labelled data availability, problem type, and required explainability.</p><div class="key-q">❓ Is this classification, regression, or anomaly detection? Do we have labeled fault data?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">9</div><div class="step-body"><h5>Decision &amp; Action Design</h5><p>Define what the system does with predictions — alerts, actuator commands, reports. Include safety conditions.</p><div class="key-q">❓ What happens when the model detects an anomaly? Who is notified? What is the fail-safe?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">10</div><div class="step-body"><h5>User Interface Design</h5><p>Design dashboards, mobile alerts, and access control for different user roles (operator, manager, admin).</p><div class="key-q">❓ Who views the dashboard? What do they need to see immediately vs on demand?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">11</div><div class="step-body"><h5>Security Planning</h5><p>Define authentication, encryption, network segmentation, data access controls and update mechanisms.</p><div class="key-q">❓ Who can access device data? How are credentials managed? How is firmware updated securely?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">12</div><div class="step-body"><h5>Testing Strategy</h5><p>Plan unit tests (sensor reading), integration tests (end-to-end pipeline), and validation tests (model performance).</p><div class="key-q">❓ What constitutes a passing test? How is model accuracy validated on new data?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">13</div><div class="step-body"><h5>Deployment Planning</h5><p>Plan device provisioning, physical installation, initial configuration and rollout sequence.</p><div class="key-q">❓ How are 50 devices configured consistently? What is the rollback plan if deployment fails?</div></div></div>
+    <div class="step-flow-item"><div class="step-circ">14</div><div class="step-body"><h5>Monitoring &amp; Maintenance</h5><p>Define ongoing observability: model drift detection, sensor health checks, firmware update schedule and data retention.</p><div class="key-q">❓ How do we know the model is still accurate 6 months later? What triggers recalibration?</div></div></div>
+  </div>
+</div>
+
+<!-- ======== MOD 3 — PATTERNS ======== -->
+<div id="d2mod3" class="card mb-3">
+  <div class="card-header"><span class="icon">🔁</span><h3>Module 3 — Application Architecture Patterns</h3></div>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Each pattern is a proven solution template for a class of AIoT design problems. Understanding patterns helps you select and combine the right approach for a new use case.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;">
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">📊</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Monitoring &amp; Alerting</h5><p style="font-size:0.78rem;color:var(--text-muted);">Continuous sensor reading + threshold alerts. Simplest and most common pattern. <strong>When to use:</strong> Environmental monitoring, equipment health checks. <strong>Limitation:</strong> High false-alarm rate if thresholds are fixed.</p></div>
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">🔄</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Closed-Loop Control</h5><p style="font-size:0.78rem;color:var(--text-muted);">Sensor reading → decision → actuator command in a continuous loop. <strong>When to use:</strong> HVAC, irrigation pumps, industrial process control. <strong>Limitation:</strong> Requires safety fail-safes; dangerous if actuator misbehaves.</p></div>
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">🔮</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Predictive Systems</h5><p style="font-size:0.78rem;color:var(--text-muted);">ML model predicts future states (failure, demand, yield). <strong>When to use:</strong> Predictive maintenance, energy forecasting, crop yield. <strong>Limitation:</strong> Requires sufficient labelled historical data; accuracy degrades with data drift.</p></div>
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">🌐</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Distributed Sensing</h5><p style="font-size:0.78rem;color:var(--text-muted);">Many sensor nodes feeding a centralised aggregator. <strong>When to use:</strong> Wide-area monitoring (smart city, precision agriculture). <strong>Limitation:</strong> Network reliability, time synchronisation, data fusion complexity.</p></div>
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">⚖️</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Edge-Cloud Collaboration</h5><p style="font-size:0.78rem;color:var(--text-muted);">Edge handles latency-sensitive inference; cloud handles ML training, storage, dashboards. <strong>When to use:</strong> Most production AIoT systems. <strong>Limitation:</strong> Adds architectural complexity; synchronisation needed.</p></div>
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">🪞</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Digital Twins</h5><p style="font-size:0.78rem;color:var(--text-muted);">A virtual replica of a physical system updated in real-time by sensor data. <strong>When to use:</strong> Industrial assets, buildings, supply chains. <strong>Limitation:</strong> Significant engineering effort to build and maintain the model fidelity.</p></div>
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">🧑‍💼</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Human-in-the-Loop</h5><p style="font-size:0.78rem;color:var(--text-muted);">AI recommends; human approves before action. Critical for safety-sensitive decisions. <strong>When to use:</strong> Medical alerts, critical infrastructure, financial decisions. <strong>Limitation:</strong> Slower response; human may be unavailable.</p></div>
+    <div class="pattern-card"><div style="font-size:1.5rem;margin-bottom:0.4rem;">🤝</div><h5 style="color:var(--white);margin-bottom:0.3rem;">Federated Learning</h5><p style="font-size:0.78rem;color:var(--text-muted);">Model is trained across many devices without sharing raw data. <strong>When to use:</strong> Privacy-sensitive distributed sensing (healthcare, personal devices). <strong>Limitation:</strong> Active research area; complex to implement reliably in production. <span style="color:var(--amber);font-size:0.72rem;font-weight:700;">⚠️ EMERGING RESEARCH</span></p></div>
+  </div>
+</div>
+
+<!-- ======== MOD 4 — SECTOR STUDIOS ======== -->
+<div id="d2mod4" class="card mb-3">
+  <div class="card-header"><span class="icon">🏭</span><h3>Module 4 — Sector-Based Design Studios</h3></div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="sec-health">🏥 Healthcare</button>
+    <button class="tab-btn" data-tab="sec-agri">🌾 Agriculture</button>
+    <button class="tab-btn" data-tab="sec-industry">🏭 Industry 4.0</button>
+    <button class="tab-btn" data-tab="sec-energy">⚡ Energy</button>
+    <button class="tab-btn" data-tab="sec-city">🏙️ Smart City</button>
+  </div>
+  <div class="tab-pane active" id="sec-health">
+    <div class="alert alert-warning mt-2"><span class="alert-icon">⚠️</span><span>All healthcare examples are <strong>EDUCATIONAL ONLY</strong>. Not validated clinical systems. Not medical advice or certified medical devices.</span></div>
+    <div class="grid-2" style="gap:1rem;margin-top:1rem;">
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Problem Statement</h5><p style="font-size:0.82rem;color:var(--text-muted);">Remote patient monitoring in ICU wards requires continuous vital sign tracking. Gaps in observation can lead to delayed detection of deterioration. Nurse-to-patient ratios are constrained.</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Sensors &amp; Devices</h5>
+      <p style="font-size:0.82rem;color:var(--text-muted);">Pulse oximeter (SpO₂), ECG electrodes, blood pressure cuff, skin temperature, accelerometer (fall detection), smart bed pressure sensor</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">AI Method</h5>
+      <p style="font-size:0.82rem;color:var(--text-muted);"><strong>Threshold rules</strong> for immediate vital sign alerts (RULE-BASED — not ML). <strong>Statistical anomaly detection</strong> for deterioration pattern. <strong>Note:</strong> Any use in clinical settings requires regulatory approval (FDA/CE/CDSCO).</p></div>
+      <div>
+        <h5 style="color:var(--cyan);margin-bottom:0.5rem;">Architecture Flow</h5>
+        <div style="font-size:0.8rem;color:var(--text-muted);line-height:2.2;">
+          <div>🩺 Wearable sensors → <span style="color:var(--cyan);">BLE</span> → Bedside ESP32 hub</div>
+          <div>⚙️ Edge: Vital sign validation, immediate threshold alerts</div>
+          <div>📡 <span style="color:var(--cyan);">Wi-Fi/Ethernet</span> → Hospital server</div>
+          <div>☁️ Nurse station dashboard + alarm system</div>
+          <div>🤖 Statistical: rolling window anomaly scoring</div>
+          <div>🧑‍⚕️ Human-in-the-loop: nurse confirms before any intervention</div>
+        </div>
+        <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Limitations &amp; Risks</h5>
+        <p style="font-size:0.78rem;color:var(--text-muted);">False alarms (alarm fatigue), sensor artefacts from patient movement, regulatory compliance requirement, data privacy (patient data is sensitive), network reliability in hospital environment</p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane" id="sec-agri">
+    <div class="grid-2" style="gap:1rem;margin-top:1rem;">
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Problem Statement</h5><p style="font-size:0.82rem;color:var(--text-muted);">Farmers over-irrigate due to lack of real-time soil data, wasting water and affecting crop yield. Manual monitoring of 50+ plots is impractical.</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Sensors</h5><p style="font-size:0.82rem;color:var(--text-muted);">Soil moisture (capacitive), soil temperature, ambient temperature and humidity, rainfall gauge, solar radiation sensor</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">AI Method</h5><p style="font-size:0.82rem;color:var(--text-muted);"><strong>RULE-BASED:</strong> If soil moisture &lt; threshold for crop type → recommend irrigation. A <strong>TRAINED ML MODEL</strong> (Decision Tree or Random Forest) trained on historical data + weather can predict optimal irrigation time. Clearly label which is in use.</p></div>
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Architecture</h5>
+        <div style="font-size:0.8rem;color:var(--text-muted);line-height:2.2;">
+          <div>🌱 Soil sensors → <span style="color:var(--cyan);">LoRaWAN</span> (long range, low power)</div>
+          <div>🔌 LoRa gateway (Raspberry Pi) at farm office</div>
+          <div>⚙️ Edge: Threshold check, pump relay control</div>
+          <div>☁️ Cloud: Historical data, ML model training, weather API integration</div>
+          <div>📱 Farmer mobile app: alerts and manual override</div>
+        </div>
+        <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Expected Benefit / Limitations</h5>
+        <p style="font-size:0.78rem;color:var(--text-muted);">Potential water saving (illustrative; actual saving depends on baseline and crop type). Limitations: LoRaWAN coverage, sensor drift in wet soil, crop-specific threshold variation, weather forecast accuracy.</p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane" id="sec-industry">
+    <div class="grid-2" style="gap:1rem;margin-top:1rem;">
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Problem Statement</h5><p style="font-size:0.82rem;color:var(--text-muted);">Unplanned equipment failure in manufacturing causes costly downtime. Maintenance teams lack early warning of impending failures.</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Sensors</h5><p style="font-size:0.82rem;color:var(--text-muted);">Triaxial accelerometers (vibration), current transformers (motor load), infrared thermometers (bearing temperature), acoustic emission sensors</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">AI Method</h5><p style="font-size:0.82rem;color:var(--text-muted);"><strong>Isolation Forest</strong> for anomaly detection (UNSUPERVISED — learns normal vibration pattern, flags deviations). <strong>Important:</strong> Requires collecting baseline data during normal operation. Cannot detect fault types without labelled fault data. Do not claim predictions are validated until the model is tested on real failure events.</p></div>
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Deployment Checklist</h5>
+        <ul style="font-size:0.78rem;color:var(--text-muted);padding-left:1.2rem;line-height:2;">
+          <li>✓ Collect 2–4 weeks of baseline vibration data (normal operation)</li>
+          <li>✓ Validate sensor mounting and sampling rate (≥1kHz for bearing faults)</li>
+          <li>✓ Train Isolation Forest on baseline data</li>
+          <li>✓ Set anomaly score threshold with maintenance team input</li>
+          <li>✓ Run parallel with existing schedule for 1 month before trusting predictions</li>
+          <li>✓ Integrate with CMMS (Computerised Maintenance Management System)</li>
+          <li>✓ Plan model retraining schedule (quarterly or after maintenance)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane" id="sec-energy">
+    <div class="grid-2" style="gap:1rem;margin-top:1rem;">
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Problem Statement</h5><p style="font-size:0.82rem;color:var(--text-muted);">University buildings consume energy in unoccupied spaces. Lack of granular monitoring makes it impossible to identify waste or set realistic reduction targets.</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Sensors</h5><p style="font-size:0.82rem;color:var(--text-muted);">Smart energy meters (per room/floor), PIR occupancy sensors, HVAC run-time sensors, solar production meter</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">AI Method</h5><p style="font-size:0.82rem;color:var(--text-muted);"><strong>RULE-BASED:</strong> If room unoccupied for &gt;15 min AND HVAC running → alert. <strong>STATISTICAL:</strong> Moving average baseline comparison for anomaly detection. <strong>TRAINED ML:</strong> LSTM or linear model for next-day demand forecast (label as ILLUSTRATIVE until validated on actual data).</p></div>
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Architecture</h5>
+        <div style="font-size:0.8rem;color:var(--text-muted);line-height:2.2;">
+          <div>⚡ Smart meters → <span style="color:var(--cyan);">Modbus/RS485</span> → Building gateway</div>
+          <div>👁️ PIR sensors → <span style="color:var(--cyan);">Zigbee mesh</span> → Same gateway</div>
+          <div>⚙️ Edge: Occupancy-linked HVAC scheduling</div>
+          <div>☁️ InfluxDB + Grafana dashboard</div>
+          <div>📊 Monthly energy reports with baseline comparison</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane" id="sec-city">
+    <div class="grid-2" style="gap:1rem;margin-top:1rem;">
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">Problem Statement</h5><p style="font-size:0.82rem;color:var(--text-muted);">Urban traffic congestion, inefficient street lighting, and unmonitored air quality reduce quality of life and increase municipal costs.</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Sensors</h5><p style="font-size:0.82rem;color:var(--text-muted);">Inductive loop detectors / radar (vehicle count), PM2.5/PM10 air quality sensors, sound level meters, smart waste bin fill sensors, water quality probes</p>
+      <h5 style="color:var(--cyan);margin:0.75rem 0 0.5rem;">Connectivity</h5><p style="font-size:0.82rem;color:var(--text-muted);">LoRaWAN for distributed low-power sensors; 4G/5G cellular for high-bandwidth nodes (cameras); fibre for fixed infrastructure</p></div>
+      <div><h5 style="color:var(--cyan);margin-bottom:0.5rem;">AI Methods</h5>
+        <ul style="font-size:0.78rem;color:var(--text-muted);padding-left:1.2rem;line-height:2;">
+          <li><strong>Traffic:</strong> Adaptive signal timing using vehicle count + time-of-day rules (RULE-BASED)</li>
+          <li><strong>Street lighting:</strong> Daylight sensor + PIR — threshold-based dimming (RULE-BASED)</li>
+          <li><strong>Waste:</strong> Fill-level threshold alert → optimised collection routing (RULE-BASED + optimisation algorithm)</li>
+          <li><strong>Air quality:</strong> Statistical threshold alerts for PM2.5 exceedances (WHO guidelines)</li>
+        </ul>
+        <div class="alert alert-info mt-2" style="font-size:0.78rem;"><span class="alert-icon">ℹ️</span><span>Smart city systems involve significant regulatory, privacy and governance considerations. Citizen data collection requires transparent policy and consent frameworks.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MOD 5-7 ======== -->
+<div id="d2mod5" class="card mb-3">
+  <div class="card-header"><span class="icon">📊</span><h3>Module 5 — AIoT Data &amp; Model Engineering</h3></div>
+  <div class="grid-2" style="gap:1rem;">
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.5rem;">Data Pipeline Steps</h5>
+      <ol style="font-size:0.82rem;color:var(--text-muted);padding-left:1.2rem;line-height:2.1;">
+        <li>Define data schema (fields, types, units, timestamp format)</li>
+        <li>Collect representative data across expected operating conditions</li>
+        <li>Label data (for supervised learning — fault vs normal)</li>
+        <li>Handle missing values (interpolation, flagging, rejection)</li>
+        <li>Handle data drift — statistical shift in feature distributions over time</li>
+        <li>Feature engineering — extract meaningful statistics (mean, RMS, FFT peaks)</li>
+        <li>Train-validation-test split</li>
+        <li>Select and train model; evaluate on test set</li>
+        <li>Deploy model (edge: TFLite; cloud: scikit-learn API)</li>
+        <li>Monitor model performance in production; schedule retraining</li>
+      </ol>
+    </div>
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.5rem;">Model Selection Guide</h5>
+      <table class="data-table">
+        <thead><tr><th>Scenario</th><th>Recommended Approach</th></tr></thead>
+        <tbody>
+          <tr><td>No labelled fault data</td><td>Isolation Forest / statistical anomaly</td></tr>
+          <tr><td>Many labelled classes</td><td>Random Forest / SVM</td></tr>
+          <tr><td>Time-series prediction</td><td>Linear Regression / LSTM</td></tr>
+          <tr><td>Pattern grouping</td><td>K-Means clustering</td></tr>
+          <tr><td>Constrained edge device</td><td>Decision Tree / TinyML (quantized)</td></tr>
+          <tr><td>Simple threshold sufficient</td><td>Rule-based (don't over-engineer)</td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-info mt-2" style="font-size:0.78rem;"><span class="alert-icon">💡</span><span>A well-calibrated threshold rule that works reliably is often better than a complex ML model that is hard to validate. Choose the simplest approach that meets requirements.</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="d2mod6" class="card mb-3">
+  <div class="card-header"><span class="icon">🚀</span><h3>Module 6 — Integration, Reliability &amp; Deployment</h3></div>
+  <div class="grid-2" style="gap:1rem;">
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.5rem;">Deployment-Readiness Checklist</h5>
+      <div id="deployment-checklist">
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc1"> Device provisioning procedure documented</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc2"> All sensors calibrated and validated</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc3"> Network coverage confirmed at all sensor locations</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc4"> MQTT broker configured with authentication and TLS</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc5"> Data schema agreed and documented</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc6"> Alert thresholds validated with domain experts</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc7"> Fail-safe and fallback behaviour tested</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc8"> Dashboard reviewed and approved by end users</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc9"> Backup and recovery procedure tested</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;cursor:pointer;"><input type="checkbox" id="dc10"> Maintenance and support plan agreed</label>
+        <div id="dc-progress" style="margin-top:0.75rem;"><div class="progress-bar"><div class="progress-fill" id="dc-fill" style="width:0%"></div></div><div id="dc-label" style="font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem;">0/10 items checked</div></div>
+      </div>
+    </div>
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.5rem;">Fault Tolerance Strategies</h5>
+      <ul style="font-size:0.82rem;color:var(--text-muted);padding-left:1.2rem;line-height:2;">
+        <li>Store-and-forward: cache data locally if network drops</li>
+        <li>Watchdog timers: auto-restart device if firmware hangs</li>
+        <li>Redundant sensors for critical measurements</li>
+        <li>Heartbeat monitoring: detect silent device failure</li>
+        <li>Graceful degradation: system continues with reduced capability</li>
+        <li>OTA (Over-the-Air) firmware updates for field devices</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="d2mod7" class="card mb-3">
+  <div class="card-header"><span class="icon">🌱</span><h3>Module 7 — Security, Ethics &amp; Sustainability by Design</h3></div>
+  <div class="grid-3" style="gap:1rem;">
+    <div class="pattern-card"><h5 style="color:var(--cyan);margin-bottom:0.5rem;">🔒 Security</h5><ul style="font-size:0.78rem;color:var(--text-muted);padding-left:1rem;line-height:1.9;"><li>TLS everywhere — MQTT, HTTP</li><li>Device identity certificates</li><li>Principle of least privilege</li><li>Secure firmware updates (signed)</li><li>Penetration testing before deployment</li></ul></div>
+    <div class="pattern-card"><h5 style="color:var(--cyan);margin-bottom:0.5rem;">🧑‍⚖️ Ethics &amp; Privacy</h5><ul style="font-size:0.78rem;color:var(--text-muted);padding-left:1rem;line-height:1.9;"><li>Informed consent for data collection</li><li>Data minimisation principle</li><li>Explainable AI decisions</li><li>Bias audit of training data</li><li>Human oversight for high-stakes decisions</li></ul></div>
+    <div class="pattern-card"><h5 style="color:var(--cyan);margin-bottom:0.5rem;">♻️ Sustainability</h5><ul style="font-size:0.78rem;color:var(--text-muted);padding-left:1rem;line-height:1.9;"><li>Low-power hardware selection</li><li>Sleep modes and duty cycling</li><li>Local processing reduces data transmission</li><li>Component lifecycle and e-waste plan</li><li>Renewable power (solar harvesting) where feasible</li></ul></div>
+  </div>
+</div>
+
+<!-- ======== MOD 8 — CAPSTONE CANVAS ======== -->
+<div id="d2mod8" class="card mb-3">
+  <div class="card-header"><span class="icon">🎨</span><h3>Module 8 — Capstone Smart-System Design Challenge</h3></div>
+  <div class="alert alert-warning" style="margin-bottom:1rem;"><span class="alert-icon">📋</span><span>Fill in the design canvas below. The output is a <strong>PROPOSED CONCEPTUAL DESIGN — Not a deployed system.</strong> All assumptions must be validated before implementation.</span></div>
+  <div class="canvas-wrapper" id="design-canvas">
+    <div class="canvas-cell" id="cc-problem" onclick="editCell('problem','Problem Statement','Describe the specific problem your AIoT system will solve')"><div class="cc-label">Problem</div><div class="cc-value" id="ccv-problem">Click to define →</div></div>
+    <div class="canvas-cell" id="cc-users" onclick="editCell('users','Target Users','Who will use or benefit from this system?')"><div class="cc-label">Target Users</div><div class="cc-value" id="ccv-users">Click to define →</div></div>
+    <div class="canvas-cell" id="cc-usecase" onclick="editCell('usecase','Use Case','Describe the primary use case in one sentence')"><div class="cc-label">Use Case</div><div class="cc-value" id="ccv-usecase">Click to define →</div></div>
+    <div class="canvas-cell" id="cc-sensors" onclick="editCell('sensors','Sensors Required','List the sensors needed (e.g. temperature, PIR, soil moisture)')"><div class="cc-label">Sensors</div><div class="cc-value" id="ccv-sensors">Click to select →</div></div>
+    <div class="canvas-cell" id="cc-hardware" onclick="editCell('hardware','Hardware Platform','Which embedded platform? (Arduino/ESP32/Raspberry Pi/Jetson)')"><div class="cc-label">Hardware</div><div class="cc-value" id="ccv-hardware">Click to select →</div></div>
+    <div class="canvas-cell" id="cc-protocol" onclick="editCell('protocol','Connectivity Protocol','Which protocol? (MQTT/WiFi, LoRaWAN, BLE, HTTP)')"><div class="cc-label">Connectivity</div><div class="cc-value" id="ccv-protocol">Click to select →</div></div>
+    <div class="canvas-cell" id="cc-processing" onclick="editCell('processing','Processing Location','Edge only / Cloud only / Edge + Cloud hybrid')"><div class="cc-label">Processing</div><div class="cc-value" id="ccv-processing">Click to select →</div></div>
+    <div class="canvas-cell" id="cc-aimethod" onclick="editCell('aimethod','AI / Decision Method','Threshold rule / Statistical / Trained ML model?')"><div class="cc-label">AI / ML Method</div><div class="cc-value" id="ccv-aimethod">Click to select →</div></div>
+    <div class="canvas-cell" id="cc-action" onclick="editCell('action','Decision Action','What happens when the system detects an event?')"><div class="cc-label">Decision / Action</div><div class="cc-value" id="ccv-action">Click to define →</div></div>
+    <div class="canvas-cell" id="cc-dashboard" onclick="editCell('dashboard','Dashboard / UI','Who sees what? (faculty dashboard, mobile alert, etc.)')"><div class="cc-label">Dashboard / UI</div><div class="cc-value" id="ccv-dashboard">Click to define →</div></div>
+    <div class="canvas-cell" id="cc-security" onclick="editCell('security','Security Measures','Authentication, encryption, data access controls')"><div class="cc-label">Security</div><div class="cc-value" id="ccv-security">Click to define →</div></div>
+    <div class="canvas-cell" id="cc-eval" onclick="editCell('eval','Evaluation Plan','How will you validate that the system works?')"><div class="cc-label">Evaluation</div><div class="cc-value" id="ccv-eval">Click to define →</div></div>
+  </div>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+    <button class="btn btn-primary" onclick="generateSummary()">📋 Generate Design Summary</button>
+    <button class="btn btn-outline btn-sm" onclick="clearCanvas()">🗑️ Clear Canvas</button>
+  </div>
+  <div id="design-summary" style="display:none;margin-top:1.25rem;background:rgba(0,188,212,0.05);border:1px solid rgba(0,188,212,0.3);border-radius:var(--radius);padding:1.25rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+      <span class="label-illustrative">📋 PROPOSED CONCEPTUAL DESIGN — Not a deployed system</span>
+    </div>
+    <pre id="summary-text" style="font-family:var(--font-body);font-size:0.82rem;color:var(--text-muted);white-space:pre-wrap;line-height:1.7;"></pre>
+  </div>
+  <!-- Edit Modal -->
+  <div id="canvas-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:none;align-items:center;justify-content:center;">
+    <div style="background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;max-width:480px;width:90%;">
+      <h4 id="modal-title" style="color:var(--white);margin-bottom:0.5rem;"></h4>
+      <p id="modal-hint" style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;"></p>
+      <textarea id="modal-input" class="form-control" rows="3" style="resize:vertical;"></textarea>
+      <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+        <button class="btn btn-primary" onclick="saveCell()">Save</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MOD 9 — ASSESSMENT RUBRIC ======== -->
+<div id="d2mod9" class="card mb-3">
+  <div class="card-header"><span class="icon">📝</span><h3>Module 9 — Presentation, Peer Review &amp; Assessment Rubric</h3></div>
+  <div style="overflow-x:auto;">
+    <table class="data-table rubric-table" style="min-width:760px;">
+      <thead><tr><th>Criterion</th><th>Max Points</th><th>Excellent (90–100%)</th><th>Good (70–89%)</th><th>Satisfactory (50–69%)</th><th>Needs Work (&lt;50%)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Problem Relevance</strong></td><td style="color:var(--cyan);">20</td><td>Real, significant problem; clear stakeholder impact</td><td>Valid problem; impact partially quantified</td><td>Problem identified but vague</td><td>Problem unclear or trivial</td></tr>
+        <tr><td><strong>Technical Coherence</strong></td><td style="color:var(--cyan);">20</td><td>All layers (sensor→edge→cloud→AI→action) consistent and justified</td><td>Most layers coherent; minor gaps</td><td>Architecture partially defined</td><td>Significant technical gaps or errors</td></tr>
+        <tr><td><strong>Feasibility</strong></td><td style="color:var(--cyan);">15</td><td>Realistic hardware, cost and timeline; assumptions stated</td><td>Mostly feasible with some optimistic assumptions</td><td>Some components not feasible without major changes</td><td>Not feasible with current assumptions</td></tr>
+        <tr><td><strong>Data / AI Validity</strong></td><td style="color:var(--cyan);">15</td><td>AI method matches problem type; data requirements defined; method clearly labelled</td><td>Good AI selection; some data requirements unclear</td><td>AI method selected but poorly justified</td><td>AI method mismatched or mislabelled</td></tr>
+        <tr><td><strong>Security &amp; Sustainability</strong></td><td style="color:var(--cyan);">15</td><td>Security and sustainability fully integrated into design</td><td>Key security measures identified; sustainability considered</td><td>Basic security mentioned</td><td>Security and sustainability not addressed</td></tr>
+        <tr><td><strong>Presentation &amp; Communication</strong></td><td style="color:var(--cyan);">15</td><td>Clear, structured, handles questions confidently</td><td>Good structure; some unclear sections</td><td>Main points covered; limited clarity</td><td>Disorganised or hard to follow</td></tr>
+      </tbody>
+      <tfoot><tr><td><strong>Total</strong></td><td style="color:var(--cyan);font-weight:700;">100</td><td colspan="4" style="color:var(--text-muted);font-size:0.78rem;">Score ≥ 80: Distinction | 65–79: Merit | 50–64: Pass | &lt;50: Resubmit</td></tr></tfoot>
+    </table>
+  </div>
+  <div class="mt-2">
+    <a href="../../pages/assessment.html" class="btn btn-primary">📝 Take Day 2 Assessment →</a>
+  </div>
+</div>
+
+<!-- RESEARCH DIRECTIONS -->
+<div class="card mb-3">
+  <div class="card-header"><span class="icon">🔭</span><h3>Research Directions &amp; Future of AIoT</h3></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;">
+    <div class="pattern-card"><div style="font-size:1.3rem;margin-bottom:0.3rem;">🧠</div><h5 style="color:var(--white);font-size:0.85rem;margin-bottom:0.25rem;">TinyML</h5><p style="font-size:0.75rem;color:var(--text-muted);">ML inference on microcontrollers. TensorFlow Lite Micro. Deployed capability.</p><span style="background:rgba(0,200,83,0.15);color:var(--green);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">DEPLOYED</span></div>
+    <div class="pattern-card"><div style="font-size:1.3rem;margin-bottom:0.3rem;">🤖</div><h5 style="color:var(--white);font-size:0.85rem;margin-bottom:0.25rem;">Generative AI + IoT</h5><p style="font-size:0.75rem;color:var(--text-muted);">LLMs for natural language IoT control and anomaly explanation. Emerging.</p><span style="background:rgba(255,143,0,0.15);color:var(--amber);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">EMERGING</span></div>
+    <div class="pattern-card"><div style="font-size:1.3rem;margin-bottom:0.3rem;">🤝</div><h5 style="color:var(--white);font-size:0.85rem;margin-bottom:0.25rem;">Federated Learning</h5><p style="font-size:0.75rem;color:var(--text-muted);">Train without sharing raw data. Active research; production use is limited.</p><span style="background:rgba(255,143,0,0.15);color:var(--amber);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">RESEARCH</span></div>
+    <div class="pattern-card"><div style="font-size:1.3rem;margin-bottom:0.3rem;">🪞</div><h5 style="color:var(--white);font-size:0.85rem;margin-bottom:0.25rem;">Digital Twins</h5><p style="font-size:0.75rem;color:var(--text-muted);">Virtual replicas of assets for simulation and optimisation.</p><span style="background:rgba(0,200,83,0.15);color:var(--green);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">DEPLOYED</span></div>
+    <div class="pattern-card"><div style="font-size:1.3rem;margin-bottom:0.3rem;">📡</div><h5 style="color:var(--white);font-size:0.85rem;margin-bottom:0.25px;">5G / 6G + IoT</h5><p style="font-size:0.75rem;color:var(--text-muted);">Ultra-low latency, massive IoT scale. 5G deployed; 6G is research.</p><span style="background:rgba(255,143,0,0.15);color:var(--amber);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">5G DEPLOYED</span></div>
+    <div class="pattern-card"><div style="font-size:1.3rem;margin-bottom:0.3rem;">🌱</div><h5 style="color:var(--white);font-size:0.85rem;margin-bottom:0.25rem;">Sustainable AIoT</h5><p style="font-size:0.75rem;color:var(--text-muted);">Energy harvesting, green AI, minimal carbon footprint design practices.</p><span style="background:rgba(0,200,83,0.15);color:var(--green);font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:3px;">ACTIVE</span></div>
+  </div>
+</div>
+
+<!-- NAV BUTTONS -->
+<div class="flex-between mt-3" style="padding-bottom:2rem;">
+  <a href="../../pages/day1/index.html" class="btn btn-outline">← Day 1</a>
+  <div class="flex gap-2">
+    <a href="../../pages/campus.html" class="btn btn-secondary">🏫 Smart Campus</a>
+    <a href="../../pages/projects.html" class="btn btn-secondary">🚀 Project Studio</a>
+    <a href="../../pages/assessment.html" class="btn btn-primary">📝 Assessment →</a>
+  </div>
+</div>
+
+<script src="../../assets/js/portal.js"></script>
+<script src="../../assets/js/nav.js"></script>
+<script>
+let currentCell = null;
+const canvasData = {};
+
+function editCell(key, title, hint) {
+  currentCell = key;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-hint').textContent = hint;
+  document.getElementById('modal-input').value = canvasData[key] || '';
+  document.getElementById('canvas-modal').style.display = 'flex';
+}
+function saveCell() {
+  const val = document.getElementById('modal-input').value.trim();
+  if (val && currentCell) {
+    canvasData[currentCell] = val;
+    document.getElementById('ccv-' + currentCell).textContent = val;
+    document.getElementById('cc-' + currentCell).classList.add('filled');
+  }
+  closeModal();
+}
+function closeModal() { document.getElementById('canvas-modal').style.display = 'none'; }
+function clearCanvas() {
+  Object.keys(canvasData).forEach(k => delete canvasData[k]);
+  document.querySelectorAll('.canvas-cell').forEach(c => c.classList.remove('filled'));
+  document.querySelectorAll('.cc-value').forEach(v => v.textContent = 'Click to define →');
+  document.getElementById('design-summary').style.display = 'none';
+  showToast('Canvas cleared', 'info');
+}
+function generateSummary() {
+  const fields = ['problem','users','usecase','sensors','hardware','protocol','processing','aimethod','action','dashboard','security','eval'];
+  const labels = { problem:'Problem',users:'Target Users',usecase:'Use Case',sensors:'Sensors',hardware:'Hardware',protocol:'Connectivity',processing:'Processing Location',aimethod:'AI/ML Method',action:'Decision/Action',dashboard:'Dashboard/UI',security:'Security',eval:'Evaluation Plan' };
+  let text = '══════════════════════════════════════\nPROPOSED AIoT SYSTEM DESIGN\n(Conceptual design only — not a deployed system)\n══════════════════════════════════════\n\n';
+  let filled = 0;
+  fields.forEach(f => { if (canvasData[f]) { text += `${labels[f]}:\n  ${canvasData[f]}\n\n`; filled++; } });
+  if (filled === 0) { showToast('Fill in at least one canvas cell before generating summary.', 'warning'); return; }
+  text += `══════════════════════════════════════\nDesigned during: AIoT FDP — 4 November 2026\nResource Person: Prof. R. Anjit Raja\nNote: All assumptions must be validated before implementation.\n══════════════════════════════════════`;
+  document.getElementById('summary-text').textContent = text;
+  document.getElementById('design-summary').style.display = 'block';
+  document.getElementById('design-summary').scrollIntoView({ behavior:'smooth' });
+  showToast('Design summary generated!', 'success');
+}
+
+// Deployment checklist progress
+document.addEventListener('DOMContentLoaded', () => {
+  const cbs = document.querySelectorAll('#deployment-checklist input[type="checkbox"]');
+  cbs.forEach(cb => cb.addEventListener('change', () => {
+    const checked = [...cbs].filter(c => c.checked).length;
+    document.getElementById('dc-fill').style.width = (checked/10*100) + '%';
+    document.getElementById('dc-label').textContent = `${checked}/10 items checked`;
+    if (checked === 10) showToast('✅ Deployment checklist complete!', 'success');
+  }));
+  initTabs(); initAccordion(); initQuiz(); updateProgress();
+  // Close modal on backdrop click
+  document.getElementById('canvas-modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+});
+</script>
+</body>
+</html>

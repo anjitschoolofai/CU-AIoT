@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 1 — AIoT FDP Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .system-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; }
+    .layer-box { border:1.5px solid var(--border); border-radius:10px; padding:1rem 1.25rem; cursor:pointer; margin-bottom:0.5rem; transition:all 0.25s; }
+    .layer-box:hover,.layer-box.sel { border-color:var(--cyan); background:rgba(0,188,212,0.07); }
+    .layer-detail { display:none; margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--border); font-size:0.82rem; color:var(--text-muted); }
+    .layer-box.sel .layer-detail { display:block; }
+    .tag-chip { display:inline-block; padding:0.15rem 0.55rem; border-radius:4px; font-size:0.7rem; font-weight:700; margin:0.2rem; background:rgba(0,188,212,0.12); color:var(--cyan); border:1px solid rgba(0,188,212,0.25); }
+    .compare-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+    .compare-col { border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+    .compare-head { padding:0.85rem 1rem; font-weight:700; font-size:0.85rem; text-align:center; background:rgba(0,188,212,0.1); color:var(--white); }
+    .compare-feat { padding:0.5rem 1rem; font-size:0.78rem; color:var(--text-muted); border-top:1px solid var(--border); display:flex; align-items:center; gap:0.4rem; }
+    .check { color:var(--green); } .cross { color:var(--red); opacity:0.5; }
+    .sensor-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0.75rem; }
+    .hw-row:hover td { background:rgba(0,188,212,0.05); }
+    .step-item { display:flex; gap:1rem; margin-bottom:1rem; }
+    .step-num { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--blue)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; color:var(--navy); flex-shrink:0; }
+    .step-body h5 { font-size:0.88rem; color:var(--white); margin-bottom:0.2rem; }
+    .step-body p  { font-size:0.78rem; color:var(--text-muted); }
+    .module-num-tag { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--cyan); margin-bottom:0.3rem; }
+    .tl-row { display:grid; grid-template-columns:100px 1fr; gap:1rem; align-items:start; margin-bottom:0.6rem; }
+    .tl-time-box { background:rgba(0,188,212,0.1); border:1px solid rgba(0,188,212,0.25); border-radius:6px; padding:0.3rem 0.5rem; text-align:center; font-size:0.72rem; font-weight:700; color:var(--cyan); }
+    .tl-content { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:0.6rem 1rem; font-size:0.82rem; color:var(--text-primary); }
+    .tl-content span { color:var(--text-muted); font-size:0.74rem; }
+  </style>
+</head>
+<body data-portal="day1">
+
+<!-- ======== PAGE HERO ======== -->
+<div class="page-hero">
+  <div class="tag">📘 Day 1 · 3 November 2026</div>
+  <h1>Building Intelligent AIoT Ecosystems</h1>
+  <p>Sensors, Edge Computing, Cloud Integration and AI-Driven Decision-Making — A comprehensive foundation covering the complete AIoT pipeline from physical sensing to intelligent action.</p>
+  <div class="meta">
+    <span>👤 Resource Person: <strong>Prof. R. Anjit Raja</strong></span>
+    <span>⏱️ Duration: <strong>~7 hours</strong></span>
+    <span>📚 Modules: <strong>13</strong></span>
+    <span>📅 Date: <strong>3 November 2026</strong></span>
+  </div>
+</div>
+
+<!-- ======== LEARNING OUTCOMES ======== -->
+<div class="card mb-3">
+  <div class="card-header"><span class="icon">🎯</span><h3>Day 1 Learning Outcomes</h3></div>
+  <div class="grid-2" style="gap:0.6rem;">
+    <div class="step-item"><div class="step-num">1</div><div class="step-body"><h5>AIoT Ecosystem Understanding</h5><p>Explain the relationship between IoT, AI, ML, edge computing, cloud platforms and AIoT</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-body"><h5>End-to-End Architecture</h5><p>Describe an end-to-end AIoT architecture and trace data from physical sensing to intelligent action</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-body"><h5>Component Selection</h5><p>Select appropriate sensors, embedded platforms, communication protocols and processing locations</p></div></div>
+    <div class="step-item"><div class="step-num">4</div><div class="step-body"><h5>Data Pipeline</h5><p>Explain how sensor data can be cleaned, analysed and used for classification, prediction or anomaly detection</p></div></div>
+    <div class="step-item"><div class="step-num">5</div><div class="step-body"><h5>Rule vs ML Distinction</h5><p>Distinguish rule-based automation from machine-learning inference and predictive analytics</p></div></div>
+    <div class="step-item"><div class="step-num">6</div><div class="step-body"><h5>Virtual Lab Experience</h5><p>Explore simulations across 5 virtual laboratory experiments without any physical hardware</p></div></div>
+    <div class="step-item"><div class="step-num">7</div><div class="step-body"><h5>Responsible Design</h5><p>Understand security, privacy, reliability, cost and sustainability considerations in AIoT</p></div></div>
+    <div class="step-item"><div class="step-num">8</div><div class="step-body"><h5>Project Concept</h5><p>Develop a concept or mini-project suitable for teaching, research or institutional innovation</p></div></div>
+  </div>
+</div>
+
+<!-- ======== DELIVERY TIMELINE ======== -->
+<div class="card mb-3">
+  <div class="card-header"><span class="icon">🗓️</span><h3>Day 1 Delivery Schedule <small>3 November 2026 — Suggested timings, adjust to official FDP timetable</small></h3></div>
+  <div class="tl-row"><div class="tl-time-box">45 min</div><div class="tl-content">🏗️ AIoT Fundamentals &amp; Architecture <span>— Modules 1–2</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">60 min</div><div class="tl-content">🔌 Sensors, Devices &amp; Embedded Hardware <span>— Modules 3–4</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">60 min</div><div class="tl-content">📡 Connectivity, Edge Computing &amp; Cloud <span>— Modules 5–7</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">60 min</div><div class="tl-content">🤖 AI/ML for Sensor Data <span>— Module 8</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">90 min</div><div class="tl-content">🔬 Interactive Virtual Laboratories <span>— Module 9 → <a href="../../pages/lab/index.html" class="text-cyan">Open Virtual Lab</a></span></div></div>
+  <div class="tl-row"><div class="tl-time-box">45 min</div><div class="tl-content">🌍 Applications, Security &amp; Privacy <span>— Modules 10–11</span></div></div>
+  <div class="tl-row"><div class="tl-time-box">60 min</div><div class="tl-content">🚀 Faculty Design Activity &amp; Assessment <span>— Modules 12–13</span></div></div>
+</div>
+
+<!-- ======== MODULE OVERVIEW GRID ======== -->
+<div class="section-title mb-1">📚 Module Overview <span class="accent">— 13 Modules</span></div>
+<p class="section-subtitle">Click any module to jump to its detailed content below.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2rem;">
+  <div class="module-card" data-module-id="d1m1" onclick="scrollTo('mod1')"><div class="module-num-tag">Module 1</div><h4>The AIoT Revolution</h4><p>IoT, AI, ML, Edge AI evolution — from connected devices to intelligent systems</p><span class="duration-tag">45 min</span></div>
+  <div class="module-card" data-module-id="d1m2" onclick="scrollTo('mod2')"><div class="module-num-tag">Module 2</div><h4>End-to-End AIoT Architecture</h4><p>Interactive 6-layer architecture from physical sensing to decision-action</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m3" onclick="scrollTo('mod3')"><div class="module-num-tag">Module 3</div><h4>Sensors, Actuators &amp; Data Acquisition</h4><p>14 sensor types, calibration, sampling, noise filtering, sensor fusion</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m4" onclick="scrollTo('mod4')"><div class="module-num-tag">Module 4</div><h4>Embedded &amp; IoT Hardware</h4><p>Arduino, ESP32, Raspberry Pi, NVIDIA Jetson — hardware selection guide</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m5" onclick="scrollTo('mod5')"><div class="module-num-tag">Module 5</div><h4>Connectivity &amp; Messaging Protocols</h4><p>Wi-Fi, BLE, LoRaWAN, MQTT pub/sub walkthrough</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m6" onclick="scrollTo('mod6')"><div class="module-num-tag">Module 6</div><h4>Edge Computing &amp; Edge AI</h4><p>Edge vs cloud, local inference, latency, bandwidth, privacy trade-offs</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m7" onclick="scrollTo('mod7')"><div class="module-num-tag">Module 7</div><h4>Cloud Integration &amp; IoT Platforms</h4><p>AWS IoT Core, Azure IoT, ThingsBoard, Node-RED, InfluxDB, Grafana</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m8" onclick="scrollTo('mod8')"><div class="module-num-tag">Module 8</div><h4>AI &amp; ML for Sensor Data</h4><p>Regression, classification, anomaly detection — algorithms and evaluation metrics</p><span class="duration-tag">60 min</span></div>
+  <div class="module-card" data-module-id="d1m9" onclick="scrollTo('mod9')"><div class="module-num-tag">Module 9</div><h4>Guided AIoT Virtual Laboratory</h4><p>5 interactive experiments — environmental, maintenance, agriculture, energy, campus</p><span class="duration-tag">90 min</span></div>
+  <div class="module-card" data-module-id="d1m10" onclick="scrollTo('mod10')"><div class="module-num-tag">Module 10</div><h4>Real-World AIoT Applications</h4><p>Smart cities, healthcare, agriculture, Industry 4.0, transportation, education</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m11" onclick="scrollTo('mod11')"><div class="module-num-tag">Module 11</div><h4>AIoT Security, Privacy &amp; Responsible Design</h4><p>Authentication, encryption, data minimisation, model integrity, lifecycle</p><span class="duration-tag">30 min</span></div>
+  <div class="module-card" data-module-id="d1m12" onclick="scrollTo('mod12')"><div class="module-num-tag">Module 12</div><h4>Faculty Design Activity</h4><p>Guided interactive design canvas — build your own AIoT solution concept</p><span class="duration-tag">45 min</span></div>
+  <div class="module-card" data-module-id="d1m13" onclick="scrollTo('mod13')"><div class="module-num-tag">Module 13</div><h4>Assessment &amp; Reflection</h4><p>MCQs, scenario questions, architecture challenges, knowledge check</p><span class="duration-tag">30 min</span></div>
+</div>
+
+<!-- ======== MODULE 1 ======== -->
+<div id="mod1" class="card mb-3">
+  <div class="card-header"><span class="icon">🚀</span><h3>Module 1 — The AIoT Revolution <small>Learning Objective: Understand how IoT, AI, and AIoT relate and evolved</small></h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE</span>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="m1-concept">Concepts</button>
+    <button class="tab-btn" data-tab="m1-compare">System Comparison</button>
+    <button class="tab-btn" data-tab="m1-terms">Key Terms</button>
+    <button class="tab-btn" data-tab="m1-quiz">Knowledge Check</button>
+  </div>
+
+  <div class="tab-pane active" id="m1-concept">
+    <h4 style="color:var(--cyan);margin-bottom:0.75rem;">From Connected Devices to Intelligent Systems</h4>
+    <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.8;">The Internet of Things (IoT) began as a vision of everyday objects connected to the internet — thermostats, meters, vehicles — sharing data. But data alone does not create intelligence. <strong style="color:var(--white);">Artificial Intelligence of Things (AIoT)</strong> is the convergence of IoT infrastructure with AI and ML capabilities, enabling systems that not only collect data but understand it, learn from it and act on it autonomously.</p>
+    <div class="grid-3" style="gap:1rem;margin-bottom:1.25rem;">
+      <div class="system-card" style="border-left:4px solid #555;">
+        <div style="font-size:1.5rem;margin-bottom:0.4rem;">🔌</div>
+        <h5 style="color:var(--white);margin-bottom:0.35rem;">IoT</h5>
+        <p style="font-size:0.78rem;color:var(--text-muted);">Connects physical devices to the internet. Enables data collection and remote monitoring. Devices follow fixed rules. <em>Example: A smart meter that reports electricity usage every 15 minutes.</em></p>
+      </div>
+      <div class="system-card" style="border-left:4px solid var(--blue);">
+        <div style="font-size:1.5rem;margin-bottom:0.4rem;">🤖</div>
+        <h5 style="color:var(--white);margin-bottom:0.35rem;">AI / ML</h5>
+        <p style="font-size:0.78rem;color:var(--text-muted);">Learns patterns from data, makes predictions and decisions. Works on historical datasets. <em>Example: A model predicting energy demand for the next 24 hours.</em></p>
+      </div>
+      <div class="system-card" style="border-left:4px solid var(--cyan);">
+        <div style="font-size:1.5rem;margin-bottom:0.4rem;">⚡</div>
+        <h5 style="color:var(--white);margin-bottom:0.35rem;">AIoT</h5>
+        <p style="font-size:0.78rem;color:var(--text-muted);">Combines both: real-time sensor data feeds AI models that make on-the-spot decisions and trigger actions. <em>Example: A campus system that detects an unoccupied classroom and autonomously recommends switching off lights.</em></p>
+      </div>
+    </div>
+    <h4 style="color:var(--cyan);margin-bottom:0.6rem;">Evolution Timeline</h4>
+    <div class="timeline" style="margin-left:0.5rem;">
+      <div class="timeline-item"><div class="tl-time">1990s</div><div class="tl-title">Embedded Systems</div><div class="tl-desc">Microcontrollers in appliances — no networking, no data sharing, fixed programs</div></div>
+      <div class="timeline-item"><div class="tl-time">2000s</div><div class="tl-title">Machine-to-Machine (M2M)</div><div class="tl-desc">Industrial sensors communicating over proprietary networks. Centralised monitoring.</div></div>
+      <div class="timeline-item"><div class="tl-time">2010s</div><div class="tl-title">Internet of Things (IoT)</div><div class="tl-desc">IP-connected devices, cloud dashboards, consumer smart home. Data at scale but mostly stored, not acted on intelligently.</div></div>
+      <div class="timeline-item"><div class="tl-time">2015+</div><div class="tl-title">AI-enabled IoT</div><div class="tl-desc">Cloud ML on IoT data streams. Predictive maintenance, anomaly detection. AI runs in the cloud, not at the edge.</div></div>
+      <div class="timeline-item"><div class="tl-time">2020+</div><div class="tl-title">AIoT — Edge AI</div><div class="tl-desc">ML inference moves to the edge device. TinyML on microcontrollers. Federated learning. Real-time intelligent decisions without cloud dependency.</div></div>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="m1-compare">
+    <h4 style="color:var(--cyan);margin-bottom:0.75rem;">System Capability Comparison</h4>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Each column represents a generation of systems. ✓ = present, — = absent.</p>
+    <div style="overflow-x:auto;">
+      <table class="data-table" style="min-width:680px;">
+        <thead><tr><th>Capability</th><th>Conventional System</th><th>IoT System</th><th>AI-Enabled IoT</th><th style="background:rgba(0,188,212,0.12);">AIoT System</th></tr></thead>
+        <tbody>
+          <tr><td>Network Connected</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Real-Time Data Collection</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Remote Monitoring</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Rule-Based Automation</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Cloud Data Storage</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Machine Learning Inference</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓ (cloud only)</td><td class="check">✓ (edge + cloud)</td></tr>
+          <tr><td>Predictive Analytics</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Anomaly Detection</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Edge/Local Inference</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+          <tr><td>Autonomous Decision-Action Loop</td><td class="cross">—</td><td class="cross">—</td><td class="cross">Partial</td><td class="check">✓</td></tr>
+          <tr><td>Self-Learning / Model Update</td><td class="cross">—</td><td class="cross">—</td><td class="cross">Partial</td><td class="check">✓</td></tr>
+          <tr><td>Offline Operation with Intelligence</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="m1-terms">
+    <div class="accordion">
+      <div class="acc-item open"><div class="acc-header"><h4>IoT — Internet of Things</h4><span class="acc-icon">▼</span></div><div class="acc-body" style="display:block;">The network of physical devices (sensors, actuators, appliances, vehicles) embedded with electronics, software and connectivity that enables them to collect and exchange data. IoT devices follow pre-programmed rules and thresholds. They do not learn from data.</div></div>
+      <div class="acc-item"><div class="acc-header"><h4>AI — Artificial Intelligence</h4><span class="acc-icon">▼</span></div><div class="acc-body">A broad field concerned with building systems that can perform tasks that normally require human intelligence: reasoning, problem-solving, perception, language understanding and learning. In the context of AIoT, AI usually refers to machine learning algorithms applied to sensor data.</div></div>
+      <div class="acc-item"><div class="acc-header"><h4>ML — Machine Learning</h4><span class="acc-icon">▼</span></div><div class="acc-body">A subset of AI in which algorithms learn patterns from data rather than being explicitly programmed with rules. Types relevant to AIoT: Supervised learning (regression, classification), Unsupervised learning (clustering, anomaly detection), Reinforcement learning (control).</div></div>
+      <div class="acc-item"><div class="acc-header"><h4>Edge AI / TinyML</h4><span class="acc-icon">▼</span></div><div class="acc-body">Running ML inference directly on the edge device (microcontroller, embedded processor, Raspberry Pi) rather than sending data to the cloud. Benefits: ultra-low latency, works offline, preserves data privacy, reduces bandwidth cost. TinyML specifically refers to ML models small enough to run on microcontrollers (e.g. ESP32, Cortex-M) with kilobytes of RAM.</div></div>
+      <div class="acc-item"><div class="acc-header"><h4>AIoT — Artificial Intelligence of Things</h4><span class="acc-icon">▼</span></div><div class="acc-body">The convergence of IoT infrastructure (sensors, connectivity, embedded hardware) with AI and ML capabilities (learning, prediction, decision-making). AIoT enables systems to move beyond simple telemetry toward autonomous perception and action — sensing the world, understanding it, and responding intelligently.</div></div>
+      <div class="acc-item"><div class="acc-header"><h4>Cloud Computing</h4><span class="acc-icon">▼</span></div><div class="acc-body">On-demand delivery of computing resources (servers, storage, databases, ML) over the internet. In IoT, the cloud provides scalable data storage, large-scale ML training and global device management. Limitation: requires internet connectivity and introduces latency.</div></div>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="m1-quiz">
+    <div class="quiz-question">
+      <h4>Q1. Which statement best describes AIoT?</h4>
+      <div class="quiz-option" data-correct="false">A. A standard for connecting devices to the internet</div>
+      <div class="quiz-option" data-correct="true">B. The convergence of IoT infrastructure with AI and ML for autonomous sensing and decision-making</div>
+      <div class="quiz-option" data-correct="false">C. A cloud computing framework for IoT dashboards</div>
+      <div class="quiz-option" data-correct="false">D. A type of wireless communication protocol</div>
+      <div class="quiz-explanation">AIoT combines the connectivity and sensing capabilities of IoT with the learning and decision-making capabilities of AI/ML. Neither IoT alone nor AI alone constitutes AIoT.</div>
+    </div>
+    <div class="quiz-question">
+      <h4>Q2. What is the key advantage of Edge AI over cloud-only ML inference?</h4>
+      <div class="quiz-option" data-correct="false">A. Edge AI is always more accurate than cloud ML</div>
+      <div class="quiz-option" data-correct="false">B. Edge AI requires no training data</div>
+      <div class="quiz-option" data-correct="true">C. Edge AI enables low-latency inference without internet dependency, preserving privacy</div>
+      <div class="quiz-option" data-correct="false">D. Edge AI eliminates the need for sensors</div>
+      <div class="quiz-explanation">Edge AI runs inference locally — this means decisions can be made in milliseconds even without internet, and sensitive data never leaves the device. The trade-off is limited compute and memory on edge hardware.</div>
+    </div>
+    <div class="quiz-question">
+      <h4>Q3. A smart irrigation system that automatically turns on pumps based only on a soil moisture threshold (e.g. &lt;40%) is an example of:</h4>
+      <div class="quiz-option" data-correct="false">A. Machine learning inference</div>
+      <div class="quiz-option" data-correct="true">B. Rule-based automation</div>
+      <div class="quiz-option" data-correct="false">C. Unsupervised learning</div>
+      <div class="quiz-option" data-correct="false">D. Federated learning</div>
+      <div class="quiz-explanation">A simple if-then threshold rule is rule-based automation, NOT machine learning. ML would involve training a model on historical data to predict optimal irrigation schedules. The portal always clearly distinguishes these two approaches.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MODULE 2 — ARCHITECTURE ======== -->
+<div id="mod2" class="card mb-3">
+  <div class="card-header"><span class="icon">🏛️</span><h3>Module 2 — End-to-End AIoT Architecture <small>Click each layer to explore its responsibilities</small></h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE</span>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">The AIoT stack is organised into six functional layers. Data flows upward from physical sensors to applications, while control decisions and commands flow back down. Click any layer to see its details.</p>
+  <div class="arch-container">
+    <div class="arch-layers">
+      <div class="layer-box sel" onclick="selectLayer(this,'l6')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><span style="font-size:0.7rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;">Layer 6</span><div style="font-weight:700;color:var(--white);">📱 Application, Visualisation &amp; Decision Layer</div><div style="font-size:0.75rem;color:var(--green);">Grafana · Custom Dashboards · Mobile Apps · Actuator APIs</div></div>
+          <span style="color:var(--cyan);font-size:1.1rem;">▼</span>
+        </div>
+        <div class="layer-detail" id="l6">
+          <p><strong>Responsibilities:</strong> User interface, alert visualisation, closed-loop actuator control, reporting</p>
+          <p><strong>Data In:</strong> Analytics outputs, recommendations, anomaly scores, predictions</p>
+          <p><strong>Data Out:</strong> Display, alerts to users, actuator commands (e.g. turn fan ON), scheduled reports</p>
+          <p><strong>Key design choices:</strong> Role-based access, alert thresholds, dashboard layout for projector use</p>
+          <p><strong>Failure points:</strong> Misconfigured alerts causing alarm fatigue; actuator commands sent without safety checks</p>
+        </div>
+      </div>
+      <div class="arch-flow-arrow">▲ Recommendations &amp; Commands &nbsp;|&nbsp; ▼ Display &amp; Actions</div>
+      <div class="layer-box" onclick="selectLayer(this,'l5')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><span style="font-size:0.7rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.08em;">Layer 5</span><div style="font-weight:700;color:var(--white);">🤖 AI/ML Analytics Layer</div><div style="font-size:0.75rem;color:var(--amber);">scikit-learn · TensorFlow Lite · ONNX Runtime · Python</div></div>
+          <span style="color:var(--cyan);font-size:1.1rem;">▼</span>
+        </div>
+        <div class="layer-detail" id="l5">
+          <p><strong>Responsibilities:</strong> Pattern recognition, anomaly detection, classification, regression, prediction</p>
+          <p><strong>Data In:</strong> Historical &amp; streaming sensor data, feature vectors</p>
+          <p><strong>Data Out:</strong> Predictions, anomaly scores, classifications, recommended actions with method labels</p>
+          <p><strong>Common models:</strong> Isolation Forest (anomaly), Random Forest (classification), Linear Regression (trend), K-Means (clustering)</p>
+          <p><strong>Important:</strong> Always label whether output comes from a threshold rule, statistical method, or trained ML model. Never mix them up.</p>
+        </div>
+      </div>
+      <div class="arch-flow-arrow">▲ Analytics Queries &nbsp;|&nbsp; ▼ Predictions</div>
+      <div class="layer-box" onclick="selectLayer(this,'l4')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><span style="font-size:0.7rem;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:0.08em;">Layer 4</span><div style="font-weight:700;color:var(--white);">☁️ Cloud &amp; Data Platform Layer</div><div style="font-size:0.75rem;color:var(--cyan);">AWS IoT Core · Azure IoT Hub · ThingsBoard · InfluxDB · Node-RED</div></div>
+          <span style="color:var(--cyan);font-size:1.1rem;">▼</span>
+        </div>
+        <div class="layer-detail" id="l4">
+          <p><strong>Responsibilities:</strong> Long-term time-series storage, global accessibility, device management, large-scale data ingestion</p>
+          <p><strong>Data In:</strong> MQTT messages / HTTP POST from edge devices and gateways</p>
+          <p><strong>Data Out:</strong> Historical data for ML training, dashboards, alerts, device management commands</p>
+          <p><strong>Failure points:</strong> Internet dependency, cloud outages affecting availability, data ingestion lag</p>
+        </div>
+      </div>
+      <div class="arch-flow-arrow">▲ Filtered Data &nbsp;|&nbsp; ▼ Cloud Commands</div>
+      <div class="layer-box" onclick="selectLayer(this,'l3')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><span style="font-size:0.7rem;font-weight:700;color:var(--teal,#00897b);text-transform:uppercase;letter-spacing:0.08em;">Layer 3</span><div style="font-weight:700;color:var(--white);">⚙️ Edge &amp; Embedded Processing Layer</div><div style="font-size:0.75rem;color:#4dd0e1;">ESP32 · Raspberry Pi 4 · NVIDIA Jetson · Arduino (limited)</div></div>
+          <span style="color:var(--cyan);font-size:1.1rem;">▼</span>
+        </div>
+        <div class="layer-detail" id="l3">
+          <p><strong>Responsibilities:</strong> Local data filtering, aggregation, protocol bridging, edge inference (TinyML)</p>
+          <p><strong>Data In:</strong> Raw sensor readings (GPIO, I2C, SPI, UART)</p>
+          <p><strong>Data Out:</strong> Filtered readings, local alerts, MQTT/HTTP messages to cloud, actuator signals</p>
+          <p><strong>Why here?</strong> Reduces bandwidth, enables offline operation, preserves privacy of raw sensor data, lowers cloud cost</p>
+          <p><strong>Failure points:</strong> Limited RAM/compute for complex models; firmware bugs; power loss</p>
+        </div>
+      </div>
+      <div class="arch-flow-arrow">▲ Raw Signals &nbsp;|&nbsp; ▼ Structured Messages</div>
+      <div class="layer-box" onclick="selectLayer(this,'l2')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><span style="font-size:0.7rem;font-weight:700;color:var(--blue-bright,#1976d2);text-transform:uppercase;letter-spacing:0.08em;">Layer 2</span><div style="font-weight:700;color:var(--white);">📡 Connectivity &amp; Messaging Layer</div><div style="font-size:0.75rem;color:#64b5f6;">Wi-Fi · BLE · Zigbee · LoRaWAN · MQTT · HTTP/HTTPS · CoAP</div></div>
+          <span style="color:var(--cyan);font-size:1.1rem;">▼</span>
+        </div>
+        <div class="layer-detail" id="l2">
+          <p><strong>Responsibilities:</strong> Reliable data transport, message queuing (MQTT broker), protocol translation (gateway)</p>
+          <p><strong>Data In:</strong> Sensor readings and actuator commands from edge/cloud</p>
+          <p><strong>Data Out:</strong> JSON/CBOR payloads delivered to MQTT topics or HTTP endpoints</p>
+          <p><strong>Key protocol choice:</strong> Short-range/high-data → Wi-Fi; long-range/low-power → LoRaWAN; local mesh → Zigbee; low-power short-range → BLE</p>
+          <p><strong>Failure points:</strong> Network congestion, packet loss, QoS mismatches, unencrypted communication</p>
+        </div>
+      </div>
+      <div class="arch-flow-arrow">▲ Physical Phenomena &nbsp;|&nbsp; ▼ Digital Signals</div>
+      <div class="layer-box" onclick="selectLayer(this,'l1')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><span style="font-size:0.7rem;font-weight:700;color:#ff8a65;text-transform:uppercase;letter-spacing:0.08em;">Layer 1</span><div style="font-weight:700;color:var(--white);">🌡️ Physical / Sensing Layer</div><div style="font-size:0.75rem;color:#ffab91;">DHT22 · PIR · HC-SR04 · MQ-135 · Accelerometers · Actuators</div></div>
+          <span style="color:var(--cyan);font-size:1.1rem;">▼</span>
+        </div>
+        <div class="layer-detail" id="l1">
+          <p><strong>Responsibilities:</strong> Measure physical phenomena (temperature, motion, vibration), convert to electrical signals, actuate physical outputs</p>
+          <p><strong>Data In:</strong> Physical environment (heat, light, gas concentration, motion, pressure)</p>
+          <p><strong>Data Out:</strong> Analog voltages or digital signals (I2C, SPI, 1-Wire, PWM)</p>
+          <p><strong>Design choices:</strong> Sensor placement, sampling rate (Nyquist theorem), supply voltage (3.3V vs 5V), power source (battery vs mains)</p>
+          <p><strong>Failure points:</strong> Sensor drift over time (requires recalibration), electrical noise, corrosion, power loss, physical damage</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-info mt-2">
+    <span class="alert-icon">💡</span>
+    <span><strong>Data flow trace example:</strong> Temperature sensor reads 31.2°C → DHT22 outputs digital signal → ESP32 reads via GPIO → Applies moving average filter → Publishes to MQTT: <code>campus/room101/temperature {"value":31.2,"unit":"°C"}</code> → ThingsBoard ingests → Isolation Forest scores 0.78 → Dashboard alert: "Temperature elevated — recommend ventilation"</span>
+  </div>
+</div>
+
+<!-- ======== MODULE 3 — SENSORS ======== -->
+<div id="mod3" class="card mb-3">
+  <div class="card-header"><span class="icon">🌡️</span><h3>Module 3 — Sensors, Actuators &amp; Data Acquisition</h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE — Sample ranges shown for educational reference</span>
+  <div class="sensor-grid" style="margin-bottom:1.25rem;">
+    <div class="sensor-card"><div class="sensor-icon">🌡️</div><div class="sensor-name">Temperature</div><div class="sensor-value" style="font-size:1.2rem;">DHT22</div><div class="sensor-unit">-40 to 80°C · ±0.5°C</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Digital · I2C / 1-Wire</div></div>
+    <div class="sensor-card"><div class="sensor-icon">💧</div><div class="sensor-name">Humidity</div><div class="sensor-value" style="font-size:1.2rem;">DHT22</div><div class="sensor-unit">0–100%RH · ±2–5%</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Digital · Same package as temp</div></div>
+    <div class="sensor-card"><div class="sensor-icon">📡</div><div class="sensor-name">Ultrasonic</div><div class="sensor-value" style="font-size:1.2rem;">HC-SR04</div><div class="sensor-unit">2–400 cm range</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Digital pulse · 5V (use divider for 3.3V)</div></div>
+    <div class="sensor-card"><div class="sensor-icon">👁️</div><div class="sensor-name">PIR Motion</div><div class="sensor-value" style="font-size:1.2rem;">HC-SR501</div><div class="sensor-unit">7m range · 120° cone</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Digital HIGH/LOW output</div></div>
+    <div class="sensor-card"><div class="sensor-icon">💨</div><div class="sensor-name">Gas / Air Quality</div><div class="sensor-value" style="font-size:1.2rem;">MQ-135</div><div class="sensor-unit">CO₂, NH₃, NOₓ</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Analog output · Needs calibration</div></div>
+    <div class="sensor-card"><div class="sensor-icon">📳</div><div class="sensor-name">Vibration</div><div class="sensor-value" style="font-size:1.2rem;">MPU-6050</div><div class="sensor-unit">±2g to ±16g</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Digital I2C · Accel + Gyro</div></div>
+    <div class="sensor-card"><div class="sensor-icon">🌱</div><div class="sensor-name">Soil Moisture</div><div class="sensor-value" style="font-size:1.2rem;">HL-69</div><div class="sensor-unit">Relative 0–100%</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Analog output · Needs calibration per soil type</div></div>
+    <div class="sensor-card"><div class="sensor-icon">💡</div><div class="sensor-name">Light Intensity</div><div class="sensor-value" style="font-size:1.2rem;">BH1750</div><div class="sensor-unit">1–65535 lux</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Digital I2C · 16-bit resolution</div></div>
+    <div class="sensor-card"><div class="sensor-icon">⏱️</div><div class="sensor-name">Pressure</div><div class="sensor-value" style="font-size:1.2rem;">BMP280</div><div class="sensor-unit">300–1100 hPa</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Digital I2C/SPI · Also measures temp</div></div>
+    <div class="sensor-card"><div class="sensor-icon">💧</div><div class="sensor-name">Water Level</div><div class="sensor-value" style="font-size:1.2rem;">Float/Ultrasonic</div><div class="sensor-unit">0–100% tank</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Ultrasonic or capacitive variants</div></div>
+  </div>
+  <div class="alert alert-warning">
+    <span class="alert-icon">⚠️</span>
+    <span>Always consult the manufacturer's datasheet before connecting any sensor. Pay attention to supply voltage (3.3V vs 5V), current limits, and GPIO compatibility. ESP32 GPIO pins are 3.3V only — connecting 5V directly will damage the chip.</span>
+  </div>
+</div>
+
+<!-- ======== MODULE 4 — HARDWARE ======== -->
+<div id="mod4" class="card mb-3">
+  <div class="card-header"><span class="icon">💻</span><h3>Module 4 — Embedded &amp; IoT Hardware</h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE — Specifications are approximate; verify against official datasheets</span>
+  <div style="overflow-x:auto;">
+    <table class="data-table" style="min-width:780px;">
+      <thead><tr><th>Platform</th><th>CPU/MCU</th><th>RAM</th><th>Connectivity</th><th>Edge AI</th><th>Typical Use</th><th>Approx. Cost</th></tr></thead>
+      <tbody class="hw-row">
+        <tr><td><strong style="color:var(--white);">Arduino Uno R3</strong></td><td class="mono">ATmega328P · 16MHz</td><td class="mono">2 KB</td><td>None built-in</td><td class="cross">Not suitable</td><td>Simple sensor reading, beginner prototyping</td><td>~₹500</td></tr>
+        <tr><td><strong style="color:var(--white);">ESP8266</strong></td><td class="mono">Tensilica L106 · 80MHz</td><td class="mono">80 KB</td><td>Wi-Fi 802.11 b/g/n</td><td class="cross">Very limited</td><td>Simple IoT sensor nodes, Wi-Fi data publish</td><td>~₹200</td></tr>
+        <tr><td><strong style="color:var(--cyan);">ESP32 DevKit ✓</strong></td><td class="mono">Xtensa LX6 dual-core · 240MHz</td><td class="mono">520 KB</td><td>Wi-Fi + BLE 4.2</td><td class="check">TinyML capable</td><td>AIoT edge nodes, sensor hubs, MQTT gateway</td><td>~₹400</td></tr>
+        <tr><td><strong style="color:var(--cyan);">Raspberry Pi 4B ✓</strong></td><td class="mono">Cortex-A72 quad-core · 1.8GHz</td><td class="mono">2/4/8 GB</td><td>Wi-Fi ac + BLE 5.0 + GbE</td><td class="check">scikit-learn, TFLite</td><td>Edge gateway, ML inference, Node-RED host</td><td>~₹4,500</td></tr>
+        <tr><td><strong style="color:var(--white);">NVIDIA Jetson Nano</strong></td><td class="mono">Cortex-A57 quad + 128 CUDA</td><td class="mono">4 GB LPDDR4</td><td>GbE (USB Wi-Fi optional)</td><td class="check">GPU-accelerated DL</td><td>Computer vision, real-time deep learning inference</td><td>~₹12,000</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="alert alert-info mt-2"><span class="alert-icon">💡</span><span>Costs are illustrative estimates (INR, November 2026). Always purchase from authorised distributors. Verify stock availability before the session.</span></div>
+</div>
+
+<!-- ======== MODULE 5 — PROTOCOLS ======== -->
+<div id="mod5" class="card mb-3">
+  <div class="card-header"><span class="icon">📡</span><h3>Module 5 — Connectivity &amp; Messaging Protocols</h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE</span>
+  <div style="overflow-x:auto;margin-bottom:1.25rem;">
+    <table class="data-table" style="min-width:680px;">
+      <thead><tr><th>Protocol</th><th>Range</th><th>Data Rate</th><th>Power</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Wi-Fi (802.11n)</strong></td><td>~50m indoor</td><td>Up to 150 Mbps</td><td>High</td><td>High-bandwidth IoT, video, local dashboards</td></tr>
+        <tr><td><strong>BLE 5.0</strong></td><td>10–40m</td><td>2 Mbps</td><td>Very Low</td><td>Wearables, beacons, short-range sensor nodes</td></tr>
+        <tr><td><strong>Zigbee (802.15.4)</strong></td><td>10–100m mesh</td><td>250 kbps</td><td>Low</td><td>Smart home mesh, building automation</td></tr>
+        <tr><td><strong>LoRaWAN</strong></td><td>2–15 km</td><td>0.3–50 kbps</td><td>Ultra-Low</td><td>Agriculture, cities — remote, battery-powered sensors</td></tr>
+        <tr><td><strong>4G/5G Cellular</strong></td><td>Km scale</td><td>Up to Gbps (5G)</td><td>Medium-High</td><td>Mobile assets, vehicles, where network is needed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4 style="color:var(--cyan);margin-bottom:0.75rem;">MQTT Publisher → Broker → Subscriber</h4>
+  <div class="mqtt-flow" style="display:grid;grid-template-columns:1fr 50px 1fr 50px 1fr;align-items:center;gap:0;">
+    <div class="mqtt-node"><div class="icon">📟</div><h5>Publisher</h5><p>ESP32 sensor node</p><div class="terminal" style="margin-top:0.5rem;font-size:0.7rem;">client.publish(<br>&nbsp;"campus/room101/<br>&nbsp;temperature",<br>&nbsp;'{"value":26.4}');</div></div>
+    <div class="mqtt-arrow">→</div>
+    <div class="mqtt-node"><div class="icon">🔀</div><h5>MQTT Broker</h5><p>Mosquitto / EMQX</p><p style="font-size:0.72rem;color:var(--text-muted);">Routes messages by topic. QoS 0/1/2. Retained messages.</p></div>
+    <div class="mqtt-arrow">→</div>
+    <div class="mqtt-node"><div class="icon">📊</div><h5>Subscriber</h5><p>ThingsBoard / Dashboard</p><div class="terminal" style="margin-top:0.5rem;font-size:0.7rem;">client.subscribe(<br>&nbsp;"campus/#")<br><span class="comment"># receives all campus topics</span></div></div>
+  </div>
+</div>
+
+<!-- ======== MODULE 6-7 ======== -->
+<div id="mod6" class="card mb-3">
+  <div class="card-header"><span class="icon">⚙️</span><h3>Module 6 — Edge Computing &amp; Edge AI</h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE — Metrics shown are conceptual, not measured benchmarks</span>
+  <div class="grid-2" style="gap:1rem;">
+    <div class="system-card" style="border-top:3px solid var(--cyan);">
+      <h5 style="color:var(--cyan);margin-bottom:0.6rem;">⚙️ Edge Processing</h5>
+      <ul style="font-size:0.8rem;color:var(--text-muted);line-height:2;padding-left:1.2rem;">
+        <li>Latency: Milliseconds (no round-trip)</li>
+        <li>Works offline — no internet needed</li>
+        <li>Data stays on device (privacy)</li>
+        <li>Bandwidth: Only sends summaries to cloud</li>
+        <li>Compute: Limited by MCU/SBC hardware</li>
+        <li>Best for: Safety-critical, real-time decisions</li>
+      </ul>
+    </div>
+    <div class="system-card" style="border-top:3px solid var(--blue);">
+      <h5 style="color:var(--blue-bright,#1976d2);margin-bottom:0.6rem;">☁️ Cloud Processing</h5>
+      <ul style="font-size:0.8rem;color:var(--text-muted);line-height:2;padding-left:1.2rem;">
+        <li>Latency: Hundreds of ms to seconds</li>
+        <li>Requires reliable internet connectivity</li>
+        <li>Raw data leaves device (privacy risk)</li>
+        <li>Unlimited scalable compute</li>
+        <li>ML training on large datasets</li>
+        <li>Best for: Historical analytics, large-scale ML, global dashboards</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="mod7" class="card mb-3">
+  <div class="card-header"><span class="icon">☁️</span><h3>Module 7 — Cloud Integration &amp; IoT Platforms</h3></div>
+  <div class="alert alert-warning"><span class="alert-icon">⚠️</span><span>The platforms below are presented as educational examples. The portal does not imply that any cloud account, service, or live integration exists or has been configured. Do not claim a live connection to any external service unless it has actually been set up and tested.</span></div>
+  <div class="grid-3" style="gap:1rem;margin-top:1rem;">
+    <div class="system-card"><h5 style="color:var(--white);margin-bottom:0.35rem;">🔴 AWS IoT Core</h5><p style="font-size:0.78rem;color:var(--text-muted);">Managed MQTT broker + device registry + rules engine. Connects to Lambda, DynamoDB, S3 for full data pipeline.</p></div>
+    <div class="system-card"><h5 style="color:var(--white);margin-bottom:0.35rem;">🔵 Azure IoT Hub</h5><p style="font-size:0.78rem;color:var(--text-muted);">Microsoft's IoT gateway. Device-to-cloud telemetry, cloud-to-device commands. Pairs with Stream Analytics, Cosmos DB.</p></div>
+    <div class="system-card"><h5 style="color:var(--white);margin-bottom:0.35rem;">🟡 ThingsBoard</h5><p style="font-size:0.78rem;color:var(--text-muted);">Open-source IoT platform. Free Community Edition. Rule chains, real-time dashboards, device management. Can self-host on Raspberry Pi.</p></div>
+    <div class="system-card"><h5 style="color:var(--white);margin-bottom:0.35rem;">🔴 Node-RED</h5><p style="font-size:0.78rem;color:var(--text-muted);">Flow-based visual programming. Runs locally on Pi. Excellent for prototyping MQTT → dashboard pipelines. Free and open-source.</p></div>
+    <div class="system-card"><h5 style="color:var(--white);margin-bottom:0.35rem;">📉 InfluxDB</h5><p style="font-size:0.78rem;color:var(--text-muted);">Time-series database purpose-built for IoT. Sub-second queries on millions of data points. Pairs with Grafana for visualisation.</p></div>
+    <div class="system-card"><h5 style="color:var(--white);margin-bottom:0.35rem;">📊 Grafana</h5><p style="font-size:0.78rem;color:var(--text-muted);">Open-source dashboard. Connects to InfluxDB, PostgreSQL, Prometheus. Used for IoT monitoring dashboards worldwide.</p></div>
+  </div>
+</div>
+
+<!-- ======== MODULE 8 — ML ======== -->
+<div id="mod8" class="card mb-3">
+  <div class="card-header"><span class="icon">🤖</span><h3>Module 8 — AI &amp; ML for Sensor Data</h3></div>
+  <span class="label-illustrative" style="margin-bottom:1rem;display:inline-flex;">📖 ILLUSTRATIVE EXAMPLE — Chart shows synthetic data for teaching purposes</span>
+  <div class="chart-container mb-3"><canvas id="ml-sensor-chart"></canvas></div>
+  <div style="overflow-x:auto;margin-bottom:1rem;">
+    <table class="data-table" style="min-width:680px;">
+      <thead><tr><th>Algorithm</th><th>Type</th><th>Sensor Use Case</th><th>Requires Labelled Data?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Linear Regression</strong></td><td>Supervised</td><td>Predict future temperature from trend</td><td>Yes (input-output pairs)</td></tr>
+        <tr><td><strong>Decision Tree</strong></td><td>Supervised</td><td>Classify equipment state (normal/warning/fault)</td><td>Yes</td></tr>
+        <tr><td><strong>Random Forest</strong></td><td>Supervised Ensemble</td><td>Predict maintenance need from vibration features</td><td>Yes (many labeled examples)</td></tr>
+        <tr><td><strong>SVM</strong></td><td>Supervised</td><td>Classify crop disease from soil/env sensor features</td><td>Yes</td></tr>
+        <tr><td><strong>K-Means Clustering</strong></td><td>Unsupervised</td><td>Group similar occupancy patterns across rooms</td><td>No (discovers structure)</td></tr>
+        <tr><td><strong>Isolation Forest</strong></td><td>Unsupervised (Anomaly)</td><td>Detect unusual vibration in equipment without fault labels</td><td>No (learns "normal" behaviour)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid-2" style="gap:1rem;">
+    <div class="system-card"><h5 style="color:var(--cyan);margin-bottom:0.4rem;">📊 Regression Metrics</h5><ul style="font-size:0.78rem;color:var(--text-muted);padding-left:1.2rem;line-height:1.9;"><li><strong>MAE</strong> — Mean Absolute Error: average magnitude of errors</li><li><strong>RMSE</strong> — Root Mean Square Error: penalises large errors more</li><li><strong>R²</strong> — Coefficient of determination: proportion of variance explained</li></ul></div>
+    <div class="system-card"><h5 style="color:var(--cyan);margin-bottom:0.4rem;">🎯 Classification Metrics</h5><ul style="font-size:0.78rem;color:var(--text-muted);padding-left:1.2rem;line-height:1.9;"><li><strong>Accuracy</strong> — Correct predictions / total (misleading with imbalanced classes)</li><li><strong>Precision</strong> — True positives / (TP + FP) — avoid false alarms</li><li><strong>Recall</strong> — True positives / (TP + FN) — avoid missed faults</li><li><strong>F1-Score</strong> — Harmonic mean of precision and recall</li></ul></div>
+  </div>
+</div>
+
+<!-- ======== MODULES 9-13 (Summary + Links) ======== -->
+<div id="mod9" class="card mb-3">
+  <div class="card-header"><span class="icon">🔬</span><h3>Module 9 — Guided AIoT Virtual Laboratory</h3></div>
+  <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:1rem;">Five interactive experiments are available in the Virtual Lab. Each includes input controls, live-updating charts labelled SIMULATED, alert generation, decision traces and reset/replay controls. No hardware required.</p>
+  <div class="grid-3" style="gap:0.75rem;margin-bottom:1rem;">
+    <div class="system-card"><div style="font-size:1.4rem;margin-bottom:0.3rem;">🌡️</div><h5 style="color:var(--white);">A — Environmental Monitoring</h5><p style="font-size:0.78rem;color:var(--text-muted);">Temperature, humidity, air quality thresholds and alerts</p></div>
+    <div class="system-card"><div style="font-size:1.4rem;margin-bottom:0.3rem;">🔧</div><h5 style="color:var(--white);">B — Predictive Maintenance</h5><p style="font-size:0.78rem;color:var(--text-muted);">Vibration anomaly detection with fault injection</p></div>
+    <div class="system-card"><div style="font-size:1.4rem;margin-bottom:0.3rem;">🌾</div><h5 style="color:var(--white);">C — Smart Agriculture</h5><p style="font-size:0.78rem;color:var(--text-muted);">Soil moisture, irrigation pump simulation</p></div>
+    <div class="system-card"><div style="font-size:1.4rem;margin-bottom:0.3rem;">⚡</div><h5 style="color:var(--white);">D — Energy Management</h5><p style="font-size:0.78rem;color:var(--text-muted);">Room-level consumption, anomaly and forecast</p></div>
+    <div class="system-card"><div style="font-size:1.4rem;margin-bottom:0.3rem;">🏫</div><h5 style="color:var(--white);">E — Smart Campus</h5><p style="font-size:0.78rem;color:var(--text-muted);">Integrated multi-zone campus dashboard</p></div>
+  </div>
+  <a href="../../pages/lab/index.html" class="btn btn-primary">🔬 Launch Virtual Laboratory →</a>
+</div>
+
+<div id="mod10" class="card mb-3">
+  <div class="card-header"><span class="icon">🌍</span><h3>Module 10 — Real-World AIoT Applications</h3></div>
+  <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:1rem;">Detailed case studies with architecture, AI methods and limitations are in the Applications Gallery.</p>
+  <div class="grid-4" style="gap:0.75rem;margin-bottom:1rem;">
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">🏙️</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Smart Cities</div></div>
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">🏥</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Healthcare</div></div>
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">🌾</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Agriculture</div></div>
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">🏭</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Industry 4.0</div></div>
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">🚌</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Transportation</div></div>
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">🎓</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Education</div></div>
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">🛡️</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Defence</div></div>
+    <div class="system-card" style="text-align:center;"><div style="font-size:1.5rem;">💧</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-top:0.3rem;">Water/Utilities</div></div>
+  </div>
+  <a href="../../pages/applications.html" class="btn btn-secondary">🌍 Open Application Gallery →</a>
+</div>
+
+<div id="mod11" class="card mb-3">
+  <div class="card-header"><span class="icon">🔒</span><h3>Module 11 — AIoT Security, Privacy &amp; Responsible Design</h3></div>
+  <div class="grid-2" style="gap:1rem;">
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.6rem;">Security Measures</h5>
+      <ul style="font-size:0.82rem;color:var(--text-muted);line-height:2;padding-left:1.2rem;">
+        <li>Device authentication (X.509 certificates, JWT tokens)</li>
+        <li>TLS/SSL encryption for all MQTT and HTTP traffic</li>
+        <li>Firmware signing and secure boot</li>
+        <li>Network segmentation — IoT devices on separate VLAN</li>
+        <li>Minimal exposed ports and services</li>
+        <li>Regular firmware updates and vulnerability patching</li>
+        <li>Never hardcode credentials — use secure key stores</li>
+      </ul>
+    </div>
+    <div>
+      <h5 style="color:var(--cyan);margin-bottom:0.6rem;">Privacy &amp; Responsible AI</h5>
+      <ul style="font-size:0.82rem;color:var(--text-muted);line-height:2;padding-left:1.2rem;">
+        <li>Data minimisation — collect only what is needed</li>
+        <li>Consent and transparency with data subjects</li>
+        <li>Purpose limitation — don't repurpose data</li>
+        <li>Data retention policies — delete when no longer needed</li>
+        <li>Explainable AI — label every decision with its method</li>
+        <li>Human oversight for safety-critical decisions</li>
+        <li>Bias awareness in training data and model outputs</li>
+      </ul>
+    </div>
+  </div>
+  <div class="alert alert-danger mt-2"><span class="alert-icon">⚠️</span><span>This module raises awareness of threats for defensive purposes only. No offensive attack methods, malware techniques or exploitation details are discussed.</span></div>
+</div>
+
+<div id="mod12" class="card mb-3">
+  <div class="card-header"><span class="icon">🎨</span><h3>Module 12 — Faculty Design Activity</h3></div>
+  <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:1rem;">Use the interactive Architecture Canvas in the Project Studio to design your own AIoT solution concept during this session.</p>
+  <a href="../../pages/projects.html" class="btn btn-primary">🚀 Open Project Studio &amp; Design Canvas →</a>
+</div>
+
+<div id="mod13" class="card mb-3">
+  <div class="card-header"><span class="icon">📝</span><h3>Module 13 — Assessment &amp; Reflection</h3></div>
+  <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:1rem;">Test your understanding of Day 1 with MCQs, scenario questions and architecture challenges.</p>
+  <a href="../../pages/assessment.html" class="btn btn-primary">📝 Take Day 1 Assessment →</a>
+</div>
+
+<!-- NAV BUTTONS -->
+<div class="flex-between mt-3" style="padding:0.5rem 0 2rem;">
+  <a href="../../index.html" class="btn btn-outline">← Home</a>
+  <div class="flex gap-2">
+    <a href="../../pages/lab/index.html" class="btn btn-secondary">🔬 Virtual Lab</a>
+    <a href="../../pages/campus.html" class="btn btn-secondary">🏫 Smart Campus Demo</a>
+    <a href="../../pages/day2/index.html" class="btn btn-primary">Day 2 →</a>
+  </div>
+</div>
+
+<script src="../../assets/js/portal.js"></script>
+<script src="../../assets/js/nav.js"></script>
+<script>
+function selectLayer(el, detailId) {
+  document.querySelectorAll('.layer-box').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+document.addEventListener('DOMContentLoaded', () => {
+  // ML Sensor Chart
+  const labels = Array.from({length:30}, (_,i) => `T-${30-i}`);
+  const baseTemp = labels.map((_,i) => 22 + Math.sin(i*0.3)*3 + Math.random()*1.5);
+  baseTemp[20] = 34.8; baseTemp[21] = 35.2; // anomaly spike
+  ChartManager.createLineChart('ml-sensor-chart', labels, [
+    { label: 'Temperature (°C)', data: baseTemp, borderColor: '#00bcd4', backgroundColor: 'rgba(0,188,212,0.1)' },
+    { label: 'Normal Range Upper', data: labels.map(()=>30), borderColor: 'rgba(244,67,54,0.6)', backgroundColor: 'transparent', borderDash:[5,5], pointRadius:0 },
+  ]);
+  initTabs(); initAccordion(); initQuiz(); initArchDiagram(); updateProgress();
+});
+</script>
+</body>
+</html>

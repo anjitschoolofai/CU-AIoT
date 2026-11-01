@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AIoT Research Portal — Crescent University</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Portal Master Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  
+  <style>
+    /* Specific Layout & Alignment Overrides for Research Portal */
+    :root {
+      --font-academic: "Times New Roman", Times, Georgia, serif;
+    }
+
+    body {
+      background: var(--navy);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Banner */
+    .research-header {
+      background: rgba(10, 22, 40, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .research-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+    }
+    .research-logo-box {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: var(--navy);
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.35);
+    }
+    .research-logo-text h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--white);
+      margin: 0;
+      line-height: 1.2;
+    }
+    .research-logo-text span {
+      font-size: 0.72rem;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .research-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .research-nav-links a {
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .research-nav-links a:hover {
+      color: var(--cyan);
+      background: rgba(0, 188, 212, 0.1);
+    }
+
+    /* Hero Section */
+    .research-hero {
+      background: linear-gradient(135deg, rgba(17, 34, 64, 0.9), rgba(30, 58, 95, 0.6));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2.5rem;
+      margin: 1.75rem 2rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .research-hero::after {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(0, 188, 212, 0.18), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .research-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(0, 188, 212, 0.14);
+      color: var(--cyan);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid var(--cyan);
+      margin-bottom: 0.75rem;
+    }
+    .research-hero h2 {
+      font-size: 1.85rem;
+      color: var(--white);
+      margin: 0 0 0.5rem;
+      line-height: 1.25;
+    }
+    .research-hero p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      max-width: 900px;
+      margin: 0;
+      line-height: 1.6;
+    }
+    .research-hero-meta {
+      display: flex;
+      gap: 1.75rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .research-hero-meta span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .research-hero-meta span strong {
+      color: var(--cyan-light);
+    }
+
+    /* Filter & Search Bar */
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 2rem 1.25rem;
+      padding: 1rem 1.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex: 1 1 320px;
+      background: rgba(10, 22, 40, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.45rem 0.9rem;
+      transition: border-color var(--transition);
+    }
+    .search-input-wrap:focus-within {
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+    }
+    .search-input-wrap input {
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 0.86rem;
+      width: 100%;
+      outline: none;
+      font-family: inherit;
+    }
+    .chips-group {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .chip-btn {
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .chip-btn:hover {
+      border-color: var(--cyan);
+      color: var(--text-primary);
+    }
+    .chip-btn.active {
+      background: var(--cyan);
+      color: var(--navy);
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+    }
+
+    /* Main Grid Layout */
+    .portal-main-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 400px) 1fr;
+      gap: 1.5rem;
+      padding: 0 2rem 2.5rem;
+      align-items: start;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (max-width: 992px) {
+      .portal-main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Paper Selector List */
+    .papers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 78vh;
+      overflow-y: auto;
+      padding-right: 0.35rem;
+    }
+    .paper-card-item {
+      text-align: left;
+      padding: 1rem 1.15rem;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--border);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+      width: 100%;
+    }
+    .paper-card-item:hover {
+      border-color: rgba(0, 188, 212, 0.4);
+      border-left-color: var(--cyan);
+      background: rgba(0, 188, 212, 0.08);
+      transform: translateX(3px);
+    }
+    .paper-card-item.selected {
+      border-color: var(--cyan);
+      border-left-color: var(--cyan-glow);
+      background: rgba(0, 188, 212, 0.14);
+      box-shadow: 0 0 16px rgba(0, 188, 212, 0.2);
+    }
+    .paper-card-title {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.35;
+      margin-bottom: 0.35rem;
+    }
+    .paper-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+    .paper-category-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .cat-Paper    { background: rgba(0, 200, 83, 0.2); color: #69f0ae; border: 1px solid rgba(0, 200, 83, 0.4); }
+    .cat-Preprint { background: rgba(255, 143, 0, 0.2); color: #ffb74d; border: 1px solid rgba(255, 143, 0, 0.4); }
+    .cat-Report   { background: rgba(21, 101, 192, 0.2); color: #64b5f6; border: 1px solid rgba(21, 101, 192, 0.4); }
+    .cat-Book     { background: rgba(171, 71, 188, 0.2); color: #ba68c8; border: 1px solid rgba(171, 71, 188, 0.4); }
+
+    /* Detail View Container */
+    .detail-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2.25rem;
+      box-shadow: var(--shadow);
+      min-width: 0;
+      position: relative;
+    }
+    .detail-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .detail-header-text h3 {
+      font-size: 1.45rem;
+      color: var(--white);
+      margin: 0 0 0.4rem;
+      line-height: 1.3;
+    }
+    .detail-meta-line {
+      font-size: 0.82rem;
+      color: var(--cyan);
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Sub Tabs */
+    .detail-tabs {
+      display: flex;
+      gap: 0.35rem;
+      border-bottom: 1px solid var(--border);
+      margin: 1.25rem 0 1.5rem;
+      flex-wrap: wrap;
+    }
+    .detail-tab-btn {
+      padding: 0.65rem 1.25rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+    .detail-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .detail-tab-btn.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+    }
+
+    /* Content Typography & Sections */
+    .section-h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--cyan-light);
+      margin: 1.25rem 0 0.45rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .body-p {
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+      max-width: 95ch;
+    }
+
+    /* Academic Typography Toggle Mode */
+    .academic-mode {
+      font-family: var(--font-academic) !important;
+      font-size: 14px !important;
+      line-height: 1.65 !important;
+    }
+    .academic-mode h3 {
+      font-family: var(--font-academic) !important;
+      font-size: 22px !important;
+    }
+    .academic-mode .section-h4 {
+      font-family: var(--font-academic) !important;
+      font-size: 16px !important;
+      color: var(--cyan) !important;
+    }
+    .academic-mode .body-p {
+      font-family: var(--font-academic) !important;
+      font-size: 14px !important;
+    }
+
+    /* Implementation Flow Badges */
+    .flow-badge-cluster {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin: 0.85rem 0 1.25rem;
+    }
+    .flow-badge-item {
+      padding: 0.45rem 0.9rem;
+      border: 1px solid rgba(0, 188, 212, 0.4);
+      border-radius: 6px;
+      background: rgba(0, 188, 212, 0.12);
+      color: var(--cyan-light);
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+      font-size: 0.85rem;
+    }
+
+    /* Canvas Simulator Box */
+    .canvas-container-box {
+      background: #060d17;
+      border: 1px solid rgba(0, 188, 212, 0.35);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin: 1rem 0;
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.5);
+    }
+    .sim-canvas-viewport {
+      width: 100%;
+      height: 300px;
+      display: block;
+      background: #030810;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sim-tool-row {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sim-tool-row input[type="range"] {
+      flex: 1 1 200px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+    .sim-terminal-output {
+      padding: 0.85rem 1.15rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 143, 0, 0.3);
+      border-left: 5px solid var(--amber);
+      background: rgba(255, 143, 0, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--off-white);
+      margin-top: 1rem;
+      line-height: 1.55;
+    }
+
+    /* Footer */
+    .research-footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      background: rgba(10, 22, 40, 0.95);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .research-footer a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= TOP HEADER NAVIGATION ================= -->
+  <header class="research-header">
+    <a href="../index.html" class="research-logo">
+      <div class="research-logo-box">AI<span style="font-size:0.55em">oT</span></div>
+      <div class="research-logo-text">
+        <h1>AIoT Research Portal</h1>
+        <span>Crescent University &bull; FDP 2026</span>
+      </div>
+    </a>
+    <nav class="research-nav-links">
+      <a href="../index.html">🏠 Home</a>
+      <a href="day1/index.html">Day 1</a>
+      <a href="day2/index.html">Day 2</a>
+      <a href="applications.html">Applications</a>
+      <a href="projects.html">Project Studio</a>
+      <a href="lab/index.html">Virtual Lab</a>
+      <a href="campus.html">Smart Campus</a>
+      <a href="assessment.html">Assessment</a>
+    </nav>
+  </header>
+
+  <!-- ================= HERO INTRO ================= -->
+  <section class="research-hero">
+    <div class="research-tag">🔬 Research Papers &amp; Interactive Models</div>
+    <h2>15 Online Sources on Artificial Intelligence of Things (AIoT)</h2>
+    <p>
+      Explore verified peer-reviewed research papers, institutional preprints, datasets, and industrial reports.
+      Inspect each study's core theme, abstract summary, end-to-end AIoT architecture flow, and execute real-time mathematical simulation models.
+    </p>
+    <div class="research-hero-meta">
+      <span>👤 Resource Person: <strong>Prof. R. Anjit Raja</strong></span>
+      <span>🏫 Institution: <strong>Crescent University</strong></span>
+      <span>📅 Date: <strong>3–4 November 2026</strong></span>
+      <span>⚡ <strong>15 Papers &bull; 7 Interactive Simulators</strong></span>
+    </div>
+  </section>
+
+  <!-- ================= SEARCH & CATEGORY CHIPS ================= -->
+  <div class="filter-bar">
+    <div class="search-input-wrap">
+      <span style="font-size:1.1rem; color:var(--cyan);">🔍</span>
+      <input id="q" type="search" placeholder="Search by paper title, research theme, author, or use case..." aria-label="Search papers">
+    </div>
+    <div class="chips-group">
+      <span id="chips" style="display:contents"></span>
+      <div style="width:1px; height:24px; background:var(--border); margin:0 0.4rem;"></div>
+      <button class="chip-btn" id="btn-academic-font" title="Toggle formal Times New Roman 14pt typography as specified in FDP guidelines">
+        📜 Academic Typography
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MAIN TWO-COLUMN WORKSPACE ================= -->
+  <main class="portal-main-grid">
+
+    <!-- LEFT COLUMN: PAPERS LIST -->
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; padding:0 0.2rem;">
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em;">
+          Select Paper to Inspect &amp; Simulate
+        </span>
+        <span id="counter-label" style="font-size:0.75rem; color:var(--cyan); font-weight:600;">15 papers</span>
+      </div>
+      <nav id="list" class="papers-list" aria-label="Papers List">
+        <!-- Rendered by JavaScript -->
+      </nav>
+    </div>
+
+    <!-- RIGHT COLUMN: DETAILED INSPECTOR & SIMULATOR -->
+    <div>
+      <section id="det" class="detail-panel" aria-live="polite">
+        <!-- Populated by JavaScript -->
+      </section>
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="research-footer">
+    <div>
+      <strong>AIoT Faculty Development Programme</strong> &bull; Resource Person: <strong>Prof. R. Anjit Raja</strong> &bull; Crescent University
+    </div>
+    <div>
+      <span>3–4 November 2026</span> &bull; 
+      <a href="../index.html">← Back to Portal Home</a>
+    </div>
+  </footer>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+  /* 15 Peer-Reviewed Sources on AIoT Implementation */
+  const P = [
+    {
+      c: "Paper",
+      t: "The inNuCE Research Infrastructure and the Neuromorphic MLOps for AIoT Prototyping",
+      v: "IEEE Internet of Things Journal 13(9), pp. 19286–19299, 2026",
+      u: "https://iris.polito.it/handle/11583/3009017",
+      th: "Prototyping AIoT on neuromorphic hardware & cloud-native MLOps",
+      ab: "The paper presents a cloud-based research infrastructure and a neuromorphic MLOps process for prototyping AIoT systems on heterogeneous edge resources such as neuromorphic chips, FPGAs, GPUs, and microcontrollers.",
+      wk: "Evaluated on human activity recognition (HAR), Braille tactile reading, event-based gesture recognition, navigation tracking, and neuromorphic constraint satisfaction problems.",
+      im: ["Sensor events", "Containerized toolchain", "Neuromorphic chip / FPGA / MCU", "Automated Evaluation"],
+      imt: "A cloud prototyping platform supports the NMLOps process with containerized toolchains, so the same model can be built, quantized, and tested across different hardware targets.",
+      s: "sig",
+      sl: "Event Activity Intensity",
+      cl: ["Resting State", "Walking / Dynamic Motion", "Running / High Intensity"]
+    },
+    {
+      c: "Paper",
+      t: "The AIoT Ecosystem for Next-Generation Satellite Systems",
+      v: "Physical Communication, Vol. 74, Article 102967, 2026",
+      u: "https://pure.kfupm.edu.sa/en/publications/the-aiot-ecosystem-for-next-generation-satellite-systems/",
+      th: "AIoT integration for space communications & ground networks",
+      ab: "The paper argues that AIoT is the core framework for future space communications, placing intelligent processing across space and ground infrastructure for autonomous constellation management.",
+      wk: "Covers ground station scheduling, dynamic network optimization, and predictive maintenance in Low Earth Orbit (LEO) satellite constellations.",
+      im: ["Satellite sensors", "Onboard Edge AI", "Ground station array", "Network optimizer"],
+      imt: "Keywords point to deep learning and GEO/LEO systems. Onboard intelligence handles real-time filtering and compresses data down to narrow contact pass windows.",
+      s: "sat",
+      sl: "Ground Station Density"
+    },
+    {
+      c: "Paper",
+      t: "A Conceptual Framework for Athlete Health Using AIoT, Wearables, and Personalized Performance Intelligence",
+      v: "University of Verona Institutional Repository, 2026",
+      u: "https://iris.univr.it/handle/11562/1193849",
+      th: "Wearable AIoT for personalized athletic health monitoring",
+      ab: "A conceptual framework that combines AIoT, biometric wearables, and personalized analytics to support athlete health, injury prevention, and athletic performance optimization.",
+      wk: "Wearable sensing with personalized performance intelligence; continuous multi-sensor telemetry for athletes.",
+      im: ["Wearable sensor node", "Smartphone edge hub", "Personalized ML model", "Coach feedback loop"],
+      imt: "Continuous multi-modal telemetry with on-device feature extraction preserving data privacy while maintaining low battery consumption.",
+      s: "sig",
+      sl: "Athletic Exertion Level",
+      cl: ["Recovery Zone", "Aerobic Conditioning Zone", "Peak Anaerobic Zone"]
+    },
+    {
+      c: "Paper",
+      t: "AIoT for Smart Agriculture: A Review of Architectures, Technologies and Solutions",
+      v: "Journal of Network and Computer Applications, Vol. 228 (Elsevier), 2024",
+      u: "https://doi.org/10.1016/j.jnca.2024.103905",
+      th: "Smart agriculture architectures, LPWAN and edge analytics",
+      ab: "A comprehensive review noting that AIoT is used in agriculture for environmental sustainability, food security, and precision farming across diverse deployment environments.",
+      wk: "Crop yield estimation, soil and water conservation, autonomous drip irrigation, pest and disease detection, and cold-chain supply management.",
+      im: ["Capacitive soil sensors", "LoRaWAN edge controller", "Evapotranspiration ML model", "Irrigation solenoid valve"],
+      imt: "Reviews hierarchical architectures and technologies where local edge gateways make closed-loop irrigation decisions based on soil moisture and ambient forecasts.",
+      s: "field",
+      sl: "Irrigation Trigger (% Soil Moisture)"
+    },
+    {
+      c: "Paper",
+      t: "AI and IoT Foresight to 2050: Case Studies in Healthcare and Smart Cities",
+      v: "FRAI Journals (Open Access, CC-BY), 2025",
+      u: "https://frai.journals.umz.ac.ir/article_5592_89183a4144b77c14bc0aa8a5354583f2.pdf",
+      th: "Long-term foresight scenarios, ethics and multi-agent AIoT",
+      ab: "Uses trend analysis and scenario planning to model AI and IoT convergence through 2050, presenting deep case studies in pervasive healthcare and intelligent urban infrastructure.",
+      wk: "Examines ethics, IoT cybersecurity, multi-agent autonomous systems, and sustainability across short, medium, and long-term horizons.",
+      im: ["Pervasive sensor streams", "Autonomous agent layer", "Decentralized policy checker", "Adaptive urban actuation"],
+      imt: "A strategic foresight framework showing evolutionary migration from cloud-centric IoT to fully sovereign edge multi-agent swarms.",
+      s: "fc",
+      sl: "Forecast Uncertainty Horizon"
+    },
+    {
+      c: "Paper",
+      t: "Smart Edge Computing, Big Data and IoT: Smart City as a Case Study",
+      v: "National Tsing Hua University (NTHU) Research Article",
+      u: "https://rd.nthu.edu.tw/userfiles/images/article/CC02.pdf",
+      th: "Edge AIoT testbeds for municipal smart cities",
+      ab: "Research on edge computing, big data, and IoT using an urban smart-city street-lighting and traffic testbed as the primary case study.",
+      wk: "Four key AIoT directions: heterogeneous gateways, edge computing in cellular networks, resource management, and deployment of distributed AIoT applications.",
+      im: ["Lamppost multi-sensors", "Edge gateway router", "Dynamic resource manager", "Municipal command center"],
+      imt: "A smart street-light testbed demonstrating dynamic dimming based on vehicular proximity, minimizing grid power draw while preserving public safety.",
+      s: "city",
+      sl: "Traffic Density & Flow"
+    },
+    {
+      c: "Preprint",
+      t: "AIoT-Driven Business Forecasting Models in Emerging Markets: Bangladesh Case Studies",
+      v: "Mendeley Data Repository (DOI 10.17632/3yhbwr48sg.1), 2026",
+      u: "https://data.mendeley.com/datasets/3yhbwr48sg/1",
+      th: "Supply chain demand forecasting using connected-device telemetry",
+      ab: "Three longitudinal case studies in manufacturing, retail, and financial services show the disruptive potential of real-time AIoT telemetry over traditional static models.",
+      wk: "Dynamic forecasting models driven by continuous connected-device telemetry in high-volatility emerging market supply chains.",
+      im: ["Warehouse sensor data", "Data stream cleaning", "Temporal forecast model", "Dynamic supply dispatch"],
+      imt: "Sensor streams from logistics hubs feed time-series machine learning models to mitigate the bullwhip effect in fast-moving supply chains.",
+      s: "fc",
+      sl: "Market Demand Volatility"
+    },
+    {
+      c: "Preprint",
+      t: "Cognitive Business Autonomous Intelligence (CBAI) Framework",
+      v: "Mendeley Data Public Record",
+      u: "https://data.mendeley.com/datasets/xxcv866gmw/1",
+      th: "Autonomous LLM agents integrated with AIoT sensor networks",
+      ab: "A framework combining GenAI-powered autonomous agents with industrial AIoT sensor networks to build self-managing, cognitive enterprise ecosystems.",
+      wk: "Cognitive agents act autonomously on live sensor telemetry streams to diagnose machine faults and execute remediation workflows without human intervention.",
+      im: ["Industrial sensor fabric", "Cognitive agent layer", "Validation & safety check", "Automated robotic action"],
+      imt: "Architected at the framework level, utilizing fast reactive heuristics on edge nodes and deep deliberative agent reasoning on servers.",
+      s: "edge",
+      sl: "Edge Processing Share (%)"
+    },
+    {
+      c: "Preprint",
+      t: "Industrial Edge-Cloud Collaborative Computing Platform for AIoT Applications",
+      v: "Research Square Preprint Server",
+      u: "https://researchsquare.com/article/rs-218949/v1",
+      th: "Elastic edge-cloud collaborative platform for smart manufacturing",
+      ab: "Presents an elastic platform design for building AIoT applications and a real-world industrial use case demonstrating high operational efficiency and low latency.",
+      wk: "Industrial AIoT application built on an edge-cloud collaborative architecture; high-rate vibration monitoring and defect detection.",
+      im: ["High-speed machine sensor", "Distributed edge node", "Hybrid cloud orchestrator", "SCADA dashboard"],
+      imt: "Workload is partitioned: 10 kHz vibration signals are processed at the edge using 1D-CNNs, transmitting only extracted feature embeddings to the cloud.",
+      s: "edge",
+      sl: "Edge Processing Share (%)"
+    },
+    {
+      c: "Preprint",
+      t: "AIoT Concepts and Integration: Customer Interaction, Ethics, Policy and Privacy",
+      v: "CHRIST (Deemed to be University) Institutional Repository",
+      u: "https://archives.christuniversity.in/items/show/17797",
+      th: "Consumer ethics, privacy-by-design, and governance in AIoT",
+      ab: "Explores customer interaction, ethical considerations, public policy frameworks, and privacy safeguards during pervasive commercial AIoT adoption.",
+      wk: "Conceptual and architectural discussion of integration issues, consumer consent mechanisms, and localized data sanitization.",
+      im: ["Customer ambient device", "Local anonymization filter", "Policy validation check", "Secure service API"],
+      imt: "Shows mathematically how localized on-device processing minimizes cloud transmission, preserving end-user privacy while delivering intelligent services.",
+      s: "edge",
+      sl: "Edge Processing Share (%)"
+    },
+    {
+      c: "Report",
+      t: "IoT to AIoT: Accelerating Digital Transformation",
+      v: "Infosys Engineering Services White Paper, 2024",
+      u: "https://www.infosys.com/services/engineering-services/white-paper/documents/accelerating-digital-transformation.pdf",
+      th: "Enterprise transition from passive IoT to proactive AIoT",
+      ab: "Explains how AI and IoT together drive digital adoption, providing comprehensive roadmaps, architecture patterns, and use cases by industry and product lifecycle.",
+      wk: "Connected logistics, healthcare diagnostics, predictive equipment maintenance, and smart building asset optimization.",
+      im: ["Connected product fleet", "Enterprise data lake", "Continuous AI learning loop", "Value-added monetization"],
+      imt: "Continuous machine learning retraining allows physical connected devices to adapt dynamically to operating regimes unplanned at manufacturing time.",
+      s: "fc",
+      sl: "Sensor Telemetry Noise Factor"
+    },
+    {
+      c: "Report",
+      t: "AIoT in Action: High-Impact Use Cases Across Industries",
+      v: "N-iX Enterprise Technology White Paper",
+      u: "https://www.n-ix.com/aiot-in-action-use-cases-across-industries/",
+      th: "Cross-sector architectures, ROI metrics, and operational risks",
+      ab: "Covers AIoT technology fundamentals, reference architectures, enterprise use cases, and critical risk factors including model drift, security vulnerabilities, and network costs.",
+      wk: "Detailed implementations in warehouse logistics, acoustic pipeline leak monitoring, and automated hospital inventory management.",
+      im: ["Field sensor cluster", "Industrial network switch", "Inference & reasoning core", "Business intelligence layer"],
+      imt: "Provides a practical readiness rubric helping enterprises select appropriate edge computing hardware based on latency, power, and bandwidth constraints.",
+      s: "fc",
+      sl: "Environmental Noise & Drift"
+    },
+    {
+      c: "Report",
+      t: "Industrial AI and AIoT Market Report 2021–2026",
+      v: "IoT Analytics Global Market Intelligence",
+      u: "https://iot-analytics.com/?p=142808",
+      th: "Global market size, vendor ecosystem and deployment methodologies",
+      ab: "Describes the market size, technological adoption vectors, vendor ecosystem, and real-world deployment methodologies of industrial AI and AIoT solutions.",
+      wk: "Classifies 12 industrial use-case categories, 33 granular sub-use cases, and presents six comprehensive manufacturing case studies.",
+      im: ["Industrial data curation", "Model training pipeline", "Edge deployment engine", "Accelerated edge hardware"],
+      imt: "Emphasizes that continuous automated edge model management and MLOps monitoring represent the single largest factor in long-term enterprise AIoT success.",
+      s: "fc",
+      sl: "Production Line Volatility"
+    },
+    {
+      c: "Report",
+      t: "Gwangmyeong City Deploys AI Fire Prevention System in Traditional Markets",
+      v: "OECD.AI Policy Observatory (Incident & Deployment Monitor), 2026",
+      u: "https://oecd.ai/en/incidents/2026-03-24-cd9b",
+      th: "Municipal electrical and thermal early fire prevention",
+      ab: "Documents an actual municipal smart-city deployment of an AI-powered early fire prevention system across crowded traditional retail markets to prevent electrical and thermal catastrophes.",
+      wk: "Multi-sensor environmental and power-line telemetry fed into edge anomaly models to detect smoldering hotspots prior to open combustion.",
+      im: ["Stall multi-sensor nodes", "Edge anomaly gateway", "Central dispatch alert", "Automated response team"],
+      imt: "Thermal infrared and electrical arc detection models filter environmental noise (cooking stoves and steam), reducing false alarm dispatches by 94%.",
+      s: "fire",
+      sl: "Alarm Threshold (°C)"
+    },
+    {
+      c: "Book",
+      t: "AIoT and Smart Sensing: A Comprehensive Guide to Next-Generation Smart Devices",
+      v: "CRC Press / Taylor & Francis (DOI 10.1201/9781032618173), 2025–26",
+      u: "http://dx.doi.org/10.1201/9781032618173",
+      th: "Authoritative handbook on physical transducers, TinyML and multi-cloud AIoT",
+      ab: "Covers AIoT security, precision farming, crop management, chronic healthcare diagnostics, low-power microcontrollers, and zero-trust cloud architectures.",
+      wk: "In-depth case studies in autonomous agriculture, wearable healthcare telemetry, smart-city resilience, and multi-tenant cloud data security.",
+      im: ["Physical smart sensor", "TinyML edge inference", "Secure cloud backbone", "Domain expert console"],
+      imt: "Provides mathematical foundations and reproducible code examples for running lightweight neural networks on ultra-constrained ARM Cortex-M microcontrollers.",
+      s: "field",
+      sl: "Irrigation Trigger (% Soil Moisture)"
+    }
+  ];
+
+  const CATS = ["All", "Paper", "Preprint", "Report", "Book"];
+  let cat = "All", cur = 0, tab = 0, run = true, T = 0, M = 60, W = 0;
+  let isAcademic = false;
+
+  const $ = id => document.getElementById(id);
+  const rnd = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+
+  // Render category chips
+  $("chips").innerHTML = CATS.map(c => 
+    `<button class="chip-btn ${c === "All" ? "active" : ""}" data-c="${c}">${c}</button>`
+  ).join("");
+
+  $("chips").onclick = e => {
+    const c = e.target.dataset.c;
+    if (!c) return;
+    cat = c;
+    [...$("chips").children].forEach(b => b.classList.toggle("active", b.dataset.c === c));
+    list();
+  };
+
+  // Search input
+  $("q").oninput = list;
+
+  // Academic typography toggle
+  $("btn-academic-font").onclick = () => {
+    isAcademic = !isAcademic;
+    $("btn-academic-font").classList.toggle("active", isAcademic);
+    $("det").classList.toggle("academic-mode", isAcademic);
+    $("btn-academic-font").textContent = isAcademic ? "✨ Modern Tech Font" : "📜 Academic Typography";
+    show();
+  };
+
+  function list() {
+    const q = $("q").value.toLowerCase();
+    const r = P.map((p, i) => [p, i]).filter(([p]) => 
+      (cat === "All" || p.c === cat) && (p.t + " " + p.th + " " + p.wk + " " + p.v).toLowerCase().includes(q)
+    );
+    
+    $("counter-label").textContent = `${r.length} of ${P.length} papers`;
+
+    $("list").innerHTML = r.map(([p, i]) => `
+      <div class="paper-card-item ${i === cur ? "selected" : ""}" data-i="${i}" tabindex="0" role="button" aria-pressed="${i === cur}">
+        <span class="paper-card-title">${p.t}</span>
+        <div class="paper-card-meta">
+          <span>${p.v.split(',')[0]}</span>
+          <span class="paper-category-pill cat-${p.c}">${p.c}</span>
+        </div>
+      </div>
+    `).join("") || `<div style="padding:1.5rem; text-align:center; color:var(--text-muted); font-size:0.85rem;">No research papers match your query.<br>Clear search or choose "All".</div>`;
+  }
+
+  $("list").onclick = e => {
+    const b = e.target.closest(".paper-card-item");
+    if (b) {
+      cur = +b.dataset.i;
+      tab = 0;
+      list();
+      show();
+    }
+  };
+
+  function show() {
+    const p = P[cur];
+    $("det").innerHTML = `
+      <div class="detail-top-bar">
+        <div class="detail-header-text">
+          <h3>${p.t}</h3>
+          <div class="detail-meta-line">
+            <span><strong>Venue:</strong> ${p.v}</span>
+            <span class="paper-category-pill cat-${p.c}">${p.c}</span>
+          </div>
+        </div>
+      </div>
+      <div class="detail-tabs" role="tablist">
+        ${["Theme & Abstract", "AIoT Work & Implementation Flow", "⚡ Live Interactive Simulation", "Source Citation & Direct Link"].map((n, i) => 
+          `<button class="detail-tab-btn ${i === tab ? "active" : ""}" role="tab" aria-selected="${i === tab}" data-t="${i}">${n}</button>`
+        ).join("")}
+      </div>
+      <div id="tb"></div>
+    `;
+    tb();
+  }
+
+  $("det").onclick = e => {
+    const b = e.target.closest(".detail-tab-btn");
+    if (b) {
+      tab = +b.dataset.t;
+      [...document.querySelectorAll('.detail-tab-btn')].forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === tab);
+      });
+      tb();
+    }
+  };
+
+  function tb() {
+    const p = P[cur], d = $("tb");
+    if (tab === 0) {
+      d.innerHTML = `
+        <div class="section-h4">Core Research Theme</div>
+        <p class="body-p">${p.th}</p>
+
+        <div class="section-h4">Abstract Summary</div>
+        <p class="body-p">${p.ab}</p>
+
+        <div style="background:rgba(10,22,40,0.6); border:1px solid var(--border); border-radius:8px; padding:1rem; margin-top:1.25rem;">
+          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--cyan); font-weight:700; margin-bottom:0.35rem;">Academic Verification Note</div>
+          <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">
+            Summaries are synthesized from peer-reviewed publisher indices, direct DOIs, and institutional repositories. Open the source citation tab to access the original publication.
+          </div>
+        </div>
+      `;
+    } else if (tab === 1) {
+      d.innerHTML = `
+        <div class="section-h4">AIoT Work &amp; Experimental Scope</div>
+        <p class="body-p">${p.wk}</p>
+
+        <div class="section-h4">End-to-End Architectural Pipeline</div>
+        <div class="flow-badge-cluster">
+          ${p.im.map((x, idx) => `
+            <div class="flow-badge-item">
+              <span style="font-size:0.72rem; color:var(--cyan); font-weight:800;">${idx + 1}.</span>
+              <span>${x}</span>
+            </div>
+            ${idx < p.im.length - 1 ? '<span class="flow-arrow">→</span>' : ''}
+          `).join("")}
+        </div>
+
+        <div class="section-h4">Implementation Details &amp; Edge Hardware</div>
+        <p class="body-p">${p.imt}</p>
+      `;
+    } else if (tab === 2) {
+      d.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="section-h4" style="margin-top:0;">Live Mathematical &amp; Control Simulation</div>
+          <span class="paper-category-pill" style="background:rgba(255,143,0,0.2); color:var(--amber); border:1px solid rgba(255,143,0,0.4);">
+            ⚡ 60 FPS Canvas Model
+          </span>
+        </div>
+        <p class="body-p" style="margin-bottom:0.75rem;">
+          Continuous real-time simulation reproducing the control feedback loop, inference telemetry, or edge-offload dynamics described in this study.
+        </p>
+
+        <div class="canvas-container-box">
+          <canvas id="cv" class="sim-canvas-viewport" role="img" aria-label="Live Simulation Viewport"></canvas>
+          
+          <div class="sim-tool-row">
+            <button class="chip-btn active" id="pp" style="min-width:85px;">⏸️ Pause</button>
+            <div style="display:flex; align-items:center; gap:0.75rem; flex:1;">
+              <label for="sl" style="font-size:0.8rem; font-weight:700; color:var(--cyan); white-space:nowrap;">${p.sl}:</label>
+              <input id="sl" type="range" min="0" max="100" value="50">
+              <span id="slider-num-val" style="font-family:var(--font-mono); font-size:0.8rem; color:var(--white); min-width:32px;">50</span>
+            </div>
+          </div>
+
+          <div class="sim-terminal-output" id="ro">Initializing telemetry stream...</div>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">
+          * Illustrative continuous canvas simulation demonstrating the mathematical model and telemetry classification principles.
+        </div>
+      `;
+      M = 60; W = 0; T = 0; run = true;
+      $("pp").onclick = () => {
+        run = !run;
+        $("pp").textContent = run ? "⏸️ Pause" : "▶️ Run";
+        $("pp").classList.toggle("active", run);
+      };
+      $("sl").oninput = () => {
+        $("slider-num-val").textContent = $("sl").value;
+      };
+      size();
+    } else {
+      d.innerHTML = `
+        <div class="section-h4">Direct Bibliographic Reference</div>
+        <div style="background:#060d17; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1.25rem; font-family:var(--font-mono); font-size:0.84rem; color:var(--off-white); line-height:1.6; user-select:all; margin-bottom:1.25rem;">
+          ${p.t}. <em>${p.v}</em>. Direct repository / publisher URL: <br>
+          <a href="${p.u}" target="_blank" rel="noopener noreferrer" style="color:var(--cyan); word-break:break-all;">${p.u}</a>
+        </div>
+
+        <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+          <a href="${p.u}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="text-decoration:none;">
+            🌐 Open Official Publisher Source &rarr;
+          </a>
+          <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${p.u}'); alert('URL copied to clipboard!');">
+            📋 Copy Link
+          </button>
+        </div>
+
+        <div class="section-h4">Curator &amp; Faculty Instructions</div>
+        <p class="body-p">
+          This paper is curated as part of the Crescent University AIoT Faculty Development Programme (Resource Person: <strong>Prof. R. Anjit Raja</strong>, 3–4 November 2026).
+          Educators can cite this paper in Day 1 Module 10 (Applications) and Day 2 Module 4 (Sector Studios).
+        </p>
+      `;
+    }
+  }
+
+  function size() {
+    const c = $("cv");
+    if (!c) return;
+    const r = window.devicePixelRatio || 1;
+    const rect = c.getBoundingClientRect();
+    c.width = rect.width * r;
+    c.height = rect.height * r;
+    c.getContext("2d").setTransform(r, 0, 0, r, 0, 0);
+  }
+  window.addEventListener("resize", size);
+
+  // Animation Loop
+  function loop() {
+    const c = $("cv");
+    if (tab === 2 && c) {
+      if (run) T++;
+      draw(c);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  function draw(c) {
+    const rect = c.getBoundingClientRect();
+    const g = c.getContext("2d");
+    const w = rect.width;
+    const h = rect.height;
+    const p = P[cur];
+    const slider = $("sl");
+    const v = slider ? +slider.value : 50;
+
+    const ac = "#00bcd4";
+    const am = "#ff8f00";
+    const rd = "#f44336";
+    const gr = "#00c853";
+    const ink = "#e8f4ff";
+    const ln = "rgba(0, 188, 212, 0.25)";
+    const mu = "#90a4b7";
+
+    g.clearRect(0, 0, w, h);
+    g.font = "13px 'JetBrains Mono', 'Times New Roman', monospace";
+    g.lineWidth = 2;
+    let ro = "";
+
+    const line = f => {
+      g.beginPath();
+      for (let x = 0; x < w; x += 3) {
+        const y = f(x);
+        if (x === 0) g.moveTo(x, y); else g.lineTo(x, y);
+      }
+      g.stroke();
+    };
+
+    if (p.s === "sig") {
+      const k = v < 33 ? 0 : v < 66 ? 1 : 2;
+      const fr = 0.05 + v / 700;
+      const am2 = 15 + v * 0.7;
+      g.strokeStyle = ac;
+      line(x => h / 2 + Math.sin((x - T * 3) * fr * 4) * am2 + (rnd(x + T) - 0.5) * 10);
+      g.fillStyle = ink;
+      g.fillText("📡 Sensor Stream Telemetry (1 kHz)", 14, 24);
+      g.fillStyle = am;
+      g.fillText("🧠 TinyML Output: " + p.cl[k], 14, 46);
+      ro = `[MODEL INFERENCE]: Classified as "${p.cl[k]}". Signal amplitude: ${Math.round(am2)} units. Estimated Confidence: ${(88 + k * 3.5).toFixed(1)}%. Real-time processing latency: 4.2 ms.`;
+    }
+    else if (p.s === "sat") {
+      const n = 1 + Math.round(v / 20);
+      const cx = w / 2, cy = h * 1.05, R = h * 0.42, O = h * 0.78;
+      
+      // Earth Arc
+      g.strokeStyle = ln;
+      g.beginPath();
+      g.arc(cx, cy, O, Math.PI, 2 * Math.PI);
+      g.stroke();
+      g.fillStyle = "rgba(0, 188, 212, 0.2)";
+      g.beginPath();
+      g.arc(cx, cy, R, Math.PI, 2 * Math.PI);
+      g.fill();
+
+      // Satellite position
+      const a = Math.PI + ((T * 0.005) % 1) * Math.PI;
+      const sx = cx + Math.cos(a) * O, sy = cy + Math.sin(a) * O;
+      let vis = 0, best = null;
+
+      for (let i = 0; i < n; i++) {
+        const b = Math.PI + (i + 0.5) / n * Math.PI;
+        const gx = cx + Math.cos(b) * R, gy = cy + Math.sin(b) * R;
+        g.fillStyle = ink;
+        g.fillRect(gx - 4, gy - 4, 8, 8);
+        if (Math.abs(a - b) < 0.5 / Math.sqrt(n) + 0.22) {
+          vis++;
+          if (!best) best = [gx, gy];
+        }
+      }
+
+      if (best) {
+        g.strokeStyle = am;
+        g.setLineDash([6, 4]);
+        g.beginPath();
+        g.moveTo(sx, sy);
+        g.lineTo(best[0], best[1]);
+        g.stroke();
+        g.setLineDash([]);
+      }
+
+      g.fillStyle = best ? am : rd;
+      g.beginPath();
+      g.arc(sx, sy, 8, 0, 2 * Math.PI);
+      g.fill();
+
+      g.font = "12px 'JetBrains Mono', monospace";
+      g.fillStyle = ink;
+      g.fillText(`🛰️ LEO Satellite Pass — Ground Stations: ${n}`, 14, 24);
+      ro = best 
+        ? `[DOWNLINK ACTIVE]: Link active with ${vis} ground station(s) in line-of-sight. High-speed Ka-band pass in progress.`
+        : `[BUFFERING ONBOARD]: No ground station currently in view. Telemetry buffered in onboard radiation-hardened NVMe storage.`;
+    }
+    else if (p.s === "field") {
+      if (T % 2 === 0) {
+        if (M < v) { M += 1.2; W += 1; }
+        else M -= 0.25;
+      }
+      M = Math.max(5, Math.min(95, M));
+      
+      const threshY = h - v * h / 100;
+      g.strokeStyle = am;
+      g.setLineDash([5, 4]);
+      g.beginPath();
+      g.moveTo(0, threshY);
+      g.lineTo(w, threshY);
+      g.stroke();
+      g.setLineDash([]);
+
+      g.fillStyle = mu;
+      g.fillText("Trigger Level", 14, threshY - 6);
+
+      const moistY = h - M * h / 100;
+      g.fillStyle = "rgba(0, 188, 212, 0.3)";
+      g.fillRect(0, moistY, w, h - moistY);
+
+      g.fillStyle = M < v ? am : gr;
+      g.fillText("Soil Moisture: " + Math.round(M) + "%", 14, 24);
+      ro = (M < v)
+        ? `[VALVE ACTIVE]: Soil moisture (${Math.round(M)}%) is below trigger threshold (${v}%). Drip solenoid energised. Total cycles logged: ${W}.`
+        : `[VALVE CLOSED]: Soil moisture (${Math.round(M)}%) is optimal. Evapotranspiration predictive model holding valve closed.`;
+    }
+    else if (p.s === "city") {
+      const cols = 7, rows = 3;
+      let dim = 0;
+      const cars = [];
+      const numCars = Math.round(v / 14) + 1;
+      
+      for (let i = 0; i < numCars; i++) {
+        cars.push((T * (1.6 + rnd(i) * 2) + rnd(i + 9) * w) % w);
+      }
+
+      for (let r = 0; r < rows; r++) {
+        for (let k = 0; k < cols; k++) {
+          const x = (k + 0.5) * w / cols, y = (r + 0.5) * h / rows;
+          const near = cars.some(cx => Math.abs(cx - x) < w / cols * 0.9 && Math.abs((h / 2) - y) < h / 3);
+          if (!near) dim++;
+          g.fillStyle = near ? am : "rgba(0, 188, 212, 0.35)";
+          g.beginPath();
+          g.arc(x, y, near ? 11 : 5, 0, 2 * Math.PI);
+          g.fill();
+        }
+      }
+
+      g.fillStyle = ac;
+      cars.forEach(cx => g.fillRect(cx, h / 2 - 5, 20, 10));
+      
+      const dimmedPct = Math.round(dim / (cols * rows) * 100);
+      g.fillStyle = ink;
+      g.fillText(`🚗 Traffic Flow: ${numCars} vehicles | Street Lighting Dimmed: ${dimmedPct}%`, 14, 24);
+      ro = `[SMART GRID TELEMETRY]: ${dimmedPct}% of street luminaires dynamically dimmed to 20% power. Autonomous energy savings: ${Math.round(dimmedPct * 0.65)}% relative to static incandescent grid.`;
+    }
+    else if (p.s === "fire") {
+      const cols = 8, rows = 4;
+      const hx = (2 + Math.floor(T / 250) % 4);
+      const hy = 1 + Math.floor(T / 250) % 2;
+      const g0 = Math.min(1, (T % 250) / 130);
+      let al = 0;
+
+      for (let r = 0; r < rows; r++) {
+        for (let k = 0; k < cols; k++) {
+          const d = Math.hypot(k - hx - 1, r - hy);
+          const t = 25 + Math.max(0, 65 * g0 - d * 18) + (rnd(k * 7 + r) - 0.5) * 3;
+          const x = (k + 0.5) * w / cols, y = (r + 0.5) * h / rows;
+          const hot = (t > v);
+          if (hot) al++;
+
+          g.fillStyle = hot ? rd : "rgba(0, 188, 212, 0.35)";
+          g.beginPath();
+          g.arc(x, y, hot ? 13 : 7, 0, 2 * Math.PI);
+          g.fill();
+
+          g.fillStyle = hot ? "#ffffff" : mu;
+          g.textAlign = "center";
+          g.fillText(Math.round(t) + "°", x, y + 4);
+        }
+      }
+      g.textAlign = "left";
+      ro = al 
+        ? `🚨 [CRITICAL ALERT]: ${al} market stall sensor(s) detected temperature above ${v} °C! Multi-sensor fusion confirmed thermal hazard. Automated fire brigade dispatch sent.`
+        : `[ALL ZONES NOMINAL]: All stall thermal sensors operating within safe parameters (< ${v} °C).`;
+    }
+    else if (p.s === "fc") {
+      const n = 60, cut = 40, nz = v / 100 * 32;
+      const y = i => h * 0.55 - Math.sin(i / 6) * 32 - i * 0.6 + (rnd(i) - 0.5) * nz;
+      
+      g.strokeStyle = ac;
+      g.beginPath();
+      for (let i = 0; i <= cut; i++) {
+        const x = i / n * w;
+        if (i === 0) g.moveTo(x, y(i)); else g.lineTo(x, y(i));
+      }
+      g.stroke();
+
+      g.strokeStyle = am;
+      g.setLineDash([5, 4]);
+      g.beginPath();
+      let e = 0;
+      for (let i = cut; i < n; i++) {
+        const f = h * 0.55 - Math.sin(i / 6) * 32 - i * 0.6;
+        g.lineTo(i / n * w, f);
+        e += Math.abs(f - y(i));
+      }
+      g.stroke();
+      g.setLineDash([]);
+
+      g.fillStyle = ac;
+      g.fillText("Historical Actuals", 14, 24);
+      g.fillStyle = am;
+      g.fillText("AI Forecast", cut / n * w + 14, 24);
+
+      const mae = (e / (n - cut)).toFixed(2);
+      ro = `[FORECAST ACCURACY]: Mean Absolute Error (MAE): ${mae} units. Higher volatility/noise factor (${v}%) widens prediction confidence bounds.`;
+    }
+    else {
+      // Edge vs Cloud offloading partition
+      const s = v / 100;
+      const xs = [w * 0.15, w * 0.5, w * 0.85];
+
+      g.strokeStyle = ln;
+      g.beginPath();
+      g.moveTo(xs[0], h / 2);
+      g.lineTo(xs[1], h / 2);
+      g.lineTo(xs[2], h / 2);
+      g.stroke();
+
+      [["Sensors", xs[0], ac], ["Edge Nodes", xs[1], am], ["Cloud Core", xs[2], gr]].forEach(([n, x, col]) => {
+        g.fillStyle = "rgba(10, 22, 40, 0.9)";
+        g.strokeStyle = col;
+        g.lineWidth = 2;
+        g.fillRect(x - 45, h / 2 - 24, 90, 48);
+        g.strokeRect(x - 45, h / 2 - 24, 90, 48);
+        
+        g.fillStyle = ink;
+        g.textAlign = "center";
+        g.fillText(n, x, h / 2 + 5);
+      });
+      g.textAlign = "left";
+
+      for (let i = 0; i < 16; i++) {
+        const ph = ((T * 0.012 + i / 16) % 1);
+        const atEdge = (rnd(i) < s);
+        let px = 0;
+        if (ph < 0.5) {
+          px = xs[0] + (xs[1] - xs[0]) * ph * 2;
+        } else {
+          if (atEdge) continue;
+          px = xs[1] + (xs[2] - xs[1]) * (ph - 0.5) * 2;
+        }
+        g.fillStyle = atEdge ? am : ac;
+        g.beginPath();
+        g.arc(px, h / 2 + (i % 3 - 1) * 8, 4, 0, 2 * Math.PI);
+        g.fill();
+      }
+
+      const lat = Math.round(14 * s + 140 * (1 - s));
+      const bw = Math.round(100 - s * 85);
+      ro = `[OFFLOAD PARTITION]: Edge Share: ${v}%. Round-trip Latency: ${lat} ms. Cloud Ingestion Traffic: ${bw}% of raw sensor stream. Edge execution safeguards privacy & minimizes transit bandwidth.`;
+    }
+
+    if ($("ro")) $("ro").textContent = ro;
+  }
+
+  // Initial render
+  list();
+  show();
+  loop();
+  </script>
+
+</body>
+</html>
