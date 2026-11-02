@@ -197,7 +197,38 @@
     </div>
   </div>
 
-  <!-- 2. SIMULATION MODE BANNER -->
+  <!-- 2. AIOT SMART CAMPUS ARCHITECTURE SHOWCASE -->
+  <div class="card mb-3" style="background:linear-gradient(180deg, rgba(10,22,40,0.92) 0%, rgba(6,13,26,0.96) 100%); border:1px solid rgba(0,188,212,0.35); box-shadow:0 0 24px rgba(0,188,212,0.12); overflow:hidden;">
+    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+      <div style="display:flex; align-items:center; gap:0.6rem;">
+        <span class="icon">🏫</span>
+        <h3 style="margin:0;">AIoT Smart Campus Architecture Blueprint
+          <small style="display:block; color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
+            End-to-end visual blueprint: Sensing Nodes &bull; Edge Gateway &bull; Connectivity &bull; Cloud Intelligence &bull; Actuation &bull; Campus Dashboard
+          </small>
+        </h3>
+      </div>
+      <div style="display:flex; gap:0.5rem; align-items:center;">
+        <button onclick="toggleCampusArchZoom()" class="btn btn-secondary btn-sm" style="font-size:0.75rem; display:inline-flex; align-items:center; gap:0.35rem;" id="btn-campus-arch-toggle">
+          🔍 Click to Expand
+        </button>
+        <a href="../Images/AIoT%20Smart%20Campus%20Architecture%201.png" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="font-size:0.75rem; display:inline-flex; align-items:center; gap:0.35rem;" title="Open original high-resolution architecture blueprint">
+          Full Resolution ↗
+        </a>
+      </div>
+    </div>
+    <div style="padding:1.25rem; background:rgba(4,9,18,0.7); text-align:center;">
+      <div style="position:relative; display:inline-block; width:100%; border-radius:10px; overflow:hidden; border:1px solid rgba(0,188,212,0.25); background:#060d1a;">
+        <img id="campus-arch-img" src="../Images/AIoT%20Smart%20Campus%20Architecture%201.png" alt="AIoT Smart Campus Architecture Blueprint — End-to-End System Simulation" style="width:100%; height:auto; max-height:580px; object-fit:contain; display:block; cursor:zoom-in; transition:max-height 0.3s ease, transform 0.3s ease;" onclick="toggleCampusArchZoom()">
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-top:0.85rem; padding:0 0.5rem; font-size:0.78rem; color:var(--text-muted);">
+        <span>✦ <strong>System Architecture Blueprint</strong>: Complete end-to-end pipeline across physical sensing, edge computing, broker connectivity, cloud analytics, and intelligent campus actuation.</span>
+        <span style="color:var(--cyan); font-weight:600;">Click image or button to toggle expanded view</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. SIMULATION MODE BANNER -->
   <div class="sim-mode-banner" role="alert">
     <div class="banner-icon">🔬</div>
     <div>
@@ -316,10 +347,32 @@
 
   <!-- 5. ARCHITECTURE DATA FLOW -->
   <div class="card mb-3">
-    <div class="card-header">
-      <span class="icon">🔄</span>
-      <h3>Architecture Data Flow <small>8-layer pipeline — conceptual overview</small></h3>
+    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+      <div style="display:flex; align-items:center; gap:0.6rem;">
+        <span class="icon">🔄</span>
+        <h3 style="margin:0;">Architecture Data Flow <small style="display:block; color:var(--text-muted); font-size:0.78rem; margin-top:2px;">8-layer pipeline — conceptual overview</small></h3>
+      </div>
+      <div style="display:flex; gap:0.5rem; align-items:center;">
+        <button onclick="togglePipelineInfographicZoom()" class="btn btn-secondary btn-sm" style="font-size:0.75rem; display:inline-flex; align-items:center; gap:0.35rem;" id="btn-pipeline-toggle">
+          🔍 Click to Expand
+        </button>
+        <a href="../Images/8-Layer%20IoT%20%2B%20AI%20Pipeline%20Infographic.png" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="font-size:0.75rem; display:inline-flex; align-items:center; gap:0.35rem;" title="Open original high-resolution infographic">
+          Full Resolution ↗
+        </a>
+      </div>
     </div>
+
+    <!-- 8-Layer Pipeline Infographic Display -->
+    <div style="margin-bottom:1.5rem; padding:1.25rem; background:rgba(4,9,18,0.7); border-radius:10px; border:1px solid rgba(0,188,212,0.25); text-align:center;">
+      <div style="position:relative; display:inline-block; width:100%; border-radius:8px; overflow:hidden; border:1px solid rgba(0,188,212,0.2); background:#060d1a;">
+        <img id="pipeline-infographic-img" src="../Images/8-Layer%20IoT%20%2B%20AI%20Pipeline%20Infographic.png" alt="8-Layer IoT + AI Pipeline Infographic — Conceptual Overview" style="width:100%; height:auto; max-height:500px; object-fit:contain; display:block; cursor:zoom-in; transition:max-height 0.3s ease, transform 0.3s ease;" onclick="togglePipelineInfographicZoom()">
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-top:0.85rem; padding:0 0.5rem; font-size:0.78rem; color:var(--text-muted);">
+        <span>✦ <strong>End-to-End 8-Layer Pipeline</strong>: Comprehensive data trajectory spanning physical sensing, edge gateways, MQTT brokering, streaming analytics, cloud intelligence, decision engine, and real-time visualization.</span>
+        <span style="color:var(--cyan); font-weight:600;">Click image or button to toggle expanded view</span>
+      </div>
+    </div>
+
     <div class="arch-flow-horiz">
       <div class="arch-flow-node layer-1">
         <div class="fn-icon">📡</div>
@@ -1222,6 +1275,40 @@
     qs('#challenge-output').classList.add('visible');
     showToast('✨ Solution design generated! (Proposed concept only)', 'success', 4000);
   }
+
+  /* ---- Architecture Infographic Zoom Toggle ---- */
+  function toggleCampusArchZoom() {
+    const img = document.getElementById('campus-arch-img');
+    const btn = document.getElementById('btn-campus-arch-toggle');
+    if (!img) return;
+    if (img.style.maxHeight === 'none') {
+      img.style.maxHeight = '580px';
+      img.style.cursor = 'zoom-in';
+      if (btn) btn.innerHTML = '🔍 Click to Expand';
+    } else {
+      img.style.maxHeight = 'none';
+      img.style.cursor = 'zoom-out';
+      if (btn) btn.innerHTML = '🔍 Click to Collapse';
+    }
+  }
+  window.toggleCampusArchZoom = toggleCampusArchZoom;
+
+  /* ---- Pipeline Infographic Zoom Toggle ---- */
+  function togglePipelineInfographicZoom() {
+    const img = document.getElementById('pipeline-infographic-img');
+    const btn = document.getElementById('btn-pipeline-toggle');
+    if (!img) return;
+    if (img.style.maxHeight === 'none') {
+      img.style.maxHeight = '500px';
+      img.style.cursor = 'zoom-in';
+      if (btn) btn.innerHTML = '🔍 Click to Expand';
+    } else {
+      img.style.maxHeight = 'none';
+      img.style.cursor = 'zoom-out';
+      if (btn) btn.innerHTML = '🔍 Click to Collapse';
+    }
+  }
+  window.togglePipelineInfographicZoom = togglePipelineInfographicZoom;
 
   /* ---- Bind events and init ---- */
   document.addEventListener('DOMContentLoaded', () => {

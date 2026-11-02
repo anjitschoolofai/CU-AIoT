@@ -2,26 +2,53 @@
    AIoT FDP Portal — Landing Page Specific Styles
    ========================================================== */
 
-/* ---- Star/Grid BG ---- */
+/* ---- Star/Grid BG with Home img.png ---- */
 .hero-bg {
   position: fixed; inset: 0; z-index: -1;
-  background: var(--navy);
+  background-color: #060d1a;
   overflow: hidden;
+}
+.hero-bg-image {
+  position: absolute; inset: 0;
+  background-image: url('../../Images/Home%20img.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.36;
+  filter: saturate(1.25) contrast(1.15) brightness(0.72) hue-rotate(-4deg);
+  transform: scale(1.02);
+  transition: opacity 0.5s ease;
+}
+.hero-bg-overlay {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(0, 188, 212, 0.16) 0%, transparent 65%),
+    radial-gradient(circle at 80% 80%, rgba(21, 101, 192, 0.22) 0%, transparent 70%),
+    linear-gradient(180deg, 
+      rgba(6, 13, 26, 0.72) 0%, 
+      rgba(10, 22, 40, 0.55) 35%, 
+      rgba(10, 22, 40, 0.82) 75%, 
+      rgba(6, 13, 26, 0.96) 100%
+    );
+  mix-blend-mode: multiply;
+  pointer-events: none;
 }
 .hero-bg::before {
   content: '';
   position: absolute; inset: 0;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,188,212,0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(21,101,192,0.1), transparent);
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,188,212,0.18), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(21,101,192,0.15), transparent);
+  pointer-events: none;
 }
 .hero-grid {
   position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(0,188,212,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,188,212,0.05) 1px, transparent 1px);
+    linear-gradient(rgba(0,188,212,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,188,212,0.06) 1px, transparent 1px);
   background-size: 50px 50px;
   mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  pointer-events: none;
 }
 
 /* ---- Landing specific ---- */
@@ -34,31 +61,36 @@
 .landing-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1rem 3rem;
-  background: rgba(10,22,40,0.85);
+  padding: 0 1.5rem;
+  height: 64px;
+  background: rgba(10,22,40,0.96);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.landing-logo { display: flex; align-items: center; gap: 0.85rem; }
+.landing-logo { display: flex; align-items: center; gap: 0.75rem; }
 .landing-logo .brand-logo-img {
-  width: 44px; height: 44px; border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 8px;
   background: #ffffff; padding: 2px;
-  box-shadow: 0 0 14px rgba(0, 188, 212, 0.4);
-  border: 1px solid rgba(0, 188, 212, 0.45);
+  box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+  border: 1px solid rgba(0, 188, 212, 0.4);
   object-fit: contain; flex-shrink: 0;
-  transition: transform 0.25s ease;
+  image-rendering: -webkit-optimize-contrast;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.landing-logo:hover .brand-logo-img { transform: scale(1.06); }
+.landing-logo:hover .brand-logo-img {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(0, 188, 212, 0.55);
+}
 .landing-logo .logo-box {
-  width: 46px; height: 46px; border-radius: 12px;
+  width: 40px; height: 40px; border-radius: 8px;
   background: linear-gradient(135deg, var(--cyan), var(--blue));
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; font-weight: 900; color: var(--navy); font-family: var(--font-head);
+  font-size: 1.25rem; font-weight: 900; color: var(--navy); font-family: var(--font-head);
 }
-.landing-logo .logo-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 800; color: var(--white); }
-.landing-logo .logo-sub   { font-size: 0.7rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.1em; }
-.landing-nav a { color: var(--text-muted); font-size: 0.87rem; padding: 0.35rem 0.75rem; border-radius: 6px; transition: color var(--transition); }
-.landing-nav a:hover { color: var(--cyan); }
+.landing-logo .logo-title { font-family: var(--font-head); font-size: 1rem; font-weight: 700; color: var(--white); }
+.landing-logo .logo-sub   { font-size: 0.68rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; }
+.landing-nav a { color: var(--text-muted); font-size: 0.82rem; padding: 0.35rem 0.65rem; border-radius: 6px; transition: all var(--transition); }
+.landing-nav a:hover, .landing-nav a.active { color: var(--cyan); background: rgba(0, 188, 212, 0.12); }
 
 /* ---- HERO SECTION ---- */
 .hero-section {
@@ -81,17 +113,20 @@
   font-weight: 900; line-height: 1.1;
   color: var(--white);
   margin-bottom: 0.5rem;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.75), 0 0 40px rgba(0, 188, 212, 0.25);
 }
-.hero-headline .aiot { color: var(--cyan); }
+.hero-headline .aiot { color: var(--cyan); text-shadow: 0 0 25px rgba(0, 188, 212, 0.5); }
 .hero-headline .fdp  {
   background: linear-gradient(135deg, var(--cyan), var(--blue-bright));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 2px 16px rgba(0, 188, 212, 0.35));
 }
 
 .hero-sub {
-  font-size: 1.05rem; color: var(--text-muted); max-width: 680px;
+  font-size: 1.05rem; color: #e2e8f0; max-width: 680px;
   margin: 1rem auto 0; line-height: 1.7;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
 }
 
 /* ---- Session Cards ---- */
@@ -100,10 +135,13 @@
   gap: 1.25rem; margin: 2.5rem auto; max-width: 760px;
 }
 .session-card {
-  background: var(--card-bg); border: 1px solid var(--border);
+  background: rgba(10, 22, 40, 0.84);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 188, 212, 0.25);
   border-radius: var(--radius-lg); padding: 1.5rem;
   text-align: left; transition: all var(--transition);
   position: relative; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 .session-card::before {
   content: '';
