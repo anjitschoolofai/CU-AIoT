@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project Studio &amp; Design Canvas — AIoT FDP Portal</title>
+  <link rel="icon" type="image/png" href="../Images/Final PGAIIRL Logo 2.0.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -112,7 +113,8 @@
     load production-grade faculty templates, perform automated sanity checks, and conduct rigorous peer reviews.
   </p>
   <div class="meta">
-    <span>👤 Resource Person: <strong>Prof. R. Anjit Raja</strong></span>
+    <span>🏛️ <a href="https://pgaiirl.netlify.app/" target="_blank" rel="noopener noreferrer" style="color:var(--cyan); text-decoration:underline;"><strong>PGAIIRL</strong></a></span>
+    <span>👤 Resource Person: <a href="https://www.linkedin.com/in/profanjitraja/" target="_blank" rel="noopener noreferrer" style="color:var(--cyan); text-decoration:underline;"><strong>Prof. R. Anjit Raja</strong></a></span>
     <span>🏫 <strong>Crescent University</strong></span>
     <span>📅 <strong>4 November 2026 (Day 2 Capstone)</strong></span>
     <span>🎯 <strong>8-Block System Stack &bull; 6 Turnkey Presets</strong></span>
@@ -527,11 +529,13 @@ Privacy: Radar &amp; CO2 used (NO optical cameras).</div>
         </button>
       </div>
 
-      <div class="alert alert-info" style="margin-top:1.5rem; font-size:0.8rem;">
-        <span class="alert-icon">🏫</span>
+      <div class="alert alert-info" style="margin-top:1.5rem; font-size:0.8rem; display:flex; align-items:center; gap:0.75rem;">
+        <a href="https://pgaiirl.netlify.app/" target="_blank" rel="noopener noreferrer" title="Visit PGAIIRL Website (https://pgaiirl.netlify.app/)">
+          <img src="../Images/Final%20PGAIIRL%20Logo%202.0.png" alt="PGAIIRL" style="width:36px; height:36px; border-radius:6px; background:#fff; padding:2px; flex-shrink:0; cursor:pointer;">
+        </a>
         <div>
-          <strong>Classroom Submission:</strong>
-          Google Classroom Code: <code>yfnftpdn</code> &bull; Resource Person: <strong>Prof. R. Anjit Raja</strong>.
+          <strong><a href="https://pgaiirl.netlify.app/" target="_blank" rel="noopener noreferrer" style="color:var(--cyan); text-decoration:none;">PGAIIRL Research Submission</a>:</strong>
+          Google Classroom Code: <code>yfnftpdn</code> &bull; Resource Person: <a href="https://www.linkedin.com/in/profanjitraja/" target="_blank" rel="noopener noreferrer" style="color:var(--cyan); text-decoration:underline; font-weight:700;">Prof. R. Anjit Raja</a> &bull; Patteesha Global AI Institute.
         </div>
       </div>
     </div>
@@ -876,7 +880,7 @@ function exportProposalJSON() {
 function copyProposalMarkdown() {
   const data = getProposalData();
   let md = `# AIoT Capstone System Proposal: ${data.proposal_title}\n\n`;
-  md += `**Institution:** Crescent University &bull; **FDP Resource Person:** Prof. R. Anjit Raja\n\n`;
+  md += `**Laboratory:** PGAIIRL (Patteesha Global AI Institute) &bull; **Institution:** Crescent University &bull; **FDP Resource Person:** Prof. R. Anjit Raja\n\n`;
   md += `## 8-Block Architecture Specifications\n\n`;
   
   for (let i = 1; i <= 8; i++) {

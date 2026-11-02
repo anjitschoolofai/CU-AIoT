@@ -50,13 +50,13 @@
 
     return `
 <header class="site-header" role="banner">
-  <div class="header-brand">
-    <a href="${ROOT}index.html" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;">
-      <div class="logo-icon">AI<span style="font-size:0.55em">oT</span></div>
-      <div class="brand-text">
-        <span class="brand-title">AIoT FDP Portal</span>
-        <span class="brand-sub">Prof. R. Anjit Raja · Crescent University</span>
-      </div>
+  <div class="header-brand" style="display:flex;align-items:center;gap:0.75rem;">
+    <a href="https://pgaiirl.netlify.app/" target="_blank" rel="noopener noreferrer" title="Visit PGAIIRL Website (https://pgaiirl.netlify.app/)" style="display:flex;align-items:center;text-decoration:none;">
+      <img src="${ROOT}Images/Final%20PGAIIRL%20Logo%202.0.png" alt="PGAIIRL Logo" class="brand-logo-img">
+    </a>
+    <a href="${ROOT}index.html" style="display:flex;flex-direction:column;text-decoration:none;">
+      <span class="brand-title">AIoT FDP Portal</span>
+      <span class="brand-sub">PGAIIRL · Crescent University</span>
     </a>
   </div>
   <nav class="top-nav" aria-label="Primary navigation">
@@ -86,6 +86,13 @@
 
     return `
 <aside class="sidebar" id="main-sidebar" role="navigation" aria-label="Module navigation">
+  <a href="https://pgaiirl.netlify.app/" target="_blank" rel="noopener noreferrer" class="sidebar-lab-badge" title="Visit PGAIIRL Website (https://pgaiirl.netlify.app/)" style="padding:1rem 1.15rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.75rem; background:rgba(0,188,212,0.03); text-decoration:none; transition:background 0.2s;">
+    <img src="${ROOT}Images/Final%20PGAIIRL%20Logo%202.0.png" alt="PGAIIRL Logo" style="width:38px; height:38px; border-radius:8px; background:#fff; padding:2px; border:1px solid rgba(0,188,212,0.3); object-fit:contain; flex-shrink:0;">
+    <div style="line-height:1.25;">
+      <div style="font-size:0.78rem; font-weight:800; color:var(--white); font-family:var(--font-head); letter-spacing:0.04em;">PGAIIRL <span style="font-size:0.7rem;color:var(--cyan);">↗</span></div>
+      <div style="font-size:0.62rem; color:var(--cyan); margin-top:2px;">Patteesha Global AI Institute</div>
+    </div>
+  </a>
   <div class="sidebar-section">
     <div class="sidebar-section-title">Navigation</div>
     ${links}
@@ -131,6 +138,29 @@
     while (body.children.length > 1) {
       main.appendChild(body.children[1]);
     }
+
+    // Append unified portal footer
+    const footerEl = document.createElement('footer');
+    footerEl.className = 'portal-injected-footer';
+    footerEl.innerHTML = `
+      <div style="margin-top:3.5rem; padding:1.5rem 0; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; font-size:0.8rem; color:var(--text-muted);">
+        <div style="display:flex; align-items:center; gap:0.85rem;">
+          <a href="https://pgaiirl.netlify.app/" target="_blank" rel="noopener noreferrer" title="Visit PGAIIRL Website (https://pgaiirl.netlify.app/)">
+            <img src="${ROOT}Images/Final%20PGAIIRL%20Logo%202.0.png" alt="PGAIIRL Logo" style="width:40px; height:40px; border-radius:8px; background:#fff; padding:2px; border:1px solid rgba(0,188,212,0.3); object-fit:contain; cursor:pointer;">
+          </a>
+          <div>
+            <a href="https://pgaiirl.netlify.app/" target="_blank" rel="noopener noreferrer" style="color:var(--white); text-decoration:none;"><strong style="color:var(--white);">PGAIIRL</strong> &bull; Patteesha Global AI Institute of Intelligent Research Labs <span style="color:var(--cyan);font-size:0.75rem;">↗</span></a>
+            <div style="font-size:0.72rem; color:var(--cyan); margin-top:2px;">AIoT Faculty Development Programme &bull; Resource Person: <a href="https://www.linkedin.com/in/profanjitraja/" target="_blank" rel="noopener noreferrer" style="color:var(--cyan); font-weight:700; text-decoration:underline;">Prof. R. Anjit Raja</a> &bull; Crescent University</div>
+          </div>
+        </div>
+        <div style="font-size:0.75rem; text-align:right;">
+          <div style="color:var(--white); font-style:italic;">Engineering Intelligence with Purpose</div>
+          <div style="color:var(--cyan); font-size:0.7rem; margin-top:2px;">3–4 November 2026</div>
+        </div>
+      </div>
+    `;
+    main.appendChild(footerEl);
+
     wrapper.appendChild(main);
     body.appendChild(wrapper);
 
